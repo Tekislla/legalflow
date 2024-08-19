@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /legalflow
+
+spring:
+  application:
+    name: "legalflow"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/legalflow 
+    username: postgres
+    password: postgres
+    driver:
+      class: org.hibernate.dialect.PostgreSQL10Dialect
+  liquibase:
+    change-log: classpath:/db/dbchangeLog.xml
+  jpa:
+    hibernate:
+      ddl-auto: none
