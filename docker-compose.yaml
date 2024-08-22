@@ -1,25 +1,25 @@
 services:
   backend:
     build:
-      context: ./backend/taskmanager
+      context: ./backend/legalflow
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
       - database
     networks:
-      - taskmanager-net
+      - legalflow-net
 
   frontend:
     build:
-      context: ./frontend/taskmanager
+      context: ./frontend/legalflow
       dockerfile: Dockerfile
     ports:
       - "9000:80"
     depends_on:
       - backend
     networks:
-      - taskmanager-net
+      - legalflow-net
 
   database:
     image: postgres:latest
@@ -28,14 +28,14 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: taskmanager
+      POSTGRES_DB: legalflow
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - taskmanager-net
+      - legalflow-net
 
 networks:
-  taskmanager-net:
+  legalflow-net:
     driver: bridge
 
 volumes:
