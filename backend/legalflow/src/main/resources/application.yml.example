@@ -7,7 +7,7 @@ spring:
   application:
     name: "legalflow"
   datasource:
-    url: jdbc:postgresql://localhost:5432/legalflow 
+    url: jdbc:postgresql://localhost:5432/legalflow
     username: postgres
     password: postgres
     driver:
