@@ -28,8 +28,8 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
 
 ## Requisitos
 
-- **Java 11+**
-- **Node.js 14+**
+- **Java 17+**
+- **Node.js 16+**
 - **Docker**
 - **PostgreSQL**
 
@@ -50,7 +50,7 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
    ```
 
 
-3. Renomeie o arquivo application.yml.example para application.yml e configure o banco de dados PostgreSQL e atualize as configurações.
+3. Renomeie o arquivo application.yml.example dentro de src/main/resources para application.yml, configure o banco de dados PostgreSQL e preencha as configurações necessárias (o banco estará pré-configurado para rodar local na porta 5432).
 
 4. Execute o projeto:
 
@@ -73,6 +73,7 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
     ```
     
 3. Execute o projeto:
+   
     ```
     quasar dev
     ```
