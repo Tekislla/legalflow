@@ -95,4 +95,6 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull re
 
 ## Licença
 
-Este projeto está licenciado sob a MIT License.
+Este projeto é protegido por direitos autorais. Todos os direitos estão reservados. 
+
+A reprodução, distribuição ou modificação do código deste repositório sem a permissão explícita do autor é estritamente proibida. Para quaisquer dúvidas ou solicitações, entre em contato com o autor.
