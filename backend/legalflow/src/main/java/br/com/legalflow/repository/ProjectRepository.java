@@ -1,6 +1,6 @@
-package br.com.agcapital.taskmanager.repository;
+package br.com.legalflow.repository;
 
-import br.com.agcapital.taskmanager.entity.Project;
+import br.com.legalflow.entity.Project;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ProjectRepository extends CrudRepository<Project, Long> {

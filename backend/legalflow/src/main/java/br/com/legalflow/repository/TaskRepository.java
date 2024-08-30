@@ -1,6 +1,6 @@
-package br.com.agcapital.taskmanager.repository;
+package br.com.legalflow.repository;
 
-import br.com.agcapital.taskmanager.entity.Task;
+import br.com.legalflow.entity.Task;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

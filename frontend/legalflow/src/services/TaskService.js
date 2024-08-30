@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const TASKS_API_BASE_URL = "http://localhost:8080/manager/tasks";
+const TASKS_API_BASE_URL = "http://localhost:8080/legalflow/tasks";
 
 class TaskService {
   saveTask(task) {

@@ -1,4 +1,4 @@
-package br.com.agcapital.taskmanager.config;
+package br.com.legalflow.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

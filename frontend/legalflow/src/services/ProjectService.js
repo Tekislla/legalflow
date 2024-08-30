@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PROJECTS_API_BASE_URL = "http://localhost:8080/manager/projects";
+const PROJECTS_API_BASE_URL = "http://localhost:8080/legalflow/projects";
 
 class ProjectService {
   saveProject(project) {

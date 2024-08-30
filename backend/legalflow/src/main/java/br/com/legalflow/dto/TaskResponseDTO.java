@@ -1,4 +1,4 @@
-package br.com.agcapital.taskmanager.dto;
+package br.com.legalflow.dto;
 
 import lombok.Data;
 

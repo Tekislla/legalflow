@@ -1,6 +1,6 @@
-package br.com.agcapital.taskmanager.dto;
+package br.com.legalflow.dto;
 
-import br.com.agcapital.taskmanager.entity.Task;
+import br.com.legalflow.entity.Task;
 import lombok.Data;
 
 import java.util.List;

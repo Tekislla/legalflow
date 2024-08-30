@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const CUSTOMERS_API_BASE_URL = "http://localhost:8080/manager/customers";
+const CUSTOMERS_API_BASE_URL = "http://localhost:8080/legalflow/customers";
 
 class CustomerService {
   saveCustomer(customer) {

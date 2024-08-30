@@ -1,10 +1,10 @@
-package br.com.agcapital.taskmanager.service;
+package br.com.legalflow.service;
 
-import br.com.agcapital.taskmanager.dto.ProjectRequestDTO;
-import br.com.agcapital.taskmanager.dto.ProjectResponseDTO;
-import br.com.agcapital.taskmanager.entity.Customer;
-import br.com.agcapital.taskmanager.entity.Project;
-import br.com.agcapital.taskmanager.repository.ProjectRepository;
+import br.com.legalflow.dto.ProjectRequestDTO;
+import br.com.legalflow.dto.ProjectResponseDTO;
+import br.com.legalflow.entity.Customer;
+import br.com.legalflow.entity.Project;
+import br.com.legalflow.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

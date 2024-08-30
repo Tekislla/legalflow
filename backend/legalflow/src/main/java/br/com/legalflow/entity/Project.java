@@ -1,4 +1,4 @@
-package br.com.agcapital.taskmanager.entity;
+package br.com.legalflow.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
