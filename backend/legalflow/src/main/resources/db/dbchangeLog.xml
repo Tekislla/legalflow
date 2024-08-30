@@ -5,31 +5,58 @@
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
     <changeSet id="1" author="joao_lazarim">
-        <createTable tableName="customer">
+        <createTable tableName="usuario">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="customer_name" type="varchar(100)"/>
+            <column name="organizacao_id" type="bigint">
+                <constraints foreignKeyName="fk_organizacao_usuario"/>
+            </column>
+            <column name="nome" type="varchar(100)"/>
+            <column name="email" type="varchar(100)"/>
+            <column name="senha_crypto" type="varchar(100)"/>
+            <column name="data_cadastro" type="date"/>
+            <column name="data_atualizacao" type="date"/>
+            <column name="ativo" type="boolean"/>
+            <column name="role" type="varchar(100)"/>
         </createTable>
-        <createTable tableName="project">
+        <createTable tableName="organizacao">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="customer_id" type="bigint">
-                <constraints foreignKeyName="fk_customer_project"/>
-            </column>
-            <column name="project_name" type="varchar(50)"/>
+            <column name="nome" type="varchar(100)"/>
+            <column name="documento" type="varchar(14)"/>
+            <column name="senha_crypto" type="varchar(100)"/>
+            <column name="data_cadastro" type="date"/>
+            <column name="data_atualizacao" type="date"/>
+            <column name="ativo" type="boolean"/>
+            <column name="role" type="varchar(100)"/>
         </createTable>
-        <createTable tableName="tasks">
+        <createTable tableName="quadro">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="project_id" type="bigint">
-                <constraints foreignKeyName="fk_project_task"/>
+            <column name="usuario_id" type="bigint">
+                <constraints foreignKeyName="fk_usuario_quadro"/>
             </column>
-            <column name="task_name" type="varchar(100)"/>
-            <column name="task_description" type="varchar(1000)"/>
-            <column name="task_status" type="varchar(50)"/>
+            <column name="organizacao_id" type="bigint">
+                <constraints foreignKeyName="fk_organizacao_quadro"/>
+            </column>
+            <column name="nome" type="varchar(50)"/>
+        </createTable>
+        <createTable tableName="processo">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quadro_id" type="bigint">
+                <constraints foreignKeyName="fk_quadro_processo"/>
+            </column>
+            <column name="nome" type="varchar(100)"/>
+            <column name="numero" type="varchar(100)"/>
+            <column name="descricao" type="varchar(1000)"/>
+            <column name="prazo_subsidio" type="date"/>
+            <column name="prazo_fatal" type="date"/>
+            <column name="arquivo" type="bytea"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

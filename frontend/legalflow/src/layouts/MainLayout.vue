@@ -18,7 +18,7 @@
         <q-item clickable @click="this.actualProjectId = null">
           <q-item-section avatar> Home </q-item-section>
         </q-item>
-        <q-expansion-item label="Projects">
+        <q-expansion-item label="Quadros">
           <projects-list
             v-for="project in projects"
             :key="project.id"
@@ -34,11 +34,28 @@
             v-show="this.projects.length === 0"
           >
             <q-item-section>
-              <q-item-label>There are no projects created.</q-item-label>
-              <q-item-label caption>Click here to create one</q-item-label>
+              <q-item-label>Não há nenhum quadro criado</q-item-label>
+              <q-item-label caption>Clique aqui para criar um</q-item-label>
             </q-item-section>
           </q-item>
         </q-expansion-item>
+        <q-expansion-item label="Configurações">
+          <q-item
+            clickable
+            @click="openNewProjectModal()"
+            v-show="this.projects.length === 0"
+          >
+            <q-item-section>
+              <q-item-label>Gestão de usuários</q-item-label>
+              <q-item-label caption>Criar ou excluir usuários</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-expansion-item>
+        <q-item clickable @click="openNewProjectModal()">
+          <q-item-section>
+            <q-item-label>Sair</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 

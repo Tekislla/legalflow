@@ -1,9 +1,9 @@
 <template>
   <q-page class="flex flex-center">
     <div class="flex column flex-center main-text">
-      <div style="font-size: 8vh">Welcome!</div>
+      <div style="font-size: 8vh">Olá!</div>
       <div class="text-h4">
-        Select a project from the menu or create a new project.
+        Selecione um quadro no menu ou crie um novo quadro
       </div>
       <div class="flex-row">
         <q-btn
@@ -12,8 +12,7 @@
           v-on:click="this.$emit('open-new-customer-modal')"
         >
           <div>
-            <div>New Customer</div>
-            <br />
+            <div>Novo usuário</div>
             <q-icon name="person" size="xl" />
           </div>
         </q-btn>
@@ -23,7 +22,7 @@
           v-on:click="this.$emit('open-new-project-modal')"
         >
           <div>
-            <div>New Project</div>
+            <div>Novo quadro</div>
             <q-icon name="topic" size="xl" />
           </div>
         </q-btn>

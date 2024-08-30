@@ -17,3 +17,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
+jwt:
+  secret: "" # Sua secret key
+  expiration: 14 # Expiração do token em dias
