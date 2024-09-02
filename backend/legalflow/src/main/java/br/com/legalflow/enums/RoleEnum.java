@@ -1,4 +1,4 @@
-package br.com.legalflow;
+package br.com.legalflow.enums;
 
 public enum RoleEnum {
     ADMIN,

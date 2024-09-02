@@ -34,9 +34,9 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario [id=" + id + ", organizacao=" + organizacao + ", nome=" + nome + ", email=" + email
+        return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email
                 + ", senhaCrypto=" + senhaCrypto + ", dataCadastro=" + dataCadastro + ", dataAtualizacao="
-                + dataAtualizacao + " , ativo=" + ativo + ", role=" + role + "quadros" + quadros + "]";
+                + dataAtualizacao + " , ativo=" + ativo + ", role=" + role + "]";
     }
 
 }

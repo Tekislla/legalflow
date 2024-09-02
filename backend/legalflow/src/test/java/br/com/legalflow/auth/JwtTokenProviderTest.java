@@ -1,5 +1,6 @@
 package br.com.legalflow.auth;
 
+import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.utils.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +20,14 @@ public class JwtTokenProviderTest {
     public void setUp() {
         jwtTokenProvider = new JwtTokenProvider();
         ReflectionTestUtils.setField(jwtTokenProvider, "jwtSecret", "minhaChaveSecreta");
-        ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpiration", 3600000L);
+        ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpirationDays", 15);
 
+        Organizacao organizacao = new Organizacao();
+        organizacao.setId(1L);
         usuario = new Usuario();
         usuario.setId(1L);
         usuario.setEmail("test@example.com");
-        usuario.setIdOrganizacao(1L);
+        usuario.setOrganizacao(organizacao);
         usuario.setRole("ROLE_USER");
     }
 

@@ -9,8 +9,8 @@ public class CadastroRequestDTO {
     private String nome;
     private String email;
     private String senha;
+    private Long idOrganizacao;
     private String nomeOrganizacao;
     private String documentoOrganizacao;
-    private Organizacao organizacao;
     private boolean administrador;
 }

@@ -33,10 +33,12 @@ public class UsuarioServiceTest {
     public void testAutenticarUsuario_Sucesso() throws Exception {
         String email = "user@example.com";
         String senha = "senha123";
+        boolean ativo = true;
 
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
         usuario.setSenhaCrypto(passwordEncoder.encode(senha));
+        usuario.setAtivo(ativo);
 
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches(senha, usuario.getSenhaCrypto())).thenReturn(true);
@@ -62,10 +64,12 @@ public class UsuarioServiceTest {
     public void testAutenticarUsuario_SenhaIncorreta() {
         String email = "user@example.com";
         String senha = "senha123";
+        boolean ativo = true;
 
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
         usuario.setSenhaCrypto(passwordEncoder.encode("senhaErrada"));
+        usuario.setAtivo(ativo);
 
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches(senha, usuario.getSenhaCrypto())).thenReturn(false);
@@ -74,5 +78,25 @@ public class UsuarioServiceTest {
                 usuarioService.autenticarUsuario(email, senha)
         );
         assertEquals("Senha incorreta", exception.getMessage());
+    }
+
+    @Test
+    public void testAutenticarUsuario_UsuarioInativo() {
+        String email = "user@example.com";
+        String senha = "senha123";
+        boolean ativo = false;
+
+        Usuario usuario = new Usuario();
+        usuario.setEmail(email);
+        usuario.setSenhaCrypto(passwordEncoder.encode("senha123"));
+        usuario.setAtivo(ativo);
+
+        when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.matches(senha, usuario.getSenhaCrypto())).thenReturn(false);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                usuarioService.autenticarUsuario(email, senha)
+        );
+        assertEquals("Usuário inativo", exception.getMessage());
     }
 }

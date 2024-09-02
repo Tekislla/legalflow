@@ -1,6 +1,7 @@
 package br.com.legalflow.service;
 
-import br.com.legalflow.RoleEnum;
+import br.com.legalflow.entity.Organizacao;
+import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.dto.request.CadastroRequestDTO;
 import br.com.legalflow.dto.request.EditarUsuarioRequestDTO;
 import br.com.legalflow.entity.Usuario;
@@ -22,10 +23,10 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Usuario cadastrarUsuario(CadastroRequestDTO dto) {
+    public Usuario cadastrarUsuario(CadastroRequestDTO dto, Organizacao organizacao) {
         Usuario usuario = new Usuario();
 
-        usuario.setOrganizacao(dto.getOrganizacao());
+        usuario.setOrganizacao(organizacao);
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenhaCrypto(passwordEncoder.encode(dto.getSenha()));
@@ -62,6 +63,10 @@ public class UsuarioService {
 
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
+    public Usuario findByEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
     public List<Usuario> findByOrganizacaoId(Long id) {

@@ -1,7 +1,10 @@
-package br.com.legalflow.filter;
+package br.com.legalflow.auth;
 
 import br.com.legalflow.config.filters.JwtTokenFilter;
+import br.com.legalflow.entity.Organizacao;
+import br.com.legalflow.service.UsuarioService;
 import br.com.legalflow.utils.JwtTokenProvider;
+import br.com.legalflow.entity.Usuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,9 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,7 +32,7 @@ public class JwtTokenFilterTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Mock
-    private UserDetailsService userDetailsService;
+    private UsuarioService usuarioService;
 
     @Mock
     private HttpServletRequest request;
@@ -40,14 +44,13 @@ public class JwtTokenFilterTest {
     private FilterChain filterChain;
 
     @Mock
-    private UserDetails userDetails;
+    private Usuario usuario;
+
+    @Mock
+    private Organizacao organizacao;
 
     @BeforeEach
     public void setUp() {
-        jwtTokenProvider = new JwtTokenProvider();
-        ReflectionTestUtils.setField(jwtTokenProvider, "jwtSecret", "minhaChaveSecreta");
-        ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpiration", 3600000L);
-
         MockitoAnnotations.openMocks(this);
     }
 
@@ -60,23 +63,38 @@ public class JwtTokenFilterTest {
     public void doFilterInternal_TokenValido() throws Exception {
         String token = "validToken";
         String email = "test@example.com";
+        Long userId = 1L;
+        Long organizationId = 1L;
 
         // Mock do request para retornar o token de autorização
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtTokenProvider.validateToken(token)).thenReturn(true);
         when(jwtTokenProvider.getEmailFromToken(token)).thenReturn(email);
+        when(jwtTokenProvider.getIdFromToken(token)).thenReturn(userId);
+        when(jwtTokenProvider.getIdOrganizacaoFromToken(token)).thenReturn(organizationId);
 
-        // Configura o mock do UserDetails para retornar o email esperado
-        when(userDetails.getUsername()).thenReturn(email);
-        when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
+        // Mock do UsuarioService para retornar o usuário correspondente ao email
+        when(usuarioService.findByEmail(email)).thenReturn(usuario);
 
-        jwtTokenFilter.doFilterInternal(request, response, filterChain);
+        // Configura o mock do Usuario e Organizacao
+        when(usuario.getId()).thenReturn(userId);
+        when(usuario.getOrganizacao()).thenReturn(organizacao);
+        when(organizacao.getId()).thenReturn(organizationId);
 
-        verify(userDetailsService, times(1)).loadUserByUsername(email);
+        // Usar reflexão para invocar o método protegido
+        Method method = JwtTokenFilter.class.getDeclaredMethod("doFilterInternal", HttpServletRequest.class, HttpServletResponse.class, FilterChain.class);
+        method.setAccessible(true);
+        method.invoke(jwtTokenFilter, request, response, filterChain);
+
+        verify(usuarioService, times(1)).findByEmail(email);
         verify(filterChain, times(1)).doFilter(request, response);
 
         assertNotNull(SecurityContextHolder.getContext().getAuthentication());
-        assertEquals(email, ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+
+        // Verifica se o principal é um UsernamePasswordAuthenticationToken com o ID do usuário
+        Object principal = ((UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
+        assertTrue(principal instanceof Usuario);
+        assertEquals(userId, ((Usuario) principal).getId());
     }
 
 
@@ -88,14 +106,16 @@ public class JwtTokenFilterTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtTokenProvider.validateToken(token)).thenReturn(false);
 
-        jwtTokenFilter.doFilterInternal(request, response, filterChain);
+        // Usar reflexão para invocar o método protegido
+        Method method = JwtTokenFilter.class.getDeclaredMethod("doFilterInternal", HttpServletRequest.class, HttpServletResponse.class, FilterChain.class);
+        method.setAccessible(true);
+        method.invoke(jwtTokenFilter, request, response, filterChain);
 
-        // Verifica que o userDetailsService não foi chamado
-        verify(userDetailsService, never()).loadUserByUsername(anyString());
+        // Verifica que o usuarioService não foi chamado
+        verify(usuarioService, never()).findByEmail(anyString());
         verify(filterChain, times(1)).doFilter(request, response);
 
         // Assegura que o contexto de segurança não tem autenticação configurada
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
-
 }
