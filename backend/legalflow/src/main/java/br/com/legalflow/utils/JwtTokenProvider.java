@@ -29,7 +29,7 @@ public class JwtTokenProvider {
     public String gerarToken(Usuario usuario) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", usuario.getId());
-        claims.put("id_organizacao", usuario.getOrganizacao().getId());
+        claims.put("organizacao_id", usuario.getOrganizacao().getId());
         claims.put("role", usuario.getRole());
 
         Date expirationDate = new Date(System.currentTimeMillis());
@@ -71,12 +71,12 @@ public class JwtTokenProvider {
                 .get("id", Long.class);
     }
 
-    public Long getIdOrganizacaoFromToken(String token) {
+    public Long getOrganizacaoIdFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody()
-                .get("id_organizacao", Long.class);
+                .get("organizacao_id", Long.class);
     }
 
     public String getRoleFromToken(String token) {

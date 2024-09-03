@@ -1,17 +1,22 @@
 <template>
+  <div></div>
+  <!--
   <q-item
     clickable
-    @click="this.$emit('get-tasks-by-project-id', project.id)"
-    :focused="project.id === this.actualProjectId"
+    @click="this.$emit('set-quadro-id', quadro.id)"
+    :focused="quadro.id === this.actualQuadroId"
   >
     <q-item-section>
-      <q-item-label>{{ project.projectName }}</q-item-label>
-      <q-item-label caption>Customer: {{ project.customerName }}</q-item-label>
+      <q-item-label>{{ quadro.nome }}</q-item-label>
+      <q-item-label caption
+        >Responsável: {{ quadro.usuario.nome }}</q-item-label
+      >
       <q-item-label class="text-teal" caption>
         {{ taskListSize }} task(s) open
       </q-item-label>
     </q-item-section>
   </q-item>
+  -->
 </template>
 
 <script>
@@ -21,8 +26,8 @@ export default defineComponent({
   name: "EssentialLink",
 
   props: {
-    project: Object,
-    actualProjectId: Number,
+    quadro: Object,
+    actualQuadroId: Number,
     taskListSize: Number,
   },
 });

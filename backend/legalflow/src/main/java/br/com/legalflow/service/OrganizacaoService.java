@@ -23,8 +23,8 @@ public class OrganizacaoService {
     public Organizacao cadastrarOrganizacao(CadastroRequestDTO dto) {
         try {
 
-            if (dto.getIdOrganizacao() != null) {
-                return findById(dto.getIdOrganizacao());
+            if (dto.getOrganizacaoId() != null) {
+                return findById(dto.getOrganizacaoId());
             }
 
             Organizacao organizacao = new Organizacao();

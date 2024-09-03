@@ -22,13 +22,14 @@ public class Processo {
     private String nome;
     private String numero;
     private String descricao;
+    private String status;
     private Date prazoSubsidio;
     private Date prazoFatal;
     private byte[] arquivo;
 
     @Override
     public String toString() {
-        return "Processo [id=" + id + ", quadro=" + quadro + ", nome=" + nome + ", numero=" + numero + ", descricao=" + descricao
-                + ", prazoSubsidio=" + prazoSubsidio + ", prazoFatal=" + prazoFatal + ", arquivo=" + Arrays.toString(arquivo) + "]";
+        return "Processo [id=" + id + ", nome=" + nome + ", numero=" + numero + ", descricao=" + descricao + ", status=" + status
+                + ", prazoSubsidio=" + prazoSubsidio + ", prazoFatal=" + prazoFatal + "]";
     }
 }

@@ -54,6 +54,7 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
             <column name="nome" type="varchar(100)"/>
             <column name="numero" type="varchar(100)"/>
             <column name="descricao" type="varchar(1000)"/>
+            <column name="status" type="varchar(100)"/>
             <column name="prazo_subsidio" type="date"/>
             <column name="prazo_fatal" type="date"/>
             <column name="arquivo" type="bytea"/>

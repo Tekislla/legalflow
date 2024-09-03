@@ -13,10 +13,10 @@
 
       <q-btn
         v-show="actualProjectId != null"
-        v-on:click="this.$emit('open-new-customer-modal')"
+        v-on:click="this.$emit('open-modal-novo-usuario')"
         unelevated
         size="md"
-        label="New Customer"
+        label="Novo Usuário"
         no-caps
         class="header-btn"
         color="teal"

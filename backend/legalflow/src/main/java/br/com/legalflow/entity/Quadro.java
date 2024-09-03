@@ -30,7 +30,6 @@ public class Quadro {
 
     @Override
     public String toString() {
-        return "Quadro [id=" + id + ", usuario=" + usuario + ", organizacao="
-                + organizacao + ", nome=" + nome + "]";
+        return "Quadro [id=" + id + ", nome=" + nome + "]";
     }
 }

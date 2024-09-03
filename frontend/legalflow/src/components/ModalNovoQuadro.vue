@@ -2,15 +2,15 @@
   <q-dialog>
     <q-card class="q-pa-md main-card">
       <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6">New Project</div>
+        <div class="text-h6">Novo Quadro</div>
         <q-space />
       </q-card-section>
 
       <q-card-section>
         <div class="q-gutter-md">
           <q-input
-            v-model="newProjectName"
-            label="Name"
+            v-model="form.nome"
+            label="Nome"
             outlined
             required
             dense
@@ -20,9 +20,9 @@
           />
 
           <q-select
-            v-model="selectedCustomer"
-            :options="customerList"
-            label="Customer"
+            v-model="usuarioSelecionado"
+            :options="listaUsuarios"
+            label="Usuário"
             outlined
             required
             dense
@@ -31,16 +31,14 @@
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
             <q-btn
-              @click="submitProjectForm()"
+              @click="submitFormNovoQuadro()"
               unelevated
               size="md"
-              label="Create project"
+              label="Criar quadro"
               no-caps
               color="teal"
               :disable="
-                !newProjectName ||
-                !selectedCustomer ||
-                newProjectName.length > 50
+                !form.nome || !usuarioSelecionado || form.nome.length > 50
               "
             />
           </q-card-actions>
@@ -53,10 +51,10 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "NewProjectModal",
+  name: "ModalNovoQuadro",
 
   props: {
-    customerList: {
+    listaUsuarios: {
       type: Array,
       required: true,
     },
@@ -64,12 +62,20 @@ export default defineComponent({
 
   data() {
     return {
-      newProjectName: "",
-      selectedCustomer: null,
+      form: {
+        nome: "",
+        usuarioId: null,
+      },
+      usuarioSelecionado: null,
     };
   },
 
   methods: {
+    submitFormNovoQuadro() {
+      this.form.usuarioId = this.usuarioSelecionado.value;
+      this.$emit("submit-form-novo-quadro", this.form);
+      console.log(this.form);
+    },
     submitProjectForm() {
       this.$emit("submit-project-form", {
         projectName: this.newProjectName,

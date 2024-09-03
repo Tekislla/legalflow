@@ -9,7 +9,7 @@
         <q-btn
           class="index-btn"
           color="teal"
-          v-on:click="this.$emit('open-new-customer-modal')"
+          v-on:click="this.$emit('open-modal-novo-usuario')"
         >
           <div>
             <div>Novo usuário</div>
@@ -19,7 +19,7 @@
         <q-btn
           class="index-btn"
           color="teal"
-          v-on:click="this.$emit('open-new-project-modal')"
+          v-on:click="this.$emit('open-modal-novo-quadro')"
         >
           <div>
             <div>Novo quadro</div>
