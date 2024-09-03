@@ -47,3 +47,13 @@
   align-items: center;
   gap: 10px;
 }
+
+.list-label {
+  font-weight: bold;
+  color: teal;
+}
+
+.list-item {
+  font-weight: normal;
+  color: black;
+}

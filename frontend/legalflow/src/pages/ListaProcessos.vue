@@ -4,22 +4,24 @@
       <q-card class="container-card q-pa-lg">
         <q-card-section class="btn-card q-gutter-md">
           <q-btn
-            v-on:click="this.$emit('open-new-task-modal')"
+            v-show="userRole === 'ADMIN'"
+            v-on:click="this.$emit('open-modal-novo-processo')"
             unelevated
             size="md"
-            label="New Task"
+            label="Novo Processo"
             no-caps
             color="teal"
-            :disable="projectId === null"
+            :disable="quadroId === null"
           />
           <q-btn
-            v-on:click="confirmDeleteProject(projectId)"
+            v-show="userRole === 'ADMIN'"
+            v-on:click="confirmaDeletarQuadro(quadroId)"
             unelevated
             size="md"
-            label="Delete Project"
+            label="Deletar Quadro"
             no-caps
             color="black"
-            :disable="projectId === null"
+            :disable="quadroId === null"
           />
         </q-card-section>
 
@@ -207,16 +209,28 @@
 
 <script>
 import { defineComponent } from "vue";
+import { useStore } from "vuex";
 import TaskService from "src/services/TaskService";
 import ProjectService from "src/services/ProjectService";
+import QuadroService from "src/services/QuadroService";
 
 export default defineComponent({
-  name: "TaskList",
+  name: "ListaProcessos",
 
   props: {
     actualStatus: String,
     tasks: Array,
-    projectId: Number,
+    quadroId: Number,
+  },
+
+  setup() {
+    const store = useStore();
+    const userRole = store.state.usuario.role;
+
+    return {
+      store,
+      userRole,
+    };
   },
 
   data() {
@@ -351,32 +365,32 @@ export default defineComponent({
           this.deleteTask(task);
         });
     },
-    confirmDeleteProject(projectId) {
-      let confirmationMessage = "Are you sure you want to delete this project?";
+    confirmaDeletarQuadro(quadroId) {
+      let confirmationMessage = "Tem certeza que deseja excluir este quadro?";
 
       if (this.tasks.length > 0)
         confirmationMessage =
-          "This project has tasks. Are you sure you want to delete this project?";
+          "Este quadro possui processos associados à ele. Tem certeza que deseja excluir este quadro?";
 
       this.$q
         .dialog({
-          title: "Delete project",
+          title: "Deletar quadro",
           message: confirmationMessage,
           persistent: true,
           ok: {
-            label: "Yes",
+            label: "Sim",
             color: "black",
             noCaps: true,
           },
           cancel: {
-            label: "No",
+            label: "Não",
             color: "black",
             noCaps: true,
             flat: true,
           },
         })
         .onOk(() => {
-          this.deleteProject(projectId);
+          this.deletarQuadro(quadroId);
         });
     },
     deleteTask(task) {
@@ -386,9 +400,9 @@ export default defineComponent({
         this.taskDetailsModalOpen = false;
       });
     },
-    deleteProject(projectId) {
-      ProjectService.deleteProject(projectId).then(() => {
-        this.$emit("delete-project");
+    deletarQuadro(quadroId) {
+      QuadroService.deletarQuadro(quadroId).then(() => {
+        this.$emit("deletar-quadro");
       });
     },
     openTaskDetailsModal(task) {

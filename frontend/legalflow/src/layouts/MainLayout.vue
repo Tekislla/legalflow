@@ -1,4 +1,3 @@
-<!-- -->
 <template>
   <q-layout view="hHh lpR fFf">
     <header-component
@@ -16,42 +15,51 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item clickable @click="this.actualQuadroId = null">
+        <q-item class="list-label" clickable @click="actualQuadroId = null">
           <q-item-section avatar> Home </q-item-section>
         </q-item>
-        <q-expansion-item label="Quadros">
-          <projects-list
+        <q-expansion-item class="list-label" label="Quadros">
+          <quadros-list
             v-for="quadro in quadros"
-            :key="quadro"
+            :key="quadro.id"
             v-bind:quadro="quadro"
-            :quadros="quadros"
             :actual-quadro-id="actualQuadroId"
             @set-quadro-id="setQuadroId(quadro.id)"
           />
           <q-item
             clickable
             @click="openModalNovoQuadro()"
-            v-show="this.projects.length === 0"
+            v-show="this.quadros.length === 0 && this.userRole === 'ADMIN'"
           >
             <q-item-section>
               <q-item-label>Não há nenhum quadro criado</q-item-label>
               <q-item-label caption>Clique aqui para criar um</q-item-label>
             </q-item-section>
           </q-item>
-        </q-expansion-item>
-        <q-expansion-item label="Configurações">
           <q-item
-            clickable
-            @click="openModalNovoQuadro()"
-            v-show="this.projects.length === 0"
+            v-show="this.quadros.length === 0 && this.userRole === 'USER'"
           >
+            <q-item-section>
+              <q-item-label>Não há nenhum quadro criado</q-item-label>
+              <q-item-label caption
+                >Solicite ao administrador para que ele crie um</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+        </q-expansion-item>
+        <q-expansion-item
+          label="Configurações"
+          v-show="this.userRole === 'ADMIN'"
+          class="list-label"
+        >
+          <q-item clickable @click="openModalNovoUsuario()" class="list-item">
             <q-item-section>
               <q-item-label>Gestão de usuários</q-item-label>
               <q-item-label caption>Criar ou excluir usuários</q-item-label>
             </q-item-section>
           </q-item>
         </q-expansion-item>
-        <q-item clickable @click="logout()">
+        <q-item class="list-label" clickable @click="logout()">
           <q-item-section>
             <q-item-label>Sair</q-item-label>
           </q-item-section>
@@ -61,52 +69,52 @@
 
     <q-page-container>
       <q-tab-panels v-model="tab" animated v-show="actualQuadroId !== null">
-        <q-tab-panel name="CREATED">
-          <task-list
+        <q-tab-panel name="CRIADO">
+          <lista-processos
             v-show="actualQuadroId !== null"
             :actual-status="this.tab"
             :quadro-id="this.actualQuadroId"
             :tasks="this.createdTasks"
             @update-task="submitTaskForm($event, 'updated')"
             @delete-task="onTaskDelete()"
-            @delete-project="onProjectDelete()"
-            @open-new-task-modal="openNewTaskModal()"
-          ></task-list>
+            @deletar-quadro="onQuadroDelete()"
+            @open-modal-novo-processo="openModalNovoProcesso()"
+          />
         </q-tab-panel>
-        <q-tab-panel name="IN_PROGRESS">
-          <task-list
+        <q-tab-panel name="EM_PROGRESSO">
+          <lista-processos
             v-show="actualQuadroId !== null"
             :actual-status="this.tab"
             :quadro-id="this.actualQuadroId"
             :tasks="this.inProgressTasks"
             @update-task="submitTaskForm($event, 'updated')"
             @delete-task="onTaskDelete()"
-            @delete-project="onProjectDelete()"
-            @open-new-task-modal="openNewTaskModal()"
-          ></task-list>
+            @deletar-quadro="onQuadroDelete()"
+            @open-modal-novo-processo="openModalNovoProcesso()"
+          />
         </q-tab-panel>
-        <q-tab-panel name="DONE">
-          <task-list
+        <q-tab-panel name="FINALIZADO">
+          <lista-processos
             v-show="actualQuadroId !== null"
             :actual-status="this.tab"
             :quadro-id="this.actualQuadroId"
             :tasks="this.doneTasks"
             @update-task="submitTaskForm($event, 'updated')"
             @delete-task="onTaskDelete()"
-            @delete-project="onProjectDelete()"
-            @open-new-task-modal="openNewTaskModal()"
-          ></task-list>
+            @deletar-quadro="onQuadroDelete()"
+            @open-modal-novo-processo="openModalNovoProcesso()"
+          />
         </q-tab-panel>
-        <q-tab-panel name="CANCELED">
-          <task-list
+        <q-tab-panel name="ARQUIVADO">
+          <lista-processos
             v-show="actualQuadroId !== null"
             :actual-status="this.tab"
             :quadro-id="this.actualQuadroId"
             :tasks="this.canceledTasks"
             @update-task="submitTaskForm($event, 'updated')"
             @delete-task="onTaskDelete()"
-            @delete-project="onProjectDelete()"
-            @open-new-task-modal="openNewTaskModal()"
+            @deletar-quadro="onQuadroDelete()"
+            @open-modal-novo-processo="openModalNovoProcesso()"
           />
         </q-tab-panel>
       </q-tab-panels>
@@ -118,8 +126,8 @@
       />
 
       <new-task-modal
-        :projects-list="this.projectsList"
-        v-model="taskModalOpen"
+        :quadros-list="this.listaQuadros"
+        v-model="modalNovoProcessoOpen"
         @submit-task-form="submitTaskForm($event, 'created')"
       />
       <modal-novo-usuario
@@ -141,25 +149,25 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import HeaderComponent from "src/components/HeaderComponent.vue";
-import NewTaskModal from "src/components/NewTaskModal.vue";
+import NewTaskModal from "src/components/ModalNovoProcesso.vue";
 import ModalNovoUsuario from "src/components/ModalNovoUsuario.vue";
 import ModalNovoQuadro from "src/components/ModalNovoQuadro.vue";
-import ProjectsList from "src/components/ProjectsList.vue";
-import TaskList from "src/pages/TaskList.vue";
+import QuadrosList from "src/components/QuadrosList.vue";
+import ListaProcessos from "src/pages/ListaProcessos.vue";
 import UsuarioService from "src/services/UsuarioService";
 import QuadroService from "src/services/QuadroService";
-import ProjectService from "src/services/ProjectService";
 import TaskService from "src/services/TaskService";
-import CustomerService from "src/services/CustomerService";
 
 export default defineComponent({
   name: "MainLayout",
 
   setup() {
     const store = useStore();
+    const userRole = store.state.usuario.role;
 
     return {
       store,
+      userRole,
     };
   },
 
@@ -168,28 +176,25 @@ export default defineComponent({
     NewTaskModal,
     ModalNovoUsuario,
     ModalNovoQuadro,
-    ProjectsList,
-    TaskList,
+    QuadrosList,
+    ListaProcessos,
   },
 
   data() {
     return {
-      tab: "CREATED",
-      projects: [],
+      tab: "CRIADO",
       tasks: [],
-      projectsList: [],
-      customers: [],
-      customersList: [],
       usuarios: [],
       listaUsuarios: [],
       quadros: [],
+      listaQuadros: [],
       createdTasks: [],
       inProgressTasks: [],
       doneTasks: [],
       canceledTasks: [],
       actualQuadroId: null,
       leftDrawerOpen: ref(false),
-      taskModalOpen: ref(false),
+      modalNovoProcessoOpen: ref(false),
       modalNovoUsuarioOpen: ref(false),
       modalNovoQuadroOpen: ref(false),
     };
@@ -198,35 +203,28 @@ export default defineComponent({
   methods: {
     fetch() {
       this.getUsuarioInfo();
-      this.getProjects();
-      this.getCustomers();
     },
     setQuadroId(quadroId) {
       this.actualQuadroId = quadroId;
     },
-    async getProjects() {
-      this.projects = (await ProjectService.listProjects()).data;
-      this.projectsList = this.projects.map((project) => {
-        return {
-          label: project.projectName,
-          value: project.id,
-        };
-      });
-    },
     async getUsuarioInfo() {
       this.listaUsuarios = [];
+      this.quadros = [];
+
       this.usuarios = (await UsuarioService.getUsuarioInfo()).data;
       console.log(this.usuarios);
 
       this.usuarios.forEach((usuario) => {
-        this.quadros.push(usuario.quadros);
+        usuario.quadros.forEach((quadro) => {
+          quadro.responsavel = usuario.nome;
+          this.quadros.push(quadro);
+        });
+
         this.listaUsuarios.push({
           label: usuario.nome,
           value: usuario.id,
         });
       });
-
-      console.log(this.usuarios);
     },
     async getTasksByProjectId(projectId) {
       if (projectId === null) return;
@@ -260,7 +258,7 @@ export default defineComponent({
     submitTaskForm(task, action) {
       TaskService.saveTask(task).then(() => {
         this.fetch();
-        this.taskModalOpen = false;
+        this.modalNovoProcessoOpen = false;
       });
       this.returnFeedbackMessage("Task " + action + " successfully!");
     },
@@ -268,13 +266,13 @@ export default defineComponent({
       this.returnFeedbackMessage("Task deleted successfully!");
       this.fetch();
     },
-    onProjectDelete() {
-      this.returnFeedbackMessage("Project deleted successfully!");
-      this.actualProjectId = null;
+    onQuadroDelete() {
+      this.returnFeedbackMessage("Quadro deletado com sucesso!");
+      this.actualQuadroId = null;
       this.fetch();
     },
-    openNewTaskModal() {
-      this.taskModalOpen = true;
+    openModalNovoProcesso() {
+      this.modalNovoProcessoOpen = true;
     },
     openModalNovoUsuario() {
       this.modalNovoUsuarioOpen = true;

@@ -12,7 +12,7 @@
       <q-toolbar-title> LegalFlow </q-toolbar-title>
 
       <q-btn
-        v-show="actualProjectId != null"
+        v-show="actualQuadroId != null && userRole === 'ADMIN'"
         v-on:click="this.$emit('open-modal-novo-usuario')"
         unelevated
         size="md"
@@ -22,11 +22,11 @@
         color="teal"
       />
       <q-btn
-        v-show="actualProjectId != null"
-        v-on:click="this.$emit('open-new-project-modal')"
+        v-show="actualQuadroId != null && userRole === 'ADMIN'"
+        v-on:click="this.$emit('open-modal-novo-quadro')"
         unelevated
         size="md"
-        label="New Project"
+        label="Novo Quadro"
         no-caps
         class="header-btn"
         color="teal"
@@ -34,26 +34,30 @@
     </q-toolbar>
 
     <q-tabs align="left" v-model="tabProxy">
-      <q-tab name="CREATED" label="Created" v-show="actualProjectId != null">
+      <q-tab name="CRIADO" label="Criado" v-show="actualQuadroId != null">
         <q-badge color="teal">
           {{ createdTasks }}
         </q-badge>
       </q-tab>
       <q-tab
-        name="IN_PROGRESS"
-        label="In Progress"
-        v-show="actualProjectId != null"
+        name="EM_PROGRESSO"
+        label="Em Progresso"
+        v-show="actualQuadroId != null"
       >
         <q-badge color="teal">
           {{ inProgressTasks }}
         </q-badge>
       </q-tab>
-      <q-tab name="DONE" label="Done" v-show="actualProjectId != null">
+      <q-tab
+        name="FINALIZADO"
+        label="Finalizado"
+        v-show="actualQuadroId != null"
+      >
         <q-badge color="teal">
           {{ doneTasks }}
         </q-badge>
       </q-tab>
-      <q-tab name="CANCELED" label="Canceled" v-show="actualProjectId != null">
+      <q-tab name="ARQUIVADO" label="Arquivado" v-show="actualQuadroId != null">
         <q-badge color="teal">
           {{ canceledTasks }}
         </q-badge>
@@ -63,6 +67,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "HeaderComponent",
@@ -72,12 +77,22 @@ export default defineComponent({
     inProgressTasks: Number,
     doneTasks: Number,
     canceledTasks: Number,
-    actualProjectId: Number,
+    actualQuadroId: Number,
+  },
+
+  setup() {
+    const store = useStore();
+    const userRole = store.state.usuario.role;
+
+    return {
+      store,
+      userRole,
+    };
   },
 
   data() {
     return {
-      tabProxy: "CREATED",
+      tabProxy: "CRIADO",
     };
   },
 

@@ -5,7 +5,7 @@
       <div class="text-h4">
         Selecione um quadro no menu ou crie um novo quadro
       </div>
-      <div class="flex-row">
+      <div class="flex-row" v-show="this.userRole === 'ADMIN'">
         <q-btn
           class="index-btn"
           color="teal"
@@ -33,8 +33,20 @@
 
 <script>
 import { defineComponent } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "IndexPage",
+
+  setup() {
+    const store = useStore();
+    const userRole = store.state.usuario.role;
+    console.log(store.state);
+
+    return {
+      store,
+      userRole,
+    };
+  },
 });
 </script>

@@ -32,7 +32,7 @@ public class UsuarioController extends BaseController {
             Usuario usuarioLogado = getUsuarioLogado();
             List<Usuario> usuarios = new ArrayList<>();
 
-            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+            if (usuarioLogado.getRole().equals(RoleEnum.ADMIN.toString())) {
                 usuarios = usuarioService.findByOrganizacaoId(usuarioLogado.getOrganizacao().getId());
             } else {
                 usuarios.add(usuarioService.findById(usuarioLogado.getId()));

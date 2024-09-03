@@ -1,12 +1,10 @@
-import api from "@/config/axios";
-
 class AuthService {
   login(credentials) {
-    return api.post(`/auth/login`, credentials);
+    return this.$axios.post(`/auth/login`, credentials);
   }
 
   cadastro(user) {
-    return api.post(`/auth/cadastro`, user);
+    return this.$axios.post(`/auth/cadastro`, user);
   }
 }
 

@@ -89,7 +89,7 @@ export default defineComponent({
   methods: {
     cadastrar() {
       console.log(this.store);
-      this.form.organizacaoId = this.store.state.usuario.organizacaoId;
+      this.form.organizacaoId = this.store.state.organizacaoId;
       this.store.dispatch("cadastrar", this.form);
       this.resetForm();
       this.$emit("submit-form-novo-usuario");
@@ -100,7 +100,7 @@ export default defineComponent({
         email: "",
         senha: "",
         administrador: false,
-        organizacaoId: this.store.state.usuario.organizacaoId,
+        organizacaoId: this.store.state.organizacaoId,
       };
     },
   },

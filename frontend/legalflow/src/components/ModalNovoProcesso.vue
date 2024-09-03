@@ -69,10 +69,10 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "NewTaskModal",
+  name: "ModalNovoProcesso",
 
   props: {
-    projectsList: {
+    quadrosList: {
       type: Array,
       required: true,
     },
