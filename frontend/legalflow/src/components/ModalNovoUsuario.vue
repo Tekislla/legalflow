@@ -40,17 +40,29 @@
             ]"
           />
 
+          <q-select
+            v-model="form.role"
+            :options="roleList"
+            label="Role"
+            outlined
+            required
+            dense
+          />
+
           <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
+            <q-btn flat label="Cancelar" color="black" no-caps v-close-popup />
             <q-btn
               @click="cadastrar()"
               unelevated
               size="md"
-              label="Create customer"
+              label="Cadastrar usuário"
               no-caps
               color="teal"
               :disable="
-                form.nome === '' || form.email === '' || form.senha === ''
+                form.nome === '' ||
+                form.email === '' ||
+                form.senha === '' ||
+                form.role === ''
               "
             />
           </q-card-actions>
@@ -82,15 +94,26 @@ export default defineComponent({
         senha: "",
         administrador: false,
         organizacaoId: null,
+        role: "",
       },
+      roleList: [
+        {
+          label: "Administrador",
+          value: "ADMIN",
+        },
+        {
+          label: "Usuário",
+          value: "USER",
+        },
+      ],
     };
   },
 
   methods: {
-    cadastrar() {
-      console.log(this.store);
+    async cadastrar() {
       this.form.organizacaoId = this.store.state.organizacaoId;
-      this.store.dispatch("cadastrar", this.form);
+
+      await this.store.dispatch("cadastrar", this.form);
       this.resetForm();
       this.$emit("submit-form-novo-usuario");
     },
@@ -101,6 +124,7 @@ export default defineComponent({
         senha: "",
         administrador: false,
         organizacaoId: this.store.state.organizacaoId,
+        role: "",
       };
     },
   },

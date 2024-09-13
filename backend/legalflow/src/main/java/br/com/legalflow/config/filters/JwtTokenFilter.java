@@ -2,7 +2,7 @@ package br.com.legalflow.config.filters;
 
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.service.UsuarioService;
-import br.com.legalflow.utils.JwtTokenProvider;
+import br.com.legalflow.security.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

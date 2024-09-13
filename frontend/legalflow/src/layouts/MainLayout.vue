@@ -125,8 +125,8 @@
         @open-modal-novo-usuario="openModalNovoUsuario()"
       />
 
-      <new-task-modal
-        :quadros-list="this.listaQuadros"
+      <modal-novo-processo
+        :actual-quadro-id="actualQuadroId"
         v-model="modalNovoProcessoOpen"
         @submit-task-form="submitTaskForm($event, 'created')"
       />
@@ -149,7 +149,7 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import HeaderComponent from "src/components/HeaderComponent.vue";
-import NewTaskModal from "src/components/ModalNovoProcesso.vue";
+import ModalNovoProcesso from "src/components/ModalNovoProcesso.vue";
 import ModalNovoUsuario from "src/components/ModalNovoUsuario.vue";
 import ModalNovoQuadro from "src/components/ModalNovoQuadro.vue";
 import QuadrosList from "src/components/QuadrosList.vue";
@@ -173,7 +173,7 @@ export default defineComponent({
 
   components: {
     HeaderComponent,
-    NewTaskModal,
+    ModalNovoProcesso,
     ModalNovoUsuario,
     ModalNovoQuadro,
     QuadrosList,
@@ -243,15 +243,15 @@ export default defineComponent({
         }
       });
     },
-    submitFormNovoQuadro(quadro) {
-      QuadroService.salvarQuadro(quadro).then(() => {
+    async submitFormNovoQuadro(quadro) {
+      await QuadroService.salvarQuadro(quadro).then(() => {
         this.fetch();
         this.modalNovoQuadroOpen = false;
       });
       this.returnFeedbackMessage("Quadro criado com sucesso!");
     },
-    submitFormNovoUsuario() {
-      this.fetch();
+    async submitFormNovoUsuario() {
+      await this.fetch();
       this.modalNovoUsuarioOpen = false;
       this.returnFeedbackMessage("Usuário criado com sucesso!");
     },

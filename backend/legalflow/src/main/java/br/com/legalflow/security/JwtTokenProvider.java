@@ -1,4 +1,4 @@
-package br.com.legalflow.utils;
+package br.com.legalflow.security;
 
 import br.com.legalflow.entity.Usuario;
 import io.jsonwebtoken.Jwts;

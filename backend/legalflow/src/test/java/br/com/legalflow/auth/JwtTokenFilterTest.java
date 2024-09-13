@@ -3,7 +3,7 @@ package br.com.legalflow.auth;
 import br.com.legalflow.config.filters.JwtTokenFilter;
 import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.service.UsuarioService;
-import br.com.legalflow.utils.JwtTokenProvider;
+import br.com.legalflow.security.JwtTokenProvider;
 import br.com.legalflow.entity.Usuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.lang.reflect.Method;
 

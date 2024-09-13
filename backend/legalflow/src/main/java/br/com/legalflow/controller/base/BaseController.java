@@ -1,4 +1,4 @@
-package br.com.legalflow.controller;
+package br.com.legalflow.controller.base;
 
 import br.com.legalflow.entity.Usuario;
 import org.springframework.security.core.context.SecurityContext;

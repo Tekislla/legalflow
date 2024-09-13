@@ -2,7 +2,7 @@ package br.com.legalflow.auth;
 
 import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.entity.Usuario;
-import br.com.legalflow.utils.JwtTokenProvider;
+import br.com.legalflow.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

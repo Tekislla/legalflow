@@ -1,5 +1,6 @@
 package br.com.legalflow.controller;
 
+import br.com.legalflow.controller.base.BaseController;
 import br.com.legalflow.dto.request.CadastroRequestDTO;
 import br.com.legalflow.dto.request.LoginRequestDTO;
 import br.com.legalflow.dto.response.LoginResponseDTO;
@@ -7,7 +8,7 @@ import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.UsuarioService;
-import br.com.legalflow.utils.JwtTokenProvider;
+import br.com.legalflow.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
