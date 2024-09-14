@@ -30,7 +30,7 @@
             :rows="tasks"
             :columns="columns"
             row-key="id"
-            no-data-label="There are no tasks available"
+            no-data-label="Não há processos disponíveis com este status."
             v-model:pagination="pagination"
             :rows-per-page-options="[10, 25, 50, 100, 0]"
           >
@@ -246,76 +246,76 @@ export default defineComponent({
       },
       taskStatusList: [
         {
-          label: "Created",
-          value: "CREATED",
+          label: "Criado",
+          value: "CRIADO",
         },
         {
-          label: "In Progress",
-          value: "IN_PROGRESS",
+          label: "Em Progresso",
+          value: "EM_PROGRESSO",
         },
         {
-          label: "Done",
-          value: "DONE",
+          label: "Finalizado",
+          value: "FINALIZADO",
         },
         {
-          label: "Canceled",
-          value: "CANCELED",
+          label: "Arquivado",
+          value: "ARQUIVADO",
         },
       ],
       columns: [
         {
           name: "details",
-          label: "Details",
+          label: "Detalhes  ",
           align: "left",
         },
         {
-          name: "taskName",
+          name: "numero",
           required: true,
-          label: "Task Name",
+          label: "Número",
           align: "left",
-          field: (row) => row.taskName,
-          format: (val) => `${this.formatTextSize(val, 30)}`,
-          sortable: true,
-        },
-        {
-          name: "taskDescription",
-          required: true,
-          label: "Description",
-          align: "left",
-          field: (row) => row.taskDescription,
-          format: (val) => `${this.formatTextSize(val, 30)}`,
-          sortable: true,
-        },
-        {
-          name: "taskStatus",
-          required: true,
-          label: "Status",
-          align: "left",
-          field: (row) => row.taskStatus,
-          format: (val) => `${this.formatTaskStatus(val)}`,
-          sortable: true,
-        },
-        {
-          name: "customerName",
-          required: true,
-          label: "Customer",
-          align: "left",
-          field: (row) => row.customerName,
+          field: (row) => row.numero,
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "projectName",
+          name: "nome",
           required: true,
-          label: "Project",
+          label: "Nome",
           align: "left",
-          field: (row) => row.projectName,
+          field: (row) => row.nome,
+          format: (val) => `${this.formatTextSize(val, 30)}`,
+          sortable: true,
+        },
+        {
+          name: "responsavel",
+          required: true,
+          label: "Responsável",
+          align: "left",
+          field: (row) => row.responsavel,
           format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "prazoSubsidio",
+          required: true,
+          label: "Prazo Subsídio",
+          align: "left",
+          field: (row) => row.prazoSubsidio,
+          format: (val) => `${this.formatTextSize(val, 30)}`,
+          sortable: true,
+        },
+        {
+          name: "prazoFatal",
+          required: true,
+          label: "Prazo Fatal",
+          align: "left",
+          field: (row) => row.prazoFatal,
+          format: (val) => `${this.formatTextSize(val, 30)}`,
           sortable: true,
         },
         {
           name: "actions",
-          label: "Quick actions",
+          label: "Ações",
           align: "right",
         },
       ],

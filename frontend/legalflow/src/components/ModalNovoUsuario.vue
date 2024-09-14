@@ -41,7 +41,7 @@
           />
 
           <q-select
-            v-model="form.role"
+            v-model="form.administrador"
             :options="roleList"
             label="Role"
             outlined
@@ -92,18 +92,17 @@ export default defineComponent({
         nome: "",
         email: "",
         senha: "",
-        administrador: false,
+        administrador: null,
         organizacaoId: null,
-        role: "",
       },
       roleList: [
         {
           label: "Administrador",
-          value: "ADMIN",
+          value: true,
         },
         {
           label: "Usuário",
-          value: "USER",
+          value: false,
         },
       ],
     };
@@ -122,9 +121,8 @@ export default defineComponent({
         nome: "",
         email: "",
         senha: "",
-        administrador: false,
+        administrador: null,
         organizacaoId: this.store.state.organizacaoId,
-        role: "",
       };
     },
   },

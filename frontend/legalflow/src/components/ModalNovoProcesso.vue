@@ -91,12 +91,12 @@
           />
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
+            <q-btn flat label="Cancelar" color="black" no-caps v-close-popup />
             <q-btn
               @click="submitTaskForm()"
               unelevated
               size="md"
-              label="Create task"
+              label="Criar processo"
               no-caps
               color="teal"
               :disable="
@@ -141,6 +141,11 @@ export default defineComponent({
   },
 
   methods: {
+    submitFormNovoProcesso() {
+      this.$emit("submit-form-novo-processo", this.novoProcesso);
+
+      this.clearForm();
+    },
     submitTaskForm() {
       this.$emit("submit-task-form", {
         taskName: this.newTaskName,
@@ -152,9 +157,15 @@ export default defineComponent({
       this.clearForm();
     },
     clearForm() {
-      this.newTaskName = "";
-      this.newTaskDescription = "";
-      this.selectedProject = null;
+      this.novoProcesso = {
+        nome: "",
+        numero: "",
+        descricao: "",
+        prazoSubsidio: "",
+        prazoFatal: "",
+        arquivo: null,
+        quadroId: this.actualQuadroId,
+      };
     },
   },
 });

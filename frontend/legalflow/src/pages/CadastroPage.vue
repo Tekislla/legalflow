@@ -47,7 +47,7 @@ export default {
       senha: "",
       nomeOrganizacao: "",
       documentoOrganizacao: "",
-      role: "ADMIN",
+      administrador: true,
     });
 
     const $store = useStore();
