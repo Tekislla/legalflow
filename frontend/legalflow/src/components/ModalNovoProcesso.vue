@@ -146,16 +146,6 @@ export default defineComponent({
 
       this.clearForm();
     },
-    submitTaskForm() {
-      this.$emit("submit-task-form", {
-        taskName: this.newTaskName,
-        taskDescription: this.newTaskDescription,
-        taskStatus: "CREATED",
-        projectId: this.selectedProject.value,
-      });
-
-      this.clearForm();
-    },
     clearForm() {
       this.novoProcesso = {
         nome: "",

@@ -2,7 +2,7 @@
   <q-item
     class="list-item"
     clickable
-    @click="this.$emit('set-quadro-id', quadro.id)"
+    @click="this.$emit('set-quadro', quadro.id)"
     :focused="quadro.id === this.actualQuadroId"
   >
     <q-item-section>
@@ -19,13 +19,11 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "QuadrosList",
+  name: "ListaQuadros",
 
   props: {
     quadro: Object,
     actualQuadroId: Number,
   },
-
-  emits: ["set-quadro-id"],
 });
 </script>

@@ -5,7 +5,7 @@
         <q-card-section class="btn-card q-gutter-md">
           <q-btn
             v-show="userRole === 'ADMIN'"
-            v-on:click="this.$emit('open-modal-novo-processo')"
+            v-on:click="this.$emit('abrir-modal-novo-processo')"
             unelevated
             size="md"
             label="Novo Processo"

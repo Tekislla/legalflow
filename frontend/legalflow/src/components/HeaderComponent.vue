@@ -13,7 +13,7 @@
 
       <q-btn
         v-show="actualQuadroId != null && userRole === 'ADMIN'"
-        v-on:click="this.$emit('open-modal-novo-usuario')"
+        v-on:click="this.$emit('abrir-modal-novo-usuario')"
         unelevated
         size="md"
         label="Novo Usuário"
@@ -23,7 +23,7 @@
       />
       <q-btn
         v-show="actualQuadroId != null && userRole === 'ADMIN'"
-        v-on:click="this.$emit('open-modal-novo-quadro')"
+        v-on:click="this.$emit('abrir-modal-novo-quadro')"
         unelevated
         size="md"
         label="Novo Quadro"
@@ -36,7 +36,7 @@
     <q-tabs align="left" v-model="tabProxy">
       <q-tab name="CRIADO" label="Criado" v-show="actualQuadroId != null">
         <q-badge color="teal">
-          {{ createdTasks }}
+          {{ processosCriados }}
         </q-badge>
       </q-tab>
       <q-tab
@@ -45,7 +45,7 @@
         v-show="actualQuadroId != null"
       >
         <q-badge color="teal">
-          {{ inProgressTasks }}
+          {{ processosEmProgresso }}
         </q-badge>
       </q-tab>
       <q-tab
@@ -54,12 +54,12 @@
         v-show="actualQuadroId != null"
       >
         <q-badge color="teal">
-          {{ doneTasks }}
+          {{ processosFinalizados }}
         </q-badge>
       </q-tab>
       <q-tab name="ARQUIVADO" label="Arquivado" v-show="actualQuadroId != null">
         <q-badge color="teal">
-          {{ canceledTasks }}
+          {{ processosArquivados }}
         </q-badge>
       </q-tab>
     </q-tabs>
@@ -73,10 +73,10 @@ export default defineComponent({
   name: "HeaderComponent",
 
   props: {
-    createdTasks: Number,
-    inProgressTasks: Number,
-    doneTasks: Number,
-    canceledTasks: Number,
+    processosCriados: Number,
+    processosEmProgresso: Number,
+    processosFinalizados: Number,
+    processosArquivados: Number,
     actualQuadroId: Number,
   },
 

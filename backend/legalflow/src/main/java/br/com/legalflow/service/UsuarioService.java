@@ -24,6 +24,12 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     public Usuario cadastrarUsuario(CadastroRequestDTO dto, Organizacao organizacao) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(dto.getEmail());
+
+        if (usuarioOpt.isPresent()) {
+            throw new RuntimeException("Já existe um usuário cadastrado com este e-mail");
+        }
+
         Usuario usuario = new Usuario();
 
         usuario.setOrganizacao(organizacao);
