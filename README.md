@@ -52,7 +52,13 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
 
 3. Renomeie o arquivo application.yml.example dentro de src/main/resources para application.yml, configure o banco de dados PostgreSQL e preencha as configurações necessárias (o banco estará pré-configurado para rodar local na porta 5432).
 
-4. Execute o projeto:
+4. Suba o banco de dados:
+
+    ```
+    docker run --name legalflow_db -e POSTGRES_DB=legalflow -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+    ```
+
+5. Execute o projeto:
 
     ```
     ./mvnw spring-boot:run
@@ -81,7 +87,19 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
 
 ### Docker
 
-1. Navegue até a raiz do projeto e execute:
+1. Navegue até o arquivo application.yml no seguinte caminho:
+
+   ```
+   cd legalflow/backend/legalflow/src/main/resources
+   ```
+
+2. Troque localhost por database em spring.datasource.url:
+
+   ```
+   url: jdbc:postgresql://database:5432/legalflow
+   ```
+
+3. Navegue até a raiz do projeto e execute:
 
     ```
     docker-compose up --build
