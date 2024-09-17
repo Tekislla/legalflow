@@ -1,53 +1,103 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card>
+  <q-page class="flex column flex-center">
+    <q-card class="form-card">
       <q-card-section>
         <div class="text-h6">Login</div>
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="email" label="Email" type="email" />
-        <q-input v-model="senha" label="Senha" type="password" />
+        <q-input
+          stack-label
+          outlined
+          required
+          v-model="email"
+          label="Email"
+          type="email"
+        />
+        <br />
+        <q-input
+          stack-label
+          outlined
+          v-model="senha"
+          label="Senha"
+          :type="isPwd ? 'password' : 'text'"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
       </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn label="Entrar" color="primary" @click="login" />
+      <q-card-actions align="center">
+        <q-btn
+          :loading="loading"
+          class="register-login-btn"
+          label="Entrar"
+          color="teal"
+          @click="login"
+          :disable="!email || !senha || !validarEmail()"
+        />
       </q-card-actions>
     </q-card>
+    <p class="register-login-text">
+      Ainda não tem uma conta?
+      <a class="register-login-text-action" @click="redirectCadastro()"
+        >Cadastre-se.</a
+      >
+    </p>
   </q-page>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
+<script>
+import { defineComponent } from "vue";
 
-const email = ref("");
-const senha = ref("");
-const router = useRouter();
-const $store = useStore();
+export default defineComponent({
+  name: "LoginPage",
 
-const login = async () => {
-  if (email.value && senha.value) {
-    try {
-      console.log("Base URL:", process.env.VUE_APP_API_BASE_URL);
+  data() {
+    return {
+      email: null,
+      senha: null,
+      isPwd: true,
+      loading: false,
+    };
+  },
 
-      await $store.dispatch("login", {
-        email: email.value,
-        senha: senha.value,
-      });
-
-      // Verifica se o token foi definido e realiza o redirecionamento
-      if ($store.state.token) {
-        router.push({ path: "/" });
-      } else {
-        console.error("Falha no login");
+  methods: {
+    redirectCadastro() {
+      this.$router.push({ path: "/auth/cadastro" });
+    },
+    validarEmail() {
+      if (this.email) {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(this.email);
       }
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
-    }
-  } else {
-    console.error("Email e senha são obrigatórios");
-  }
-};
+      return false;
+    },
+    async login() {
+      this.loading = true;
+      try {
+        await this.$store.dispatch("login", {
+          email: this.email,
+          senha: this.senha,
+        });
+
+        this.loading = false;
+
+        if (this.$store.state.token) {
+          this.$router.push({ path: "/" });
+        } else {
+          console.error("Falha no login");
+        }
+      } catch (error) {
+        this.loading = false;
+        console.error("Erro ao fazer login:", error);
+      }
+    },
+  },
+});
 </script>

@@ -1,3 +1,7 @@
+.q-page {
+  max-width: 100%;
+}
+
 .main-card {
   width: 500px;
 }
@@ -68,4 +72,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .date-input-right {
   margin-left: 10px;
+}
+
+.form-card {
+  width: 400px;
+  padding: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.register-login-text {
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.register-login-text-action {
+  color: teal;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.q-field__control {
+  color: teal !important;
+}
+
+.register-login-btn {
+  width: 95%;
+  height: 40px;
 }
