@@ -70,7 +70,7 @@ public class JwtTokenFilterTest {
         when(jwtTokenProvider.validateToken(token)).thenReturn(true);
         when(jwtTokenProvider.getEmailFromToken(token)).thenReturn(email);
         when(jwtTokenProvider.getIdFromToken(token)).thenReturn(userId);
-        when(jwtTokenProvider.getIdOrganizacaoFromToken(token)).thenReturn(organizationId);
+        when(jwtTokenProvider.getOrganizacaoIdFromToken(token)).thenReturn(organizationId);
 
         // Mock do UsuarioService para retornar o usuário correspondente ao email
         when(usuarioService.findByEmail(email)).thenReturn(usuario);
