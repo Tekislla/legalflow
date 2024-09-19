@@ -87,13 +87,13 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
 
 ### Docker
 
-1. Navegue até o arquivo application.yml no seguinte caminho:
+1. Renomeie o arquivo application.yml.example para application.yml no seguinte caminho:
 
    ```
    cd legalflow/backend/legalflow/src/main/resources
    ```
 
-2. Troque localhost por database em spring.datasource.url:
+2. Troque localhost por database em spring.datasource.url, e configure as outras variáveis caso deseje (mantenha as informações do banco de dados como estão, alterando apenas localhost por database na url):
 
    ```
    url: jdbc:postgresql://database:5432/legalflow
