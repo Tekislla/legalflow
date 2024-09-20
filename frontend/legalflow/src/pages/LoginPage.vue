@@ -54,6 +54,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import NotificationUtil from "src/utils/NotificationUtil";
 
 export default defineComponent({
   name: "LoginPage",
@@ -91,11 +92,22 @@ export default defineComponent({
         if (this.$store.state.token) {
           this.$router.push({ path: "/" });
         } else {
-          console.error("Falha no login");
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            "Falha no login",
+            "negative",
+            "red"
+          );
         }
       } catch (error) {
         this.loading = false;
-        console.error("Erro ao fazer login:", error);
+
+        NotificationUtil.returnFeedbackMessage(
+          this.$q,
+          error.response?.data || "Falha no login",
+          "negative",
+          "red"
+        );
       }
     },
   },

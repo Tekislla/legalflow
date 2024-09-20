@@ -1,5 +1,5 @@
 <template>
-  <q-dialog>
+  <q-dialog persistent>
     <q-card class="q-pa-md main-card">
       <q-card-section class="row items-center q-pb-none">
         <div class="text-h6">Novo Processo</div>
@@ -9,11 +9,11 @@
       <q-card-section>
         <div class="q-gutter-md">
           <q-input
-            v-model="novoProcesso.nome"
+            stack-label
+            v-model="processo.nome"
             label="Nome"
             outlined
             required
-            dense
             :rules="[
               (val) =>
                 val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
@@ -21,11 +21,11 @@
           />
 
           <q-input
-            v-model="novoProcesso.numero"
+            stack-label
+            v-model="processo.numero"
             label="Número do processo"
             outlined
             required
-            dense
             :rules="[
               (val) =>
                 val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
@@ -33,11 +33,35 @@
           />
 
           <q-input
-            v-model="novoProcesso.descricao"
+            stack-label
+            v-model="processo.autor"
+            label="Autor"
+            outlined
+            required
+            :rules="[
+              (val) =>
+                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
+            ]"
+          />
+
+          <q-input
+            stack-label
+            v-model="processo.reu"
+            label="Réu"
+            outlined
+            required
+            :rules="[
+              (val) =>
+                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
+            ]"
+          />
+
+          <q-input
+            stack-label
+            v-model="processo.descricao"
             label="Descrição"
             outlined
             required
-            dense
             type="textarea"
             hint="Máximo 1000 caracteres"
             :rules="[
@@ -50,61 +74,139 @@
           <div class="row">
             <div class="col date-input-left">
               <q-input
-                v-model="novoProcesso.prazoSubsidio"
+                stack-label
                 label="Prazo de subsídio"
                 outlined
                 required
-                dense
-                :mask="dateMask"
-                type="date"
+                v-model="processo.prazoSubsidio"
+                mask="##/##/####"
+                :rules="[
+                  (val) => {
+                    const dateParts = val.split('/');
+                    const day = parseInt(dateParts[0]);
+                    const month = parseInt(dateParts[1]);
+                    if (day > 31 || day < 1) {
+                      return 'Dia inválido';
+                    }
+                    if (month > 12 || month < 1) {
+                      return 'Mês inválido';
+                    }
+                    return true;
+                  },
+                ]"
               >
                 <template v-slot:append>
-                  <q-icon name="event" />
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date
+                        v-model="processo.prazoSubsidio"
+                        mask="DD/MM/YYYY"
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
                 </template>
               </q-input>
             </div>
 
             <div class="col date-input-right">
               <q-input
-                v-model="novoProcesso.prazoFatal"
+                stack-label
                 label="Prazo fatal"
                 outlined
                 required
-                dense
-                :mask="dateMask"
-                type="date"
+                v-model="processo.prazoFatal"
+                mask="##/##/####"
+                :rules="[
+                  (val) => {
+                    const dateParts = val.split('/');
+                    const day = parseInt(dateParts[0]);
+                    const month = parseInt(dateParts[1]);
+                    if (day > 31 || day < 1) {
+                      return 'Dia inválido';
+                    }
+                    if (month > 12 || month < 1) {
+                      return 'Mês inválido';
+                    }
+                    return true;
+                  },
+                ]"
               >
                 <template v-slot:append>
-                  <q-icon name="event" />
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="processo.prazoFatal" mask="DD/MM/YYYY">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
                 </template>
               </q-input>
             </div>
           </div>
 
-          <q-input
-            v-model="novoProcesso.arquivo"
+          <q-file
+            stack-label
+            clearable
+            v-model="arquivo"
             label="Arquivo"
             outlined
             required
-            dense
-            type="file"
-          />
+          >
+            <template v-slot:append>
+              <q-icon name="attach_file" />
+            </template>
+          </q-file>
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="black" no-caps v-close-popup />
             <q-btn
-              @click="submitTaskForm()"
+              flat
+              label="Cancelar"
+              color="black"
+              no-caps
+              v-close-popup
+              @click="clearForm"
+            />
+            <q-btn
+              @click="submitFormNovoProcesso()"
               unelevated
               size="md"
               label="Criar processo"
               no-caps
               color="teal"
               :disable="
-                !newTaskName ||
-                !newTaskDescription ||
-                !selectedProject ||
-                newTaskDescription.length > 1000 ||
-                newTaskName.length > 100
+                !processo.nome ||
+                !processo.numero ||
+                !processo.autor ||
+                !processo.reu ||
+                !processo.descricao ||
+                !processo.prazoSubsidio ||
+                !processo.prazoFatal ||
+                !arquivo ||
+                processo.descricao.length > 1000
               "
             />
           </q-card-actions>
@@ -115,6 +217,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
+import ProcessoService from "src/services/ProcessoService";
 
 export default defineComponent({
   name: "ModalNovoProcesso",
@@ -127,22 +230,40 @@ export default defineComponent({
 
   data() {
     return {
-      novoProcesso: {
+      processo: {
         nome: "",
         numero: "",
+        autor: "",
+        reu: "",
         descricao: "",
         prazoSubsidio: "",
         prazoFatal: "",
-        arquivo: null,
-        quadroId: this.actualQuadroId,
+        quadroId: "",
       },
-      dateMask: "DD-MM-YYYY",
+      arquivo: null,
+      persistent: true,
     };
   },
 
   methods: {
-    submitFormNovoProcesso() {
-      this.$emit("submit-form-novo-processo", this.novoProcesso);
+    async submitFormNovoProcesso() {
+      try {
+        this.processo.quadroId = this.actualQuadroId;
+        const formData = new FormData();
+
+        formData.append(
+          "processo",
+          new Blob([JSON.stringify(this.processo)], {
+            type: "application/json",
+          })
+        );
+
+        formData.append("arquivo", this.arquivo);
+        await ProcessoService.salvarProcesso(formData);
+        this.$emit("processo-criado");
+      } catch (error) {
+        console.error(error);
+      }
 
       this.clearForm();
     },
@@ -150,12 +271,14 @@ export default defineComponent({
       this.novoProcesso = {
         nome: "",
         numero: "",
+        autor: "",
+        reu: "",
         descricao: "",
         prazoSubsidio: "",
         prazoFatal: "",
-        arquivo: null,
         quadroId: this.actualQuadroId,
       };
+      this.arquivo = null;
     },
   },
 });

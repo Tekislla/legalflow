@@ -2,7 +2,11 @@ import { axios } from "src/boot/axios";
 
 class ProcessoService {
   salvarProcesso(form) {
-    return axios.post("/processo/", form);
+    return axios.post("/processo/", form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 
   deletarProcesso(id) {

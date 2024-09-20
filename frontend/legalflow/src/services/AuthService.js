@@ -1,10 +1,12 @@
+import { axios } from "src/boot/axios";
+
 class AuthService {
   login(credentials) {
-    return this.$axios.post(`/auth/login`, credentials);
+    return axios.post(`/auth/login`, credentials);
   }
 
   cadastro(user) {
-    return this.$axios.post(`/auth/cadastro`, user);
+    return axios.post(`/auth/cadastro`, user);
   }
 }
 

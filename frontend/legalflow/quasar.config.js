@@ -53,6 +53,9 @@ module.exports = configure(function (ctx) {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node20",
       },
+      rollupOptions: {
+        external: ["quasar/lang/pt-BR.js"],
+      },
 
       vueRouterMode: "hash", // available values: 'hash', 'history'
       // vueRouterBase,
@@ -66,7 +69,7 @@ module.exports = configure(function (ctx) {
       env: {
         VUE_APP_API_BASE_URL: ctx.dev
           ? "http://localhost:8080/legalflow"
-          : "https://suaapi.com/legalflow",
+          : "http://localhost:8080/legalflow",
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
@@ -93,7 +96,7 @@ module.exports = configure(function (ctx) {
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: "pt-BR", // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

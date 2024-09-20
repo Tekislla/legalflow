@@ -5,6 +5,8 @@ import br.com.legalflow.dto.request.QuadroRequestDTO;
 import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.entity.Quadro;
 import br.com.legalflow.entity.Usuario;
+import br.com.legalflow.exception.organizacao.OrganizacaoJaCadastradaException;
+import br.com.legalflow.exception.organizacao.OrganizacaoNaoEncontradaException;
 import br.com.legalflow.repository.OrganizacaoRepository;
 import br.com.legalflow.repository.QuadroRepository;
 import br.com.legalflow.repository.UsuarioRepository;
@@ -21,24 +23,29 @@ public class OrganizacaoService {
     private OrganizacaoRepository organizacaoRepository;
 
     public Organizacao cadastrarOrganizacao(CadastroRequestDTO dto) {
-        try {
-
-            if (dto.getOrganizacaoId() != null) {
-                return findById(dto.getOrganizacaoId());
-            }
-
-            Organizacao organizacao = new Organizacao();
-
-            organizacao.setNome(dto.getNomeOrganizacao());
-            organizacao.setDocumento(dto.getDocumentoOrganizacao());
-
-            return organizacaoRepository.save(organizacao);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (dto.getOrganizacaoId() != null) {
+            return findById(dto.getOrganizacaoId());
         }
+
+        Optional<Organizacao> organizacaoOpt = organizacaoRepository.findByDocumento(dto.getDocumentoOrganizacao());
+
+        if (organizacaoOpt.isPresent()) {
+            throw new OrganizacaoJaCadastradaException(dto.getDocumentoOrganizacao());
+        }
+
+        Organizacao organizacao = new Organizacao();
+
+        organizacao.setNome(dto.getNomeOrganizacao());
+        organizacao.setDocumento(dto.getDocumentoOrganizacao());
+
+        return organizacaoRepository.save(organizacao);
     }
 
     public Organizacao findById(Long id) {
-        return organizacaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Organização não encontrada"));
+        return organizacaoRepository.findById(id).orElseThrow(() -> new OrganizacaoNaoEncontradaException(id));
+    }
+
+    public Optional<Organizacao> findByDocumento(String documento) {
+        return organizacaoRepository.findByDocumento(documento);
     }
 }

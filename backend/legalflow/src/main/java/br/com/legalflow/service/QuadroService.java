@@ -4,6 +4,9 @@ import br.com.legalflow.dto.request.QuadroRequestDTO;
 import br.com.legalflow.entity.Organizacao;
 import br.com.legalflow.entity.Quadro;
 import br.com.legalflow.entity.Usuario;
+import br.com.legalflow.exception.organizacao.OrganizacaoNaoEncontradaException;
+import br.com.legalflow.exception.quadro.QuadroNaoEncontradoException;
+import br.com.legalflow.exception.usuario.UsuarioNaoEncontradoException;
 import br.com.legalflow.repository.OrganizacaoRepository;
 import br.com.legalflow.repository.QuadroRepository;
 import br.com.legalflow.repository.UsuarioRepository;
@@ -35,11 +38,11 @@ public class QuadroService {
             Optional<Organizacao> organizacaoOpt = organizacaoRepository.findById(dto.getOrganizacaoId());
 
             if (usuarioOpt.isEmpty()) {
-                throw new Exception("Usuário não encontrado");
+                throw new UsuarioNaoEncontradoException(dto.getUsuarioId());
             }
 
             if (organizacaoOpt.isEmpty()) {
-                throw new Exception("Organização não encontrada");
+                throw new OrganizacaoNaoEncontradaException(dto.getOrganizacaoId());
             }
 
             quadro.setUsuario(usuarioOpt.get());
@@ -54,7 +57,7 @@ public class QuadroService {
     }
 
     public Quadro findById(Long id) {
-        return quadroRepository.findById(id).orElseThrow(() -> new RuntimeException("Quadro não encontrado"));
+        return quadroRepository.findById(id).orElseThrow(() -> new QuadroNaoEncontradoException(id));
     }
 
     public List<Quadro> findByUsuarioIdAndOrganizacaoId(Long usuarioId, Long organizacaoId) {

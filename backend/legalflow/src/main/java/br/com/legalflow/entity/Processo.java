@@ -20,6 +20,8 @@ public class Processo {
     private Quadro quadro;
     private String nome;
     private String numero;
+    private String autor;
+    private String reu;
     private String descricao;
     private String status;
     private Date prazoSubsidio;
@@ -28,7 +30,7 @@ public class Processo {
 
     @Override
     public String toString() {
-        return "Processo [id=" + id + ", nome=" + nome + ", numero=" + numero + ", descricao=" + descricao + ", status=" + status
+        return "Processo [id=" + id + ", nome=" + nome + ", numero=" + numero + ", autor=" + autor + ", reu=" + reu + ", descricao=" + descricao + ", status=" + status
                 + ", prazoSubsidio=" + prazoSubsidio + ", prazoFatal=" + prazoFatal + "]";
     }
 }

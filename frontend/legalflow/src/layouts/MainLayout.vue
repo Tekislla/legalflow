@@ -128,7 +128,7 @@
       <modal-novo-processo
         :actual-quadro-id="actualQuadroId"
         v-model="modalNovoProcessoOpen"
-        @submit-form-novo-processo="submitFormNovoProcesso($event)"
+        @processo-criado="processoCriado()"
       />
       <modal-novo-usuario
         v-model="modalNovoUsuarioOpen"
@@ -156,7 +156,7 @@ import ListaQuadros from "src/components/ListaQuadros.vue";
 import ListaProcessos from "src/pages/ListaProcessos.vue";
 import UsuarioService from "src/services/UsuarioService";
 import QuadroService from "src/services/QuadroService";
-import ProcessoService from "src/services/ProcessoService";
+import NotificationUtil from "src/utils/NotificationUtil";
 
 export default defineComponent({
   name: "MainLayout",
@@ -245,6 +245,16 @@ export default defineComponent({
           value: usuario.id,
         });
       });
+
+      this.fetchQuadro();
+    },
+    fetchQuadro() {
+      if (this.actualQuadroId != null) {
+        let actualQuadro = this.quadros.find(
+          (quadro) => quadro.id === this.actualQuadroId
+        );
+        this.setQuadro(actualQuadro);
+      }
     },
     async submitFormNovoQuadro(quadro) {
       await QuadroService.salvarQuadro(quadro).then(() => {
@@ -258,11 +268,8 @@ export default defineComponent({
       this.modalNovoUsuarioOpen = false;
       this.returnFeedbackMessage("Usuário criado com sucesso!");
     },
-    async submitFormNovoProcesso(processo) {
-      await ProcessoService.salvarProcesso(processo).then(() => {
-        this.fetch();
-        this.modalNovoProcessoOpen = false;
-      });
+    async processoCriado() {
+      await this.fetch();
       this.returnFeedbackMessage("Processo criado com sucesso!");
     },
     onTaskDelete() {
@@ -278,12 +285,12 @@ export default defineComponent({
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
     returnFeedbackMessage(notifyMessage) {
-      this.$q.notify({
-        type: "positive",
-        color: "teal",
-        message: notifyMessage,
-        position: "bottom-right",
-      });
+      NotificationUtil.returnFeedbackMessage(
+        this.$q,
+        notifyMessage,
+        "positive",
+        "teal"
+      );
     },
     limparProcessos() {
       this.processos = [];

@@ -85,7 +85,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
+import NotificationUtil from "src/utils/NotificationUtil";
 
 export default defineComponent({
   name: "RegisterPage",
@@ -119,12 +120,34 @@ export default defineComponent({
     async cadastrar() {
       this.loading = true;
       try {
-        this.$store.dispatch("cadastrar", this.form);
+        await this.$store.dispatch("cadastrar", this.form);
+
+        await this.$store.dispatch("login", {
+          email: this.form.email,
+          senha: this.form.senha,
+        });
+
         this.loading = false;
-        console.log("Cadastro realizado com sucesso!");
+
+        if (this.$store.state.token) {
+          this.$router.push({ path: "/" });
+        } else {
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            "Erro ao logar após o cadastro",
+            "negative",
+            "red"
+          );
+        }
       } catch (error) {
         this.loading = false;
-        console.error("Erro ao cadastrar:", error);
+
+        NotificationUtil.returnFeedbackMessage(
+          this.$q,
+          error.response?.data || "",
+          "negative",
+          "red"
+        );
       }
     },
   },

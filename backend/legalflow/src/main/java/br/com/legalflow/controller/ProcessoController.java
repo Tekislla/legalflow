@@ -11,6 +11,7 @@ import br.com.legalflow.service.QuadroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/processo")
@@ -24,9 +25,10 @@ public class ProcessoController extends BaseController {
     private OrganizacaoService organizacaoService;
 
     @PostMapping("/")
-    public ResponseEntity<?> criarProcesso(@RequestBody ProcessoRequestDTO processoRequestDTO) {
+    public ResponseEntity<?> criarProcesso(@RequestPart("processo") ProcessoRequestDTO dto,
+                                           @RequestPart("arquivo") MultipartFile arquivo) {
         try {
-            Processo processo = processoService.saveProcesso(processoRequestDTO);
+            Processo processo = processoService.saveProcesso(dto, arquivo.getBytes());
 
             return ResponseEntity.ok(processo);
         } catch (Exception e) {

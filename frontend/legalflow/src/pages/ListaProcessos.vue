@@ -210,8 +210,6 @@
 <script>
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
-import TaskService from "src/services/TaskService";
-import ProjectService from "src/services/ProjectService";
 import QuadroService from "src/services/QuadroService";
 
 export default defineComponent({
@@ -393,13 +391,7 @@ export default defineComponent({
           this.deletarQuadro(quadroId);
         });
     },
-    deleteTask(task) {
-      TaskService.deleteTask(task.id).then(() => {
-        this.$emit("delete-task");
-        this.isEditingTask = false;
-        this.taskDetailsModalOpen = false;
-      });
-    },
+    deleteTask(task) {},
     deletarQuadro(quadroId) {
       QuadroService.deletarQuadro(quadroId).then(() => {
         this.$emit("deletar-quadro");

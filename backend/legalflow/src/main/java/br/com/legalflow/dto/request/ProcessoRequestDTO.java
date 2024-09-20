@@ -2,8 +2,6 @@ package br.com.legalflow.dto.request;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class ProcessoRequestDTO {
 
@@ -11,9 +9,10 @@ public class ProcessoRequestDTO {
     private Long quadroId;
     private String nome;
     private String numero;
+    private String autor;
+    private String reu;
     private String descricao;
-    private Date prazoSubsidio;
-    private Date prazoFatal;
-    private byte[] arquivo;
+    private String prazoSubsidio;
+    private String prazoFatal;
 
 }

@@ -111,7 +111,7 @@ export default defineComponent({
   methods: {
     async cadastrar() {
       this.form.organizacaoId = this.store.state.organizacaoId;
-
+      this.form.administrador = this.form.administrador.value;
       await this.store.dispatch("cadastrar", this.form);
       this.resetForm();
       this.$emit("submit-form-novo-usuario");

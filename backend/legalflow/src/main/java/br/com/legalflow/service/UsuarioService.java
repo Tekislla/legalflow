@@ -5,6 +5,10 @@ import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.dto.request.CadastroRequestDTO;
 import br.com.legalflow.dto.request.EditarUsuarioRequestDTO;
 import br.com.legalflow.entity.Usuario;
+import br.com.legalflow.exception.usuario.CredenciaisInvalidasException;
+import br.com.legalflow.exception.usuario.UsuarioInativoException;
+import br.com.legalflow.exception.usuario.UsuarioJaCadastradoException;
+import br.com.legalflow.exception.usuario.UsuarioNaoEncontradoException;
 import br.com.legalflow.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +31,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(dto.getEmail());
 
         if (usuarioOpt.isPresent()) {
-            throw new RuntimeException("Já existe um usuário cadastrado com este e-mail");
+            throw new UsuarioJaCadastradoException(dto.getEmail());
         }
 
         Usuario usuario = new Usuario();
@@ -48,7 +52,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(dto.getId());
 
         if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Usuário não encontrado");
+            throw new UsuarioNaoEncontradoException(dto.getId());
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -68,11 +72,11 @@ public class UsuarioService {
     }
 
     public Usuario findById(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        return usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
     }
 
     public Usuario findByEmail(String email) {
-        return usuarioRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        return usuarioRepository.findByEmail(email).orElseThrow(() -> new UsuarioNaoEncontradoException(email));
     }
 
     public List<Usuario> findByOrganizacaoId(Long id) {
@@ -89,21 +93,21 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public Usuario autenticarUsuario(String email, String senha) throws Exception {
+    public Usuario autenticarUsuario(String email, String senha) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         if (usuarioOpt.isEmpty()) {
-            throw new Exception("Usuário não encontrado");
+            throw new UsuarioNaoEncontradoException(email);
         }
 
         Usuario usuario = usuarioOpt.get();
 
         if (!usuario.isAtivo()) {
-            throw new Exception("Usuário inativo");
+            throw new UsuarioInativoException(email);
         }
 
         if (!passwordEncoder.matches(senha, usuario.getSenhaCrypto())) {
-            throw new Exception("Senha incorreta");
+            throw new CredenciaisInvalidasException();
         }
 
         return usuario;
