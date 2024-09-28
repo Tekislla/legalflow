@@ -28,7 +28,6 @@ public class ProcessoService {
 
 
     public Processo saveProcesso(ProcessoRequestDTO dto, byte[] arquivo) {
-        try {
             Processo processo = new Processo();
 
             if (dto.getId() != null) {
@@ -57,10 +56,6 @@ public class ProcessoService {
             processo.setArquivo(arquivo);
 
             return processoRepository.save(processo);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Processo findById(Long id) {

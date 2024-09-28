@@ -27,7 +27,6 @@ public class QuadroService {
     private OrganizacaoRepository organizacaoRepository;
 
     public Quadro saveQuadro(QuadroRequestDTO dto) {
-        try {
             Quadro quadro = new Quadro();
 
             if (dto.getId() != null) {
@@ -50,10 +49,6 @@ public class QuadroService {
             quadro.setNome(dto.getNome());
 
             return quadroRepository.save(quadro);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Quadro findById(Long id) {
