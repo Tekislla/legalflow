@@ -82,7 +82,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const userRole = store.state.usuario.role;
+    const userRole = "ADMIN";
 
     return {
       store,
