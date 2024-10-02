@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { axios } from "src/boot/axios";
+import { axios } from "@/boot/axios";
 
 export default createStore({
   state: {
@@ -25,13 +25,19 @@ export default createStore({
       state.usuario = {};
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
+      localStorage.removeItem("organizacaoId");
     },
   },
   actions: {
     login({ commit }, authData) {
       return axios.post("/auth/login", authData).then((response) => {
         commit("setToken", response.data.token);
-        commit("setUsuario", response.data.usuario);
+        commit("setUsuario", {
+          id: response.data.usuario.id,
+          nome: response.data.usuario.nome,
+          email: response.data.usuario.email,
+          role: response.data.usuario.role,
+        });
         commit("setOrganizacaoId", response.data.organizacaoId);
       });
     },

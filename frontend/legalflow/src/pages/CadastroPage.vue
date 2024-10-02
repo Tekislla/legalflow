@@ -86,7 +86,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import NotificationUtil from "src/utils/NotificationUtil";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "RegisterPage",

@@ -210,7 +210,7 @@
 <script>
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
-import QuadroService from "src/services/QuadroService";
+import QuadroService from "@/services/QuadroService";
 
 export default defineComponent({
   name: "ListaProcessos",
