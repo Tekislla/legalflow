@@ -54,7 +54,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import NotificationUtil from "src/utils/NotificationUtil";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "LoginPage",
@@ -88,7 +88,6 @@ export default defineComponent({
         });
 
         this.loading = false;
-
         if (this.$store.state.token) {
           this.$router.push({ path: "/" });
         } else {
@@ -101,7 +100,7 @@ export default defineComponent({
         }
       } catch (error) {
         this.loading = false;
-
+        console.error(error);
         NotificationUtil.returnFeedbackMessage(
           this.$q,
           error.response?.data || "Falha no login",

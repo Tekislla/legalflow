@@ -1,27 +1,31 @@
-// ***********************************************************
-// This example support/component.js is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
+// component.js (cypress/support/component.js)
 
-// Import commands.js using ES2015 syntax:
-import './commands'
+import { mount } from "cypress/vue";
+import { createStoreMock } from "../support/store"; // Mock da store que você já definiu
+import { Quasar } from "quasar"; // Importa o Quasar caso sua aplicação use
+import "quasar/dist/quasar.css"; // Importa o CSS do Quasar para garantir o estilo
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+// Registra o comando mount do Cypress e injeta a store e o Quasar globalmente
+Cypress.Commands.add("mount", (component, options = {}) => {
+  const initialState = {
+    token: "mocked_token",
+    usuario: {
+      id: 1,
+      nome: "Mocked User",
+      email: "mocked@example.com",
+      role: "ADMIN",
+    },
+    organizacaoId: "mocked_organizacao",
+    actualQuadroId: "1",
+  };
 
-import { mount } from 'cypress/vue'
+  const store = createStoreMock(initialState); // Cria a store mockada
 
-Cypress.Commands.add('mount', mount)
-
-// Example use:
-// cy.mount(MyComponent)
+  return mount(component, {
+    global: {
+      plugins: [store, Quasar], // Injeta o Vuex store e o Quasar em todos os componentes montados
+      ...options.global, // Permite a opção de sobrescrever ou adicionar plugins ao montar
+    },
+    ...options,
+  });
+});

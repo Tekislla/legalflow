@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
     "format": "prettier --write \"**/*.{js,vue,css,html,md,json}\" --ignore-path .gitignore",
-    "test": "jest",
+    "test": "npx cypress open",
     "dev": "quasar dev",
     "build": "quasar build"
   },

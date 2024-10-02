@@ -217,7 +217,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import ProcessoService from "src/services/ProcessoService";
+import ProcessoService from "@/services/ProcessoService";
 
 export default defineComponent({
   name: "ModalNovoProcesso",

@@ -1,4 +1,4 @@
-import { axios } from "src/boot/axios";
+import { axios } from "@/boot/axios";
 
 class QuadroService {
   salvarQuadro(form) {

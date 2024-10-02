@@ -6,6 +6,7 @@
       :processos-finalizados="getProcessosSize(processosFinalizados)"
       :processos-arquivados="getProcessosSize(processosArquivados)"
       :actual-quadro-id="actualQuadroId"
+      :user-role="userRole"
       @toggle-left-drawer="toggleLeftDrawer()"
       @update:tab="tab = $event"
       @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
@@ -148,15 +149,15 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
-import HeaderComponent from "src/components/HeaderComponent.vue";
-import ModalNovoProcesso from "src/components/ModalNovoProcesso.vue";
-import ModalNovoUsuario from "src/components/ModalNovoUsuario.vue";
-import ModalNovoQuadro from "src/components/ModalNovoQuadro.vue";
-import ListaQuadros from "src/components/ListaQuadros.vue";
-import ListaProcessos from "src/pages/ListaProcessos.vue";
-import UsuarioService from "src/services/UsuarioService";
-import QuadroService from "src/services/QuadroService";
-import NotificationUtil from "src/utils/NotificationUtil";
+import HeaderComponent from "@/components/HeaderComponent.vue";
+import ModalNovoProcesso from "@/components/ModalNovoProcesso.vue";
+import ModalNovoUsuario from "@/components/ModalNovoUsuario.vue";
+import ModalNovoQuadro from "@/components/ModalNovoQuadro.vue";
+import ListaQuadros from "@/components/ListaQuadros.vue";
+import ListaProcessos from "@/pages/ListaProcessos.vue";
+import UsuarioService from "@/services/UsuarioService";
+import QuadroService from "@/services/QuadroService";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "MainLayout",

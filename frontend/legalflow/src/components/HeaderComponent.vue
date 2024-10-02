@@ -67,27 +67,29 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 
 export default defineComponent({
   name: "HeaderComponent",
 
   props: {
-    processosCriados: Number,
-    processosEmProgresso: Number,
-    processosFinalizados: Number,
-    processosArquivados: Number,
+    processosCriados: {
+      type: Number,
+      default: 0,
+    },
+    processosEmProgresso: {
+      type: Number,
+      default: 0,
+    },
+    processosFinalizados: {
+      type: Number,
+      default: 0,
+    },
+    processosArquivados: {
+      type: Number,
+      default: 0,
+    },
     actualQuadroId: Number,
-  },
-
-  setup() {
-    const store = useStore();
-    const userRole = "ADMIN";
-
-    return {
-      store,
-      userRole,
-    };
+    userRole: String,
   },
 
   data() {
