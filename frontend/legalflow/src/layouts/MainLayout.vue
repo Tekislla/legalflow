@@ -5,7 +5,7 @@
       :processos-em-progresso="getProcessosSize(processosEmProgresso)"
       :processos-finalizados="getProcessosSize(processosFinalizados)"
       :processos-arquivados="getProcessosSize(processosArquivados)"
-      :actual-quadro-id="actualQuadroId"
+      :id-quadro-atual="idQuadroAtual"
       :user-role="userRole"
       @toggle-left-drawer="toggleLeftDrawer()"
       @update:tab="tab = $event"
@@ -15,7 +15,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item class="list-label" clickable @click="actualQuadroId = null">
+        <q-item class="list-label" clickable @click="idQuadroAtual = null">
           <q-item-section avatar> Home </q-item-section>
         </q-item>
         <q-expansion-item class="list-label" label="Quadros">
@@ -23,7 +23,7 @@
             v-for="quadro in quadros"
             v-bind:quadro="quadro"
             :key="quadro.id"
-            :actual-quadro-id="actualQuadroId"
+            :id-quadro-atual="idQuadroAtual"
             :processos-em-aberto="getProcessosAbertos(quadro.processos)"
             @set-quadro="setQuadro(quadro)"
           />
@@ -69,51 +69,55 @@
     </q-drawer>
 
     <q-page-container>
-      <q-tab-panels v-model="tab" animated v-show="actualQuadroId !== null">
+      <q-tab-panels v-model="tab" animated v-show="idQuadroAtual !== null">
         <q-tab-panel name="CRIADO">
           <lista-processos
-            v-show="actualQuadroId !== null"
-            :actual-status="this.tab"
-            :quadro-id="this.actualQuadroId"
-            :tasks="this.processosCriados"
-            @update-task="submitTaskForm($event, 'updated')"
-            @delete-task="onTaskDelete()"
+            :user-role="userRole"
+            v-show="idQuadroAtual !== null"
+            :status-atual="this.tab"
+            :quadro-id="this.idQuadroAtual"
+            :processos="this.processosCriados"
+            @salvar-processo="processoSalvo()"
+            @deletar-processo="onProcessoDelete()"
             @deletar-quadro="onQuadroDelete()"
             @abrir-modal-novo-processo="abrirModalNovoProcesso()"
           />
         </q-tab-panel>
         <q-tab-panel name="EM_PROGRESSO">
           <lista-processos
-            v-show="actualQuadroId !== null"
-            :actual-status="this.tab"
-            :quadro-id="this.actualQuadroId"
-            :tasks="this.processosEmProgresso"
-            @update-task="submitTaskForm($event, 'updated')"
-            @delete-task="onTaskDelete()"
+            :user-role="userRole"
+            v-show="idQuadroAtual !== null"
+            :status-atual="this.tab"
+            :quadro-id="this.idQuadroAtual"
+            :processos="this.processosEmProgresso"
+            @salvar-processo="processoSalvo()"
+            @deletar-processo="onProcessoDelete()"
             @deletar-quadro="onQuadroDelete()"
             @abrir-modal-novo-processo="abrirModalNovoProcesso()"
           />
         </q-tab-panel>
         <q-tab-panel name="FINALIZADO">
           <lista-processos
-            v-show="actualQuadroId !== null"
-            :actual-status="this.tab"
-            :quadro-id="this.actualQuadroId"
-            :tasks="this.processosFinalizados"
-            @update-task="submitTaskForm($event, 'updated')"
-            @delete-task="onTaskDelete()"
+            :user-role="userRole"
+            v-show="idQuadroAtual !== null"
+            :status-atual="this.tab"
+            :quadro-id="this.idQuadroAtual"
+            :processos="this.processosFinalizados"
+            @salvar-processo="processoSalvo()"
+            @deletar-processo="onProcessoDelete()"
             @deletar-quadro="onQuadroDelete()"
             @abrir-modal-novo-processo="abrirModalNovoProcesso()"
           />
         </q-tab-panel>
         <q-tab-panel name="ARQUIVADO">
           <lista-processos
-            v-show="actualQuadroId !== null"
-            :actual-status="this.tab"
-            :quadro-id="this.actualQuadroId"
-            :tasks="this.processosArquivados"
-            @update-task="submitTaskForm($event, 'updated')"
-            @delete-task="onTaskDelete()"
+            :user-role="userRole"
+            v-show="idQuadroAtual !== null"
+            :status-atual="this.tab"
+            :quadro-id="this.idQuadroAtual"
+            :processos="this.processosArquivados"
+            @salvar-processo="processoSalvo()"
+            @deletar-processo="onProcessoDelete()"
             @deletar-quadro="onQuadroDelete()"
             @abrir-modal-novo-processo="abrirModalNovoProcesso()"
           />
@@ -121,26 +125,25 @@
       </q-tab-panels>
 
       <router-view
-        v-show="this.actualQuadroId === null"
+        v-show="this.idQuadroAtual === null"
         @abrir-modal-novo-quadro="abrirModalNovoQuadro()"
         @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
       />
 
       <modal-novo-processo
-        :actual-quadro-id="actualQuadroId"
+        :id-quadro-atual="idQuadroAtual"
         v-model="modalNovoProcessoOpen"
-        @processo-criado="processoCriado()"
-      />
-      <modal-novo-usuario
-        v-model="modalNovoUsuarioOpen"
-        @update:modalNovoUsuarioOpen="modalNovoUsuarioOpen = $event"
-        @hide-modal="modalNovoUsuarioOpen = false"
-        @submit-form-novo-usuario="submitFormNovoUsuario()"
+        @processo-criado="processoSalvo()"
       />
       <modal-novo-quadro
         :lista-usuarios="this.listaUsuarios"
         v-model="modalNovoQuadroOpen"
-        @submit-form-novo-quadro="submitFormNovoQuadro($event)"
+        @salvar-quadro="salvarQuadro($event)"
+      />
+      <modal-novo-usuario
+        v-model="modalNovoUsuarioOpen"
+        @update:modalNovoUsuarioOpen="modalNovoUsuarioOpen = $event"
+        @salvar-usuario="salvarUsuario()"
       />
     </q-page-container>
   </q-layout>
@@ -157,6 +160,7 @@ import ListaQuadros from "@/components/ListaQuadros.vue";
 import ListaProcessos from "@/pages/ListaProcessos.vue";
 import UsuarioService from "@/services/UsuarioService";
 import QuadroService from "@/services/QuadroService";
+import ProcessoService from "@/services/ProcessoService";
 import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
@@ -193,7 +197,7 @@ export default defineComponent({
       processosEmProgresso: [],
       processosFinalizados: [],
       processosArquivados: [],
-      actualQuadroId: null,
+      idQuadroAtual: null,
       leftDrawerOpen: ref(false),
       modalNovoProcessoOpen: ref(false),
       modalNovoUsuarioOpen: ref(false),
@@ -207,7 +211,7 @@ export default defineComponent({
     },
     setQuadro(quadro) {
       this.limparProcessos();
-      this.actualQuadroId = quadro.id;
+      this.idQuadroAtual = quadro.id;
       this.processos = quadro.processos;
       quadro.processos.forEach((processo) => {
         processo.status === "CRIADO"
@@ -250,36 +254,37 @@ export default defineComponent({
       this.fetchQuadro();
     },
     fetchQuadro() {
-      if (this.actualQuadroId != null) {
+      if (this.idQuadroAtual != null) {
         let actualQuadro = this.quadros.find(
-          (quadro) => quadro.id === this.actualQuadroId
+          (quadro) => quadro.id === this.idQuadroAtual
         );
         this.setQuadro(actualQuadro);
       }
     },
-    async submitFormNovoQuadro(quadro) {
+    async salvarQuadro(quadro) {
       await QuadroService.salvarQuadro(quadro).then(() => {
         this.fetch();
         this.modalNovoQuadroOpen = false;
       });
       this.returnFeedbackMessage("Quadro criado com sucesso!");
     },
-    async submitFormNovoUsuario() {
+    async salvarUsuario() {
       await this.fetch();
       this.modalNovoUsuarioOpen = false;
       this.returnFeedbackMessage("Usuário criado com sucesso!");
     },
-    async processoCriado() {
+    async processoSalvo() {
+      this.modalNovoProcessoOpen = false;
       await this.fetch();
-      this.returnFeedbackMessage("Processo criado com sucesso!");
+      this.returnFeedbackMessage("Processo salvo com sucesso!");
     },
-    onTaskDelete() {
-      this.returnFeedbackMessage("Task deleted successfully!");
+    onProcessoDelete() {
+      this.returnFeedbackMessage("Processo deletado com sucesso");
       this.fetch();
     },
     onQuadroDelete() {
       this.returnFeedbackMessage("Quadro deletado com sucesso!");
-      this.actualQuadroId = null;
+      this.idQuadroAtual = null;
       this.fetch();
     },
     toggleLeftDrawer() {

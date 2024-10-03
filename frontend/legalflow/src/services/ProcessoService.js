@@ -9,6 +9,12 @@ class ProcessoService {
     });
   }
 
+  baixarProcesso(id) {
+    return axios.get(`/processo/download/${id}`, {
+      responseType: "blob",
+    });
+  }
+
   deletarProcesso(id) {
     return axios.delete(`/processo/${id}`);
   }

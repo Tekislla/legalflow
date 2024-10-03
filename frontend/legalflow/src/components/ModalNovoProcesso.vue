@@ -175,6 +175,7 @@
             label="Arquivo"
             outlined
             required
+            accept="application/pdf"
           >
             <template v-slot:append>
               <q-icon name="attach_file" />
@@ -223,7 +224,7 @@ export default defineComponent({
   name: "ModalNovoProcesso",
 
   props: {
-    actualQuadroId: {
+    idQuadroAtual: {
       type: Number,
     },
   },
@@ -239,6 +240,7 @@ export default defineComponent({
         prazoSubsidio: "",
         prazoFatal: "",
         quadroId: "",
+        status: "Criado",
       },
       arquivo: null,
       persistent: true,
@@ -248,7 +250,7 @@ export default defineComponent({
   methods: {
     async submitFormNovoProcesso() {
       try {
-        this.processo.quadroId = this.actualQuadroId;
+        this.processo.quadroId = this.idQuadroAtual;
         const formData = new FormData();
 
         formData.append(
@@ -276,7 +278,8 @@ export default defineComponent({
         descricao: "",
         prazoSubsidio: "",
         prazoFatal: "",
-        quadroId: this.actualQuadroId,
+        quadroId: this.idQuadroAtual,
+        status: "Criado",
       };
       this.arquivo = null;
     },

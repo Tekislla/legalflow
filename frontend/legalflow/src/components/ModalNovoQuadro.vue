@@ -31,7 +31,7 @@
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
             <q-btn
-              @click="submitFormNovoQuadro()"
+              @click="salvarQuadro()"
               unelevated
               size="md"
               label="Criar quadro"
@@ -71,9 +71,9 @@ export default defineComponent({
   },
 
   methods: {
-    submitFormNovoQuadro() {
+    salvarQuadro() {
       this.form.usuarioId = this.usuarioSelecionado.value;
-      this.$emit("submit-form-novo-quadro", this.form);
+      this.$emit("salvar-quadro", this.form);
       console.log(this.form);
     },
     submitProjectForm() {

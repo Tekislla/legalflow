@@ -16,7 +16,7 @@ Cypress.Commands.add("mount", (component, options = {}) => {
       role: "ADMIN",
     },
     organizacaoId: "mocked_organizacao",
-    actualQuadroId: "1",
+    idQuadroAtual: "1",
   };
 
   const store = createStoreMock(initialState); // Cria a store mockada

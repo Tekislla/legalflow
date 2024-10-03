@@ -20,8 +20,8 @@ export const createStoreMock = (initialState = {}) => {
     initialState.organizacaoId || "mocked_organizacao"
   );
   localStorage.setItem(
-    "actualQuadroId",
-    initialState.actualQuadroId || "mocked_quadro"
+    "idQuadroAtual",
+    initialState.idQuadroAtual || "mocked_quadro"
   );
 
   return new Vuex.Store({
@@ -29,7 +29,7 @@ export const createStoreMock = (initialState = {}) => {
       token: localStorage.getItem("token") || "",
       usuario: JSON.parse(localStorage.getItem("usuario")) || {},
       organizacaoId: localStorage.getItem("organizacaoId") || "",
-      actualQuadroId: localStorage.getItem("actualQuadroId") || "",
+      idQuadroAtual: localStorage.getItem("idQuadroAtual") || "",
     },
     mutations: {
       setToken(state, token) {
@@ -44,9 +44,9 @@ export const createStoreMock = (initialState = {}) => {
         state.organizacaoId = organizacaoId;
         localStorage.setItem("organizacaoId", organizacaoId);
       },
-      setActualQuadroId(state, actualQuadroId) {
-        state.actualQuadroId = actualQuadroId;
-        localStorage.setItem("actualQuadroId", actualQuadroId);
+      setidQuadroAtual(state, idQuadroAtual) {
+        state.idQuadroAtual = idQuadroAtual;
+        localStorage.setItem("idQuadroAtual", idQuadroAtual);
       },
       logout(state) {
         state.token = "";

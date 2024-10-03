@@ -18,7 +18,7 @@ describe("HeaderComponent dentro do MainLayout", () => {
           processosEmProgresso: 10,
           processosFinalizados: 3,
           processosArquivados: 2,
-          actualQuadroId: 1,
+          idQuadroAtual: 1,
         });
 
         // Aguarda o Vue processar a atualização e renderizar os elementos
@@ -30,7 +30,7 @@ describe("HeaderComponent dentro do MainLayout", () => {
           cy.log("Estado atual do data do MainLayout:");
           cy.log(`processosCriados: ${wrapper.vm.processosCriados}`);
           cy.log(`processosEmProgresso: ${wrapper.vm.processosEmProgresso}`);
-          cy.log(`actualQuadroId: ${wrapper.vm.actualQuadroId}`);
+          cy.log(`idQuadroAtual: ${wrapper.vm.idQuadroAtual}`);
 
           // Verifica se o HeaderComponent está corretamente montado
           const headerComponent = wrapper.findComponent({
@@ -40,7 +40,7 @@ describe("HeaderComponent dentro do MainLayout", () => {
 
           // Log para verificar as props do HeaderComponent
           cy.log("Props do HeaderComponent:");
-          cy.log(`actualQuadroId: ${headerComponent.props("actualQuadroId")}`);
+          cy.log(`idQuadroAtual: ${headerComponent.props("idQuadroAtual")}`);
           cy.log(`userRole: ${headerComponent.vm.userRole}`);
           cy.log(
             `processosCriados: ${headerComponent.props("processosCriados")}`

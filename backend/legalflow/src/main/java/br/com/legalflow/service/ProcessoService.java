@@ -3,6 +3,7 @@ package br.com.legalflow.service;
 import br.com.legalflow.dto.request.ProcessoRequestDTO;
 import br.com.legalflow.entity.Processo;
 import br.com.legalflow.entity.Quadro;
+import br.com.legalflow.enums.ProcessoStatusEnum;
 import br.com.legalflow.exception.processo.ProcessoNaoEncontradoException;
 import br.com.legalflow.exception.quadro.QuadroNaoEncontradoException;
 import br.com.legalflow.repository.ProcessoRepository;
@@ -28,34 +29,35 @@ public class ProcessoService {
 
 
     public Processo saveProcesso(ProcessoRequestDTO dto, byte[] arquivo) {
-            Processo processo = new Processo();
+        Processo processo = new Processo();
 
-            if (dto.getId() != null) {
-                processo = findById(dto.getId());
-            }
+        if (dto.getId() != null) {
+            processo = findById(dto.getId());
+        }
 
-            Optional<Quadro> quadroOpt = quadroRepository.findById(dto.getQuadroId());
+        Optional<Quadro> quadroOpt = quadroRepository.findById(dto.getQuadroId());
 
-            if (quadroOpt.isEmpty()) {
-                throw new QuadroNaoEncontradoException(dto.getQuadroId());
-            }
+        if (quadroOpt.isEmpty()) {
+            throw new QuadroNaoEncontradoException(dto.getQuadroId());
+        }
 
-            Date prazoSubsidio = DateUtils.parseDate(dto.getPrazoSubsidio(), "dd/MM/yyyy");
-            Date prazoFatal = DateUtils.parseDate(dto.getPrazoFatal(), "dd/MM/yyyy");
+        Date prazoSubsidio = DateUtils.parseDate(dto.getPrazoSubsidio(), "dd/MM/yyyy");
+        Date prazoFatal = DateUtils.parseDate(dto.getPrazoFatal(), "dd/MM/yyyy");
+        ProcessoStatusEnum status = ProcessoStatusEnum.getProcessoStatusEnum(dto.getStatus());
 
-            processo.setQuadro(quadroOpt.get());
-            processo.setNome(dto.getNome());
-            processo.setDescricao(dto.getDescricao());
-            processo.setNumero(dto.getNumero());
-            processo.setAutor(dto.getAutor());
-            processo.setReu(dto.getReu());
-            processo.setStatus("CRIADO");
-            processo.setDescricao(dto.getDescricao());
-            processo.setPrazoSubsidio(prazoSubsidio);
-            processo.setPrazoFatal(prazoFatal);
-            processo.setArquivo(arquivo);
+        processo.setQuadro(quadroOpt.get());
+        processo.setNome(dto.getNome());
+        processo.setDescricao(dto.getDescricao());
+        processo.setNumero(dto.getNumero());
+        processo.setAutor(dto.getAutor());
+        processo.setReu(dto.getReu());
+        processo.setStatus(status.name());
+        processo.setDescricao(dto.getDescricao());
+        processo.setPrazoSubsidio(prazoSubsidio);
+        processo.setPrazoFatal(prazoFatal);
+        processo.setArquivo(arquivo);
 
-            return processoRepository.save(processo);
+        return processoRepository.save(processo);
     }
 
     public Processo findById(Long id) {

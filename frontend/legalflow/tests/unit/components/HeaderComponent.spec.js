@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils';
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import { createStore } from 'vuex';
-import { Quasar } from 'quasar';
+import { mount } from "@vue/test-utils";
+import HeaderComponent from "@/components/HeaderComponent.vue";
+import { createStore } from "vuex";
+import { Quasar } from "quasar";
 
-describe('HeaderComponent.vue', () => {
+describe("HeaderComponent.vue", () => {
   let store;
 
   beforeEach(() => {
@@ -11,13 +11,13 @@ describe('HeaderComponent.vue', () => {
     store = createStore({
       state: {
         usuario: {
-          role: 'ADMIN',  // Definindo o papel do usuário como ADMIN
+          role: "ADMIN", // Definindo o papel do usuário como ADMIN
         },
       },
     });
   });
 
-  it('renders the component correctly', () => {
+  it("renders the component correctly", () => {
     const wrapper = mount(HeaderComponent, {
       global: {
         plugins: [Quasar, store],
@@ -27,21 +27,23 @@ describe('HeaderComponent.vue', () => {
         processosEmProgresso: 3,
         processosFinalizados: 2,
         processosArquivados: 1,
-        actualQuadroId: 1,  // Quadro ativo definido
+        idQuadroAtual: 1, // Quadro ativo definido
       },
     });
 
     // Verifica se o título do header está correto
-    expect(wrapper.find('q-toolbar-title').text()).toBe('LegalFlow');
-    
+    expect(wrapper.find("q-toolbar-title").text()).toBe("LegalFlow");
+
     // Verifica se o botão de 'Novo Usuário' está presente
-    expect(wrapper.find('button[aria-label="Novo Usuário"]').exists()).toBe(true);
+    expect(wrapper.find('button[aria-label="Novo Usuário"]').exists()).toBe(
+      true
+    );
 
     // Verifica se os valores dos badges estão corretos
-    expect(wrapper.find('q-badge').text()).toContain('5'); // Criado
+    expect(wrapper.find("q-badge").text()).toContain("5"); // Criado
   });
 
-  it('emits the correct events', async () => {
+  it("emits the correct events", async () => {
     const wrapper = mount(HeaderComponent, {
       global: {
         plugins: [Quasar, store],
@@ -51,20 +53,20 @@ describe('HeaderComponent.vue', () => {
         processosEmProgresso: 3,
         processosFinalizados: 2,
         processosArquivados: 1,
-        actualQuadroId: 1,
+        idQuadroAtual: 1,
       },
     });
 
     // Simular clique no botão de abrir o modal de novo quadro
-    await wrapper.find('button[aria-label="Novo Quadro"]').trigger('click');
-    expect(wrapper.emitted('abrir-modal-novo-quadro')).toBeTruthy();
+    await wrapper.find('button[aria-label="Novo Quadro"]').trigger("click");
+    expect(wrapper.emitted("abrir-modal-novo-quadro")).toBeTruthy();
 
     // Simular clique no botão de abrir o modal de novo usuário
-    await wrapper.find('button[aria-label="Novo Usuário"]').trigger('click');
-    expect(wrapper.emitted('abrir-modal-novo-usuario')).toBeTruthy();
+    await wrapper.find('button[aria-label="Novo Usuário"]').trigger("click");
+    expect(wrapper.emitted("abrir-modal-novo-usuario")).toBeTruthy();
   });
 
-  it('hides buttons if conditions are not met', () => {
+  it("hides buttons if conditions are not met", () => {
     const wrapper = mount(HeaderComponent, {
       global: {
         plugins: [Quasar, store],
@@ -74,12 +76,16 @@ describe('HeaderComponent.vue', () => {
         processosEmProgresso: 3,
         processosFinalizados: 2,
         processosArquivados: 1,
-        actualQuadroId: null, // Quadro ID indefinido
+        idQuadroAtual: null, // Quadro ID indefinido
       },
     });
 
-    // Os botões não devem aparecer se actualQuadroId for null
-    expect(wrapper.find('button[aria-label="Novo Usuário"]').exists()).toBe(false);
-    expect(wrapper.find('button[aria-label="Novo Quadro"]').exists()).toBe(false);
+    // Os botões não devem aparecer se idQuadroAtual for null
+    expect(wrapper.find('button[aria-label="Novo Usuário"]').exists()).toBe(
+      false
+    );
+    expect(wrapper.find('button[aria-label="Novo Quadro"]').exists()).toBe(
+      false
+    );
   });
 });

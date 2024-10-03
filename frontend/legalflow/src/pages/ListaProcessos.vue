@@ -15,7 +15,7 @@
           />
           <q-btn
             v-show="userRole === 'ADMIN'"
-            v-on:click="confirmaDeletarQuadro(quadroId)"
+            v-on:click="confirmaDeletar(quadroId, 'quadro')"
             unelevated
             size="md"
             label="Deletar Quadro"
@@ -27,7 +27,7 @@
 
         <q-card-section>
           <q-table
-            :rows="tasks"
+            :rows="processos"
             :columns="columns"
             row-key="id"
             no-data-label="Não há processos disponíveis com este status."
@@ -35,56 +35,37 @@
             :rows-per-page-options="[10, 25, 50, 100, 0]"
           >
             <template v-slot:body-cell-details="props">
-              <q-td :props="props">
+              <q-td :props="props" auto-width>
                 <q-btn-group unelevated>
                   <q-btn
                     size="md"
                     round
                     icon="open_in_new"
-                    @click="openTaskDetailsModal(props.row)"
+                    @click="abrirModalDetalhesProcesso(props.row)"
                   >
                   </q-btn>
                 </q-btn-group>
               </q-td>
             </template>
             <template v-slot:body-cell-actions="props">
-              <q-td :props="props">
+              <q-td :props="props" auto-width>
                 <q-btn-group unelevated>
                   <q-btn
                     size="md"
                     round
-                    icon="add_task"
-                    @click="changeStatus(props.row, 'CREATED')"
-                    :disabled="this.actualStatus === 'CREATED'"
+                    icon="file_open"
+                    @click="baixarProcesso(props.row)"
                   >
-                    <q-tooltip>Mark as created</q-tooltip>
-                  </q-btn>
-                  <q-btn
-                    size="md"
-                    round
-                    icon="construction"
-                    @click="changeStatus(props.row, 'IN_PROGRESS')"
-                    :disabled="this.actualStatus === 'IN_PROGRESS'"
-                  >
-                    <q-tooltip>Mark as in progress</q-tooltip>
-                  </q-btn>
-                  <q-btn
-                    size="md"
-                    round
-                    icon="done_all"
-                    @click="changeStatus(props.row, 'DONE')"
-                    :disabled="this.actualStatus === 'DONE'"
-                  >
-                    <q-tooltip>Mark as done</q-tooltip>
+                    <q-tooltip>Abrir processo em nova guia</q-tooltip>
                   </q-btn>
                   <q-btn
                     size="md"
                     round
                     icon="block"
-                    @click="changeStatus(props.row, 'CANCELED')"
-                    :disabled="this.actualStatus === 'CANCELED'"
+                    @click="arquivarProcesso(props.row)"
+                    :disabled="this.statusAtual === 'ARQUIVADO'"
                   >
-                    <q-tooltip>Cancel task</q-tooltip>
+                    <q-tooltip>Arquivar processo</q-tooltip>
                   </q-btn>
                 </q-btn-group>
               </q-td>
@@ -93,23 +74,22 @@
         </q-card-section>
       </q-card>
 
-      <q-dialog persistent v-model="taskDetailsModalOpen">
+      <q-dialog persistent v-model="modalDetalhesProcessoOpen">
         <q-card class="q-pa-md main-card">
           <q-card-section class="row items-center q-pb-none">
             <div class="col-6">
-              <div class="text-h6">
-                {{ this.formatTextSize(selectedTask.taskName, 15) }}
-              </div>
+              <div class="text-h6">Detalhes</div>
             </div>
             <div class="col-6 text-right">
               <q-select
-                v-model="selectedTaskStatus"
-                :options="taskStatusList"
+                stack-label
+                v-model="processoSelecionado.status"
+                :options="statusList"
                 label="Status"
                 outlined
                 required
-                dense
-                :disable="!isEditingTask"
+                :disable="!editandoProcesso"
+                :rules="[(val) => !!val || 'Status é obrigatório']"
               />
             </div>
           </q-card-section>
@@ -117,30 +97,170 @@
           <q-card-section>
             <div class="q-gutter-md">
               <q-input
-                v-show="isEditingTask"
-                v-model="selectedTaskName"
-                label="Name"
+                stack-label
+                :disable="!editandoProcesso"
+                v-model="processoSelecionado.numero"
+                label="Número do processo"
                 outlined
                 required
-                dense
                 :rules="[
-                  (val) =>
-                    val.length <= 100 || 'Please use maximum 100 characters',
+                  (val) => !!val || 'Número do processo é obrigatório',
+                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
+                ]"
+              />
+              <q-input
+                stack-label
+                :disable="!editandoProcesso"
+                v-model="processoSelecionado.nome"
+                label="Nome"
+                outlined
+                required
+                :rules="[
+                  (val) => !!val || 'Nome é obrigatório',
+                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
+                ]"
+              />
+              <q-input
+                stack-label
+                :disable="!editandoProcesso"
+                v-model="processoSelecionado.autor"
+                label="Autor"
+                outlined
+                required
+                :rules="[
+                  (val) => !!val || 'Autor é obrigatório',
+                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
+                ]"
+              />
+              <q-input
+                stack-label
+                :disable="!editandoProcesso"
+                v-model="processoSelecionado.reu"
+                label="Réu"
+                outlined
+                required
+                :rules="[
+                  (val) => !!val || 'Réu é obrigatório',
+                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
                 ]"
               />
 
+              <div class="row">
+                <div class="col date-input-left">
+                  <q-input
+                    :disable="!editandoProcesso"
+                    stack-label
+                    label="Prazo de subsídio"
+                    outlined
+                    required
+                    v-model="processoSelecionado.prazoSubsidio"
+                    mask="##/##/####"
+                    :rules="[
+                      (val) => !!val || 'Prazo de subsídio é obrigatório',
+                      (val) => {
+                        const dateParts = val.split('/');
+                        const day = parseInt(dateParts[0]);
+                        const month = parseInt(dateParts[1]);
+                        if (day > 31 || day < 1) {
+                          return 'Dia inválido';
+                        }
+                        if (month > 12 || month < 1) {
+                          return 'Mês inválido';
+                        }
+                        return true;
+                      },
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="processoSelecionado.prazoSubsidio"
+                            mask="DD/MM/YYYY"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+
+                <div class="col date-input-right">
+                  <q-input
+                    :disable="!editandoProcesso"
+                    stack-label
+                    label="Prazo fatal"
+                    outlined
+                    required
+                    v-model="processoSelecionado.prazoFatal"
+                    mask="##/##/####"
+                    :rules="[
+                      (val) => !!val || 'Prazo fatal é obrigatório',
+                      (val) => {
+                        const dateParts = val.split('/');
+                        const day = parseInt(dateParts[0]);
+                        const month = parseInt(dateParts[1]);
+                        if (day > 31 || day < 1) {
+                          return 'Dia inválido';
+                        }
+                        if (month > 12 || month < 1) {
+                          return 'Mês inválido';
+                        }
+                        return true;
+                      },
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="processoSelecionado.prazoFatal"
+                            mask="DD/MM/YYYY"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+
               <q-input
-                v-model="selectedTaskDescription"
-                label="Description"
+                stack-label
+                v-model="processoSelecionado.descricao"
+                label="Descrição"
                 outlined
                 required
-                dense
-                :disable="!isEditingTask"
+                :disable="!editandoProcesso"
                 type="textarea"
-                :hint="isEditingTask ? 'Max 1000 characters' : ''"
+                :hint="editandoProcesso ? 'Max 1000 caracteres' : ''"
                 :rules="[
-                  (val) =>
-                    val.length <= 1000 || 'Please use maximum 1000 characters',
+                  (val) => !!val || 'Descrição é obrigatória',
+                  (val) => val.length <= 1000 || 'Máximo de 1000 caracteres',
                 ]"
               />
 
@@ -149,51 +269,60 @@
                   <div class="left-buttons">
                     <q-btn
                       unelevated
-                      @click="confirmDeleteTask(selectedTask)"
-                      label="Delete task"
+                      @click="confirmaDeletar(processoSelecionado, 'processo')"
+                      label="Deletar Processo"
                       color="black"
                       no-caps
                     />
                   </div>
                   <div class="right-buttons">
                     <q-btn
-                      v-show="!isEditingTask"
+                      v-show="!editandoProcesso"
                       flat
-                      @click="isEditingTask = false"
-                      label="Close"
+                      @click="editandoProcesso = false"
+                      label="Fechar"
                       color="black"
                       no-caps
                       v-close-popup
                     />
                     <q-btn
-                      v-show="isEditingTask"
+                      v-show="editandoProcesso"
                       flat
-                      @click="isEditingTask = false"
-                      label="Cancel"
+                      @click="editandoProcesso = false"
+                      label="Cancelar"
                       color="black"
                       no-caps
                     />
                     <q-btn
-                      v-show="!isEditingTask"
+                      v-show="!editandoProcesso"
                       unelevated
-                      @click="isEditingTask = true"
-                      label="Edit task"
+                      @click="editandoProcesso = true"
+                      label="Editar Processo"
                       color="teal"
                       no-caps
                     />
                     <q-btn
-                      v-show="isEditingTask"
+                      v-show="editandoProcesso"
                       unelevated
-                      @click="saveTask(selectedTask)"
-                      label="Save task"
+                      @click="salvarProcesso(processoSelecionado)"
+                      label="Salvar Processo"
                       color="teal"
                       no-caps
                       :disable="
-                        !selectedTaskName ||
-                        !selectedTaskDescription ||
-                        selectedTaskName.length > 100 ||
-                        selectedTaskDescription.length > 1000 ||
-                        selectedTaskStatus === ''
+                        processoSelecionado.status !== '' &&
+                        processoSelecionado.status !== undefined &&
+                        processoSelecionado.nome !== '' &&
+                        processoSelecionado.nome.length >= 100 &&
+                        processoSelecionado.numero !== '' &&
+                        processoSelecionado.numero.length >= 100 &&
+                        processoSelecionado.autor !== '' &&
+                        processoSelecionado.autor.length >= 100 &&
+                        processoSelecionado.reu !== '' &&
+                        processoSelecionado.reu.length >= 100 &&
+                        processoSelecionado.prazoSubsidio !== '' &&
+                        processoSelecionado.prazoFatal !== '' &&
+                        processoSelecionado.descricao !== '' &&
+                        processoSelecionado.descricao.length >= 1000
                       "
                     />
                   </div>
@@ -209,40 +338,30 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 import QuadroService from "@/services/QuadroService";
+import ProcessoService from "@/services/ProcessoService";
+import { formatDate, formatStatus, formatTextSize } from "@/utils/formatters";
 
 export default defineComponent({
   name: "ListaProcessos",
 
   props: {
-    actualStatus: String,
-    tasks: Array,
+    statusAtual: String,
+    processos: Array,
     quadroId: Number,
-  },
-
-  setup() {
-    const store = useStore();
-    const userRole = store.state.usuario.role;
-
-    return {
-      store,
-      userRole,
-    };
+    userRole: String,
   },
 
   data() {
     return {
-      taskDetailsModalOpen: false,
-      isEditingTask: false,
-      selectedTask: {},
-      selectedTaskName: "",
-      selectedTaskDescription: "",
-      selectedTaskStatus: "",
+      loading: false,
+      modalDetalhesProcessoOpen: false,
+      editandoProcesso: false,
+      processoSelecionado: {},
       pagination: {
         rowsPerPage: 10,
       },
-      taskStatusList: [
+      statusList: [
         {
           label: "Criado",
           value: "CRIADO",
@@ -263,7 +382,7 @@ export default defineComponent({
       columns: [
         {
           name: "details",
-          label: "Detalhes  ",
+          label: "Detalhes",
           align: "left",
         },
         {
@@ -281,15 +400,24 @@ export default defineComponent({
           label: "Nome",
           align: "left",
           field: (row) => row.nome,
-          format: (val) => `${this.formatTextSize(val, 30)}`,
+          format: (val) => `${formatTextSize(val, 30)}`,
           sortable: true,
         },
         {
-          name: "responsavel",
+          name: "autor",
           required: true,
-          label: "Responsável",
+          label: "Autor",
           align: "left",
-          field: (row) => row.responsavel,
+          field: (row) => row.autor,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "reu",
+          required: true,
+          label: "Réu",
+          align: "left",
+          field: (row) => row.reu,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -299,7 +427,7 @@ export default defineComponent({
           label: "Prazo Subsídio",
           align: "left",
           field: (row) => row.prazoSubsidio,
-          format: (val) => `${this.formatTextSize(val, 30)}`,
+          format: (val) => `${formatDate(val)}`,
           sortable: true,
         },
         {
@@ -308,72 +436,74 @@ export default defineComponent({
           label: "Prazo Fatal",
           align: "left",
           field: (row) => row.prazoFatal,
-          format: (val) => `${this.formatTextSize(val, 30)}`,
+          format: (val) => `${formatDate(val)}`,
           sortable: true,
         },
         {
           name: "actions",
           label: "Ações",
-          align: "right",
+          align: "center",
         },
       ],
     };
   },
 
   methods: {
-    changeStatus(task, status) {
-      this.$emit("update-task", {
-        id: task.id,
-        taskName: task.taskName,
-        taskDescription: task.taskDescription,
-        taskStatus: status,
-        projectId: this.projectId,
+    async baixarProcesso(processo) {
+      await ProcessoService.baixarProcesso(processo.id).then((response) => {
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const fileURL = URL.createObjectURL(blob);
+
+        window.open(fileURL, "_blank");
       });
     },
-    saveTask(task) {
-      this.$emit("update-task", {
-        id: task.id,
-        taskName: this.selectedTaskName,
-        taskDescription: this.selectedTaskDescription,
-        taskStatus: this.selectedTaskStatus.value,
-        projectId: this.projectId,
-      });
-      this.isEditingTask = false;
-      this.taskDetailsModalOpen = false;
+    arquivarProcesso(processo) {
+      let processoSelecionado = {
+        ...processo,
+        status: "Arquivado",
+        prazoSubsidio: formatDate(processo.prazoSubsidio),
+        prazoFatal: formatDate(processo.prazoFatal),
+      };
+      this.salvarProcesso(processoSelecionado);
     },
-    confirmDeleteTask(task) {
-      this.$q
-        .dialog({
-          title: "Delete task",
-          message: "Are you sure you want to delete this task?",
-          persistent: true,
-          ok: {
-            label: "Yes",
-            color: "black",
-            noCaps: true,
-          },
-          cancel: {
-            label: "No",
-            color: "black",
-            noCaps: true,
-            flat: true,
-          },
+    async salvarProcesso(processo) {
+      processo.quadroId = this.quadroId;
+      if (typeof processo.status !== "string") {
+        processo.status = processo.status.label;
+      }
+
+      const formData = new FormData();
+
+      formData.append(
+        "processo",
+        new Blob([JSON.stringify(processo)], {
+          type: "application/json",
         })
-        .onOk(() => {
-          this.deleteTask(task);
-        });
-    },
-    confirmaDeletarQuadro(quadroId) {
-      let confirmationMessage = "Tem certeza que deseja excluir este quadro?";
+      );
 
-      if (this.tasks.length > 0)
-        confirmationMessage =
-          "Este quadro possui processos associados à ele. Tem certeza que deseja excluir este quadro?";
+      formData.append(
+        "arquivo",
+        new Blob([processo.arquivo], { type: "application/pdf" })
+      );
+
+      await ProcessoService.salvarProcesso(formData).then(() => {
+        this.$emit("salvar-processo", processo);
+        this.modalDetalhesProcessoOpen = false;
+        this.editandoProcesso = false;
+      });
+    },
+    confirmaDeletar(objeto, tipo) {
+      let title = "Deletar processo";
+      let message = "Tem certeza que deseja excluir este processo?";
+      if (tipo === "quadro") {
+        title = "Deletar quadro";
+        message = "Tem certeza que deseja excluir este quadro?";
+      }
 
       this.$q
         .dialog({
-          title: "Deletar quadro",
-          message: confirmationMessage,
+          title: title,
+          message: message,
           persistent: true,
           ok: {
             label: "Sim",
@@ -388,31 +518,31 @@ export default defineComponent({
           },
         })
         .onOk(() => {
-          this.deletarQuadro(quadroId);
+          if (tipo === "processo") {
+            this.deletarProcesso(objeto);
+          } else {
+            this.deletarQuadro(objeto);
+          }
         });
     },
-    deleteTask(task) {},
+    deletarProcesso(processo) {
+      ProcessoService.deletarProcesso(processo.id).then(() => {
+        this.$emit("deletar-processo");
+      });
+    },
     deletarQuadro(quadroId) {
       QuadroService.deletarQuadro(quadroId).then(() => {
         this.$emit("deletar-quadro");
       });
     },
-    openTaskDetailsModal(task) {
-      this.selectedTask = task;
-      this.selectedTaskName = task.taskName;
-      this.selectedTaskStatus = this.taskStatusList.find(
-        (status) => status.value === task.taskStatus
-      );
-      this.selectedTaskDescription = task.taskDescription;
-      this.taskDetailsModalOpen = true;
-    },
-    formatTaskStatus(taskStatus) {
-      return this.taskStatusList.find((status) => status.value === taskStatus)
-        .label;
-    },
-    formatTextSize(text, limit) {
-      if (!text) return "";
-      return text.length > limit ? text.substring(0, limit) + "..." : text;
+    abrirModalDetalhesProcesso(processo) {
+      this.processoSelecionado = {
+        ...processo,
+        status: formatStatus(this.statusList, processo.status),
+        prazoSubsidio: formatDate(processo.prazoSubsidio),
+        prazoFatal: formatDate(processo.prazoFatal),
+      };
+      this.modalDetalhesProcessoOpen = true;
     },
   },
 });

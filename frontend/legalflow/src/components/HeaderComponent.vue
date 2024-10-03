@@ -12,7 +12,7 @@
       <q-toolbar-title> LegalFlow </q-toolbar-title>
 
       <q-btn
-        v-show="actualQuadroId != null && userRole === 'ADMIN'"
+        v-show="idQuadroAtual != null && userRole === 'ADMIN'"
         v-on:click="this.$emit('abrir-modal-novo-usuario')"
         unelevated
         size="md"
@@ -22,7 +22,7 @@
         color="teal"
       />
       <q-btn
-        v-show="actualQuadroId != null && userRole === 'ADMIN'"
+        v-show="idQuadroAtual != null && userRole === 'ADMIN'"
         v-on:click="this.$emit('abrir-modal-novo-quadro')"
         unelevated
         size="md"
@@ -34,7 +34,7 @@
     </q-toolbar>
 
     <q-tabs align="left" v-model="tabProxy">
-      <q-tab name="CRIADO" label="Criado" v-show="actualQuadroId != null">
+      <q-tab name="CRIADO" label="Criado" v-show="idQuadroAtual != null">
         <q-badge color="teal">
           {{ processosCriados }}
         </q-badge>
@@ -42,7 +42,7 @@
       <q-tab
         name="EM_PROGRESSO"
         label="Em Progresso"
-        v-show="actualQuadroId != null"
+        v-show="idQuadroAtual != null"
       >
         <q-badge color="teal">
           {{ processosEmProgresso }}
@@ -51,13 +51,13 @@
       <q-tab
         name="FINALIZADO"
         label="Finalizado"
-        v-show="actualQuadroId != null"
+        v-show="idQuadroAtual != null"
       >
         <q-badge color="teal">
           {{ processosFinalizados }}
         </q-badge>
       </q-tab>
-      <q-tab name="ARQUIVADO" label="Arquivado" v-show="actualQuadroId != null">
+      <q-tab name="ARQUIVADO" label="Arquivado" v-show="idQuadroAtual != null">
         <q-badge color="teal">
           {{ processosArquivados }}
         </q-badge>
@@ -88,7 +88,7 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
-    actualQuadroId: Number,
+    idQuadroAtual: Number,
     userRole: String,
   },
 

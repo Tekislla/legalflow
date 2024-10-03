@@ -9,6 +9,7 @@ public class ProcessoRequestDTO {
     private Long quadroId;
     private String nome;
     private String numero;
+    private String status;
     private String autor;
     private String reu;
     private String descricao;

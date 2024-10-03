@@ -3,7 +3,7 @@
     class="list-item"
     clickable
     @click="this.$emit('set-quadro', quadro.id)"
-    :focused="quadro.id === this.actualQuadroId"
+    :focused="quadro.id === this.idQuadroAtual"
   >
     <q-item-section>
       <q-item-label>{{ quadro.nome }}</q-item-label>
@@ -23,7 +23,7 @@ export default defineComponent({
 
   props: {
     quadro: Object,
-    actualQuadroId: Number,
+    idQuadroAtual: Number,
   },
 });
 </script>

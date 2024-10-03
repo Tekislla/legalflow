@@ -9,6 +9,7 @@ import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.ProcessoService;
 import br.com.legalflow.service.QuadroService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,19 @@ public class ProcessoController extends BaseController {
             Processo processo = processoService.saveProcesso(dto, arquivo.getBytes());
 
             return ResponseEntity.ok(processo);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadProcesso(@PathVariable Long id) {
+        try {
+            Processo processo = processoService.findById(id);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + processo.getNumero() + ".pdf\"")
+                    .body(processo.getArquivo());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
