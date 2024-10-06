@@ -15,7 +15,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item class="list-label" clickable @click="idQuadroAtual = null">
+        <q-item class="list-label" clickable @click="redirectHome()">
           <q-item-section avatar> Home </q-item-section>
         </q-item>
         <q-expansion-item class="list-label" label="Quadros">
@@ -53,7 +53,11 @@
           v-show="this.userRole === 'ADMIN'"
           class="list-label"
         >
-          <q-item clickable @click="abrirModalNovoUsuario()" class="list-item">
+          <q-item
+            clickable
+            @click="redirectListagemUsuarios()"
+            class="list-item"
+          >
             <q-item-section>
               <q-item-label>Gestão de usuários</q-item-label>
               <q-item-label caption>Criar ou excluir usuários</q-item-label>
@@ -126,8 +130,11 @@
 
       <router-view
         v-show="this.idQuadroAtual === null"
+        :user-role="userRole"
+        :usuarios="this.usuarios"
         @abrir-modal-novo-quadro="abrirModalNovoQuadro()"
         @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
+        @deletar-usuario="onUsuarioDelete()"
       />
 
       <modal-novo-processo
@@ -160,7 +167,6 @@ import ListaQuadros from "@/components/ListaQuadros.vue";
 import ListaProcessos from "@/pages/ListaProcessos.vue";
 import UsuarioService from "@/services/UsuarioService";
 import QuadroService from "@/services/QuadroService";
-import ProcessoService from "@/services/ProcessoService";
 import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
@@ -209,8 +215,17 @@ export default defineComponent({
     fetch() {
       this.getUsuarioInfo();
     },
+    redirectHome() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/" });
+    },
+    redirectListagemUsuarios() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/usuarios" });
+    },
     setQuadro(quadro) {
       this.limparProcessos();
+      this.$router.push({ path: "/" });
       this.idQuadroAtual = quadro.id;
       this.processos = quadro.processos;
       quadro.processos.forEach((processo) => {
@@ -285,6 +300,10 @@ export default defineComponent({
     onQuadroDelete() {
       this.returnFeedbackMessage("Quadro deletado com sucesso!");
       this.idQuadroAtual = null;
+      this.fetch();
+    },
+    onUsuarioDelete() {
+      this.returnFeedbackMessage("Usuário deletado com sucesso!");
       this.fetch();
     },
     toggleLeftDrawer() {

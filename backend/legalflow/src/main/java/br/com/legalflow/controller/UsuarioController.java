@@ -3,6 +3,7 @@ package br.com.legalflow.controller;
 import br.com.legalflow.controller.base.BaseController;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.enums.RoleEnum;
+import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
 import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,6 @@ public class UsuarioController extends BaseController {
 
     @Autowired
     private UsuarioService usuarioService;
-    @Autowired
-    private OrganizacaoService organizacaoService;
-
 
     @GetMapping("/")
     public ResponseEntity<?> getUsuarioInfo() {
@@ -35,6 +33,24 @@ public class UsuarioController extends BaseController {
             }
 
             return ResponseEntity.ok(usuarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {
+        try {
+            Usuario usuarioLogado = getUsuarioLogado();
+
+            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+                throw new UsuarioNaoAutorizadoException();
+            }
+
+            Usuario usuario = usuarioService.findById(id);
+            usuarioService.excluirUsuario(usuario);
+
+            return ResponseEntity.ok("Usuário excluído com sucesso");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

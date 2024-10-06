@@ -5,6 +5,7 @@ import br.com.legalflow.dto.request.ProcessoRequestDTO;
 import br.com.legalflow.entity.Processo;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.enums.RoleEnum;
+import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
 import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.ProcessoService;
 import br.com.legalflow.service.QuadroService;
@@ -56,7 +57,7 @@ public class ProcessoController extends BaseController {
             Usuario usuarioLogado = getUsuarioLogado();
 
             if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
-                throw new Exception("Você não tem permissão para deletar este processo");
+                throw new UsuarioNaoAutorizadoException();
             }
 
             processoService.deleteById(id);
@@ -67,4 +68,30 @@ public class ProcessoController extends BaseController {
         }
     }
 
+    @GetMapping("/total/{organizacaoId}")
+    public ResponseEntity<?> countProcessosByOrganizacao(@PathVariable Long organizacaoId) {
+        try {
+            return ResponseEntity.ok(processoService.countProcessosByOrganizacao(organizacaoId));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/a-vencer/subsidio/{organizacaoId}")
+    public ResponseEntity<?> findProcessosAVencerByPrazoSubsidio(@PathVariable Long organizacaoId) {
+        try {
+            return ResponseEntity.ok(processoService.findProcessosAVencerByPrazoSubsidio(organizacaoId));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/a-vencer/fatal/{organizacaoId}")
+    public ResponseEntity<?> findProcessosAVencerByPrazoFatal(@PathVariable Long organizacaoId) {
+        try {
+            return ResponseEntity.ok(processoService.findProcessosAVencerByPrazoFatal(organizacaoId));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
 }

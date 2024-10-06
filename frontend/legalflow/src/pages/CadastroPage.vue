@@ -46,6 +46,7 @@
           :type="isPwd ? 'password' : 'text'"
           label="Senha"
           required
+          v-on:keyup.enter="cadastrar"
         >
           <template v-slot:append>
             <q-icon

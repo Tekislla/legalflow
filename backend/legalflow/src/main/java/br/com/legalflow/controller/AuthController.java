@@ -49,15 +49,4 @@ public class AuthController extends BaseController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> userInfo() {
-        try {
-           Usuario usuario = getUsuarioLogado();
-            return ResponseEntity.ok(usuario.getId());
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
-
-
 }

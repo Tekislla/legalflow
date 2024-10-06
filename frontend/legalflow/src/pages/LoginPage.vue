@@ -11,8 +11,9 @@
           outlined
           required
           v-model="email"
-          label="Email"
+          label="E-mail"
           type="email"
+          v-on:keyup.enter="login"
         />
         <br />
         <q-input
@@ -21,6 +22,7 @@
           v-model="senha"
           label="Senha"
           :type="isPwd ? 'password' : 'text'"
+          v-on:keyup.enter="login"
         >
           <template v-slot:append>
             <q-icon

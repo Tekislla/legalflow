@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,15 +30,8 @@ public class Usuario {
     private Date dataAtualizacao;
     private boolean ativo;
     private String role;
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Quadro> quadros;
-
-    @Override
-    public String toString() {
-        return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email
-                + ", senhaCrypto=" + senhaCrypto + ", dataCadastro=" + dataCadastro + ", dataAtualizacao="
-                + dataAtualizacao + " , ativo=" + ativo + ", role=" + role + "]";
-    }
-
+    private List<Quadro> quadros = new ArrayList<>();
 }

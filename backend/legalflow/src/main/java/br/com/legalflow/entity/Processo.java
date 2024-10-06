@@ -27,10 +27,4 @@ public class Processo {
     private Date prazoSubsidio;
     private Date prazoFatal;
     private byte[] arquivo;
-
-    @Override
-    public String toString() {
-        return "Processo [id=" + id + ", nome=" + nome + ", numero=" + numero + ", autor=" + autor + ", reu=" + reu + ", descricao=" + descricao + ", status=" + status
-                + ", prazoSubsidio=" + prazoSubsidio + ", prazoFatal=" + prazoFatal + "]";
-    }
 }

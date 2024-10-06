@@ -8,6 +8,11 @@ const routes = [
         component: () => import("pages/IndexPage.vue"),
         meta: { requiresAuth: true },
       },
+      {
+        path: "usuarios",
+        component: () => import("pages/ListagemUsuarios.vue"),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

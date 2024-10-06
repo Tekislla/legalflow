@@ -9,7 +9,7 @@
       <q-item-label>{{ quadro.nome }}</q-item-label>
       <q-item-label caption>Responsável: {{ quadro.responsavel }}</q-item-label>
       <q-item-label class="text-teal" caption>
-        {{ quadro.processos.length }} processos em aberto
+        {{ processosEmAberto }} processos em aberto
       </q-item-label>
     </q-item-section>
   </q-item>
@@ -24,6 +24,7 @@ export default defineComponent({
   props: {
     quadro: Object,
     idQuadroAtual: Number,
+    processosEmAberto: Number,
   },
 });
 </script>

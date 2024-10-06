@@ -8,6 +8,7 @@ import br.com.legalflow.exception.organizacao.OrganizacaoNaoEncontradaException;
 import br.com.legalflow.exception.quadro.QuadroNaoEncontradoException;
 import br.com.legalflow.exception.usuario.UsuarioNaoEncontradoException;
 import br.com.legalflow.repository.OrganizacaoRepository;
+import br.com.legalflow.repository.ProcessoRepository;
 import br.com.legalflow.repository.QuadroRepository;
 import br.com.legalflow.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class QuadroService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private OrganizacaoRepository organizacaoRepository;
+
+    @Autowired
+    private ProcessoService processoService;
 
     public Quadro saveQuadro(QuadroRequestDTO dto) {
             Quadro quadro = new Quadro();
@@ -63,7 +67,11 @@ public class QuadroService {
         return quadroRepository.findByOrganizacaoId(organizacaoId);
     }
 
-    public void deleteById(Long id) {
-        quadroRepository.deleteById(id);
+    public void deletarQuadro(Quadro quadro) {
+        for (var processo : quadro.getProcessos()) {
+            processoService.deleteById(processo.getId());
+        }
+
+        quadroRepository.deleteById(quadro.getId());
     }
 }

@@ -25,6 +25,9 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private QuadroService quadroService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public Usuario cadastrarUsuario(CadastroRequestDTO dto, Organizacao organizacao) {
@@ -83,8 +86,12 @@ public class UsuarioService {
         return usuarioRepository.findByOrganizacaoId(id);
     }
 
-    public void deleteById(Long id) {
-        usuarioRepository.deleteById(id);
+    public void excluirUsuario(Usuario usuario) {
+        for (var quadro : usuario.getQuadros()) {
+            quadroService.deletarQuadro(quadro);
+        }
+
+        usuarioRepository.deleteById(usuario.getId());
     }
 
     public void ativaDesativaUsuario(Long id, boolean ativo) {

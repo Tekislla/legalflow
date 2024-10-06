@@ -41,8 +41,8 @@ public class ProcessoService {
             throw new QuadroNaoEncontradoException(dto.getQuadroId());
         }
 
-        Date prazoSubsidio = DateUtils.parseDate(dto.getPrazoSubsidio(), "dd/MM/yyyy");
-        Date prazoFatal = DateUtils.parseDate(dto.getPrazoFatal(), "dd/MM/yyyy");
+        Date prazoSubsidio = DateUtils.getDataFormatada(dto.getPrazoSubsidio(), "dd/MM/yyyy");
+        Date prazoFatal = DateUtils.getDataFormatada(dto.getPrazoFatal(), "dd/MM/yyyy");
         ProcessoStatusEnum status = ProcessoStatusEnum.getProcessoStatusEnum(dto.getStatus());
 
         processo.setQuadro(quadroOpt.get());
@@ -64,8 +64,18 @@ public class ProcessoService {
         return processoRepository.findById(id).orElseThrow(() -> new ProcessoNaoEncontradoException(id));
     }
 
-    public List<Processo> findByQuadroId(Long quadroId) {
-        return processoRepository.findByQuadroId(quadroId);
+    public long countProcessosByOrganizacao(Long quadroId) {
+        return processoRepository.countByQuadroOrganizacaoId(quadroId);
+    }
+
+    public List<Processo> findProcessosAVencerByPrazoSubsidio(Long organizacaoId) {
+        Date prazo = DateUtils.getDataSomandoDias(7);
+        return processoRepository.findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqual(organizacaoId, prazo);
+    }
+
+    public List<Processo> findProcessosAVencerByPrazoFatal(Long organizacaoId) {
+        Date prazo = DateUtils.getDataSomandoDias(7);
+        return processoRepository.findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqual(organizacaoId, prazo);
     }
 
     public void deleteById(Long id) {

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,12 +26,8 @@ public class Quadro {
     @JoinColumn(name = "organizacao_id")
     private Organizacao organizacao;
     @JsonManagedReference
+    @ToString.Exclude
     @OneToMany(mappedBy = "quadro", cascade = CascadeType.ALL)
-    private List<Processo> processos;
+    private List<Processo> processos = new ArrayList<>();;
     private String nome;
-
-    @Override
-    public String toString() {
-        return "Quadro [id=" + id + ", nome=" + nome + "]";
-    }
 }
