@@ -132,9 +132,11 @@
         v-show="this.idQuadroAtual === null"
         :user-role="userRole"
         :usuarios="this.usuarios"
+        :email-usuario-logado="emailUsuarioLogado"
         @abrir-modal-novo-quadro="abrirModalNovoQuadro()"
         @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
         @deletar-usuario="onUsuarioDelete()"
+        @editar-usuario="onUsuarioEdit()"
       />
 
       <modal-novo-processo
@@ -175,10 +177,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const userRole = store.state.usuario.role;
+    const emailUsuarioLogado = store.state.usuario.email;
 
     return {
       store,
       userRole,
+      emailUsuarioLogado,
     };
   },
 
@@ -220,8 +224,8 @@ export default defineComponent({
       this.$router.push({ path: "/" });
     },
     redirectListagemUsuarios() {
-      this.idQuadroAtual = null;
       this.$router.push({ path: "/usuarios" });
+      this.idQuadroAtual = null;
     },
     setQuadro(quadro) {
       this.limparProcessos();
@@ -304,6 +308,10 @@ export default defineComponent({
     },
     onUsuarioDelete() {
       this.returnFeedbackMessage("Usuário deletado com sucesso!");
+      this.fetch();
+    },
+    onUsuarioEdit() {
+      this.returnFeedbackMessage("Usuário editado com sucesso!");
       this.fetch();
     },
     toggleLeftDrawer() {

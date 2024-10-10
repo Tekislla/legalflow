@@ -1,6 +1,7 @@
 package br.com.legalflow.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,5 +27,6 @@ public class Processo {
     private String status;
     private Date prazoSubsidio;
     private Date prazoFatal;
+    @JsonIgnore
     private byte[] arquivo;
 }

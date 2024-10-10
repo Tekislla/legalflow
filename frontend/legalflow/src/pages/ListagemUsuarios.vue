@@ -30,7 +30,7 @@
                     size="md"
                     round
                     icon="open_in_new"
-                    @click="showUsuarios()"
+                    @click="abrirmodalDetalhesUsuario(props.row)"
                   >
                   </q-btn>
                 </q-btn-group>
@@ -40,18 +40,33 @@
               <q-td :props="props" auto-width>
                 <q-btn-group unelevated>
                   <q-btn
+                    v-show="
+                      props.row.ativo && props.row.email !== emailUsuarioLogado
+                    "
                     size="md"
                     round
                     icon="person_remove"
-                    @click="baixarProcesso(props.row)"
+                    @click="confirmaAcao(props.row, 'desativar')"
                   >
                     <q-tooltip>Desativar usuário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-show="
+                      !props.row.ativo && props.row.email !== emailUsuarioLogado
+                    "
+                    size="md"
+                    round
+                    icon="person_add"
+                    @click="confirmaAcao(props.row, 'ativar')"
+                  >
+                    <q-tooltip>Ativar usuário</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-show="props.row.email !== emailUsuarioLogado"
                     size="md"
                     round
                     icon="person_off"
-                    @click="confirmaDeletar(props.row.id)"
+                    @click="confirmaAcao(props.row, 'deletar')"
                   >
                     <q-tooltip>Excluir usuário</q-tooltip>
                   </q-btn>
@@ -68,132 +83,110 @@
             <div class="col-6">
               <div class="text-h6">Detalhes</div>
             </div>
-            <div class="col-6 text-right">
-              <q-select
-                stack-label
-                v-model="usuarioSelecionado.status"
-                :options="statusList"
-                label="Status"
-                outlined
-                required
-                :disable="!editandoUsuario"
-                :rules="[(val) => !!val || 'Status é obrigatório']"
-              />
-            </div>
           </q-card-section>
 
           <q-card-section>
             <div class="q-gutter-md">
               <q-input
                 stack-label
-                :disable="!editandoUsuario"
-                v-model="usuarioSelecionado.nome"
-                label="Número do processo"
-                outlined
-                required
-                :rules="[
-                  (val) => !!val || 'Número do processo é obrigatório',
-                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
-                ]"
-              />
-              <q-input
-                stack-label
-                :disable="!editandoUsuario"
+                disable
                 v-model="usuarioSelecionado.nome"
                 label="Nome"
                 outlined
                 required
-                :rules="[
-                  (val) => !!val || 'Nome é obrigatório',
-                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
-                ]"
               />
               <q-input
                 stack-label
-                :disable="!editandoUsuario"
-                v-model="usuarioSelecionado.nome"
-                label="Autor"
-                outlined
-                required
-                :rules="[
-                  (val) => !!val || 'Autor é obrigatório',
-                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
-                ]"
-              />
-              <q-input
-                stack-label
-                :disable="!editandoUsuario"
+                disable
                 v-model="usuarioSelecionado.email"
-                label="Réu"
+                label="E-mail"
                 outlined
                 required
-                :rules="[
-                  (val) => !!val || 'Réu é obrigatório',
-                  (val) => val.length <= 100 || 'Máximo de 100 caracteres',
-                ]"
               />
-
               <q-input
                 stack-label
-                v-model="usuarioSelecionado.nome"
-                label="Descrição"
+                v-model="usuarioSelecionado.senha"
+                label="Senha"
                 outlined
                 required
-                :disable="!editandoUsuario"
-                type="textarea"
-                :hint="editandoUsuario ? 'Max 1000 caracteres' : ''"
+                :type="showPwd ? 'text' : 'password'"
                 :rules="[
-                  (val) => !!val || 'Descrição é obrigatória',
-                  (val) => val.length <= 1000 || 'Máximo de 1000 caracteres',
+                  (val) => val.length <= 20 || 'Máximo de 20 caracteres',
+                  (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
                 ]"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showPwd ? 'visibility' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="showPwd = !showPwd"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                stack-label
+                v-model="usuarioSelecionado.confirmaSenha"
+                label="Confirme a senha"
+                outlined
+                required
+                :type="showPwd ? 'text' : 'password'"
+                :rules="[
+                  (val) =>
+                    val === usuarioSelecionado.senha ||
+                    'As senhas não conferem',
+                  (val) => val.length <= 20 || 'Máximo de 20 caracteres',
+                  (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
+                ]"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showPwd ? 'visibility' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="showPwd = !showPwd"
+                  />
+                </template>
+              </q-input>
+
+              <q-select
+                v-model="usuarioSelecionado.role"
+                :options="roles"
+                label="Role"
+                outlined
+                required
+                dense
+                :disable="usuarioSelecionado.email === emailUsuarioLogado"
               />
 
-              <q-card-actions>
-                <div class="flex-container">
-                  <div class="left-buttons">
-                    <q-btn
-                      unelevated
-                      @click="confirmaDeletar(usuarioSelecionado, 'processo')"
-                      label="Deletar Processo"
-                      color="black"
-                      no-caps
-                    />
-                  </div>
-                  <div class="right-buttons">
-                    <q-btn
-                      v-show="!editandoUsuario"
-                      flat
-                      @click="editandoUsuario = false"
-                      label="Fechar"
-                      color="black"
-                      no-caps
-                      v-close-popup
-                    />
-                    <q-btn
-                      v-show="editandoUsuario"
-                      flat
-                      @click="editandoUsuario = false"
-                      label="Cancelar"
-                      color="black"
-                      no-caps
-                    />
-                    <q-btn
-                      v-show="!editandoUsuario"
-                      unelevated
-                      @click="editandoUsuario = true"
-                      label="Editar Processo"
-                      color="teal"
-                      no-caps
-                    />
-                    <q-btn
-                      v-show="editandoUsuario"
-                      unelevated
-                      label="Salvar Processo"
-                      color="teal"
-                      no-caps
-                    />
-                  </div>
-                </div>
+              <q-card-actions align="right">
+                <q-btn
+                  v-show="!editandoUsuario"
+                  flat
+                  @click="editandoUsuario = false"
+                  label="Fechar"
+                  color="black"
+                  no-caps
+                  v-close-popup
+                />
+                <q-btn
+                  v-show="!editandoUsuario"
+                  unelevated
+                  @click="editarUsuario(usuarioSelecionado)"
+                  label="Alterar senha"
+                  color="teal"
+                  no-caps
+                  :disable="
+                    (usuarioSelecionado.senha != '' &&
+                      usuarioSelecionado.senha.length < 5) ||
+                    (usuarioSelecionado.senha != '' &&
+                      usuarioSelecionado.senha.length > 20) ||
+                    (usuarioSelecionado.confirmaSenha != '' &&
+                      usuarioSelecionado.confirmaSenha.length < 5) ||
+                    (usuarioSelecionado.confirmaSenha != '' &&
+                      usuarioSelecionado.confirmaSenha.length > 20) ||
+                    usuarioSelecionado.senha !==
+                      usuarioSelecionado.confirmaSenha
+                  "
+                />
               </q-card-actions>
             </div>
           </q-card-section>
@@ -206,7 +199,11 @@
 <script>
 import { defineComponent } from "vue";
 import UsuarioService from "@/services/UsuarioService";
-import { formatDate } from "@/utils/formatters";
+import {
+  formatDate,
+  formatUserRole,
+  formatUserStatus,
+} from "@/utils/formatters";
 
 export default defineComponent({
   name: "ListagemUsuarios",
@@ -214,17 +211,20 @@ export default defineComponent({
   props: {
     userRole: String,
     usuarios: Array,
+    emailUsuarioLogado: String,
   },
 
   data() {
     return {
       loading: false,
+      showPwd: false,
       modalDetalhesUsuarioOpen: false,
       editandoUsuario: false,
       usuarioSelecionado: {},
       pagination: {
         rowsPerPage: 10,
       },
+      roles: ["Administrador", "Usuário"],
       columns: [
         {
           name: "details",
@@ -255,7 +255,7 @@ export default defineComponent({
           label: "Role",
           align: "left",
           field: (row) => row.role,
-          format: (val) => `${val}`,
+          format: (val) => `${formatUserRole(val)}`,
           sortable: true,
         },
         {
@@ -264,7 +264,7 @@ export default defineComponent({
           label: "Ativo",
           align: "left",
           field: (row) => row.ativo,
-          format: (val) => `${val}`,
+          format: (val) => `${formatUserStatus(val)}`,
           sortable: true,
         },
         {
@@ -295,10 +295,25 @@ export default defineComponent({
   },
 
   methods: {
-    confirmaDeletar(objeto) {
-      const title = "Deletar usuário";
-      const message =
-        "Tem certeza que deseja excluir este usuário? TODOS os quadros e processos associados a ele serão PERMANENTEMENTE EXCLUÍDOS!";
+    confirmaAcao(usuario, acao) {
+      let title = "";
+      let message = "";
+
+      switch (acao) {
+        case "desativar":
+          title = "Desativar usuário";
+          message = "Tem certeza que deseja desativar este usuário?";
+          break;
+        case "ativar":
+          title = "Ativar usuário";
+          message = "Tem certeza que deseja ativar este usuário?";
+          break;
+        default:
+          title = "Deletar usuário";
+          message =
+            "Tem certeza que deseja excluir este usuário? TODOS os quadros e processos associados a ele serão PERMANENTEMENTE EXCLUÍDOS!";
+          break;
+      }
 
       this.$q
         .dialog({
@@ -318,7 +333,17 @@ export default defineComponent({
           },
         })
         .onOk(() => {
-          this.deletarUsuario(objeto);
+          switch (acao) {
+            case "desativar":
+              this.ativarDesativarUsuario(usuario, false);
+              break;
+            case "ativar":
+              this.ativarDesativarUsuario(usuario, true);
+              break;
+            default:
+              this.deletarUsuario(usuario);
+              break;
+          }
         });
     },
     deletarUsuario(usuario) {
@@ -326,17 +351,35 @@ export default defineComponent({
         this.$emit("deletar-usuario");
       });
     },
-    abrirmodalDetalhesUsuario(processo) {
+    ativarDesativarUsuario(usuario, condicao) {
+      UsuarioService.editarUsuario({
+        id: usuario.id,
+        ativo: condicao,
+        administrador: usuario.role === "ADMIN",
+      }).then(() => {
+        this.$emit("editar-usuario");
+      });
+    },
+    editarUsuario(usuarioSelecionado) {
+      const usuario = {
+        id: usuarioSelecionado.id,
+        senha: usuarioSelecionado.senha || null,
+        ativo: usuarioSelecionado.ativo,
+        administrador: usuarioSelecionado.role === "Administrador",
+      };
+      UsuarioService.editarUsuario(usuario).then(() => {
+        this.$emit("editar-usuario");
+        this.modalDetalhesUsuarioOpen = false;
+      });
+    },
+    abrirmodalDetalhesUsuario(usuario) {
       this.usuarioSelecionado = {
-        ...processo,
-        status: formatStatus(this.statusList, processo.status),
-        prazoSubsidio: formatDate(processo.prazoSubsidio),
-        prazoFatal: formatDate(processo.prazoFatal),
+        ...usuario,
+        senha: "",
+        confirmaSenha: "",
+        role: formatUserRole(usuario.role),
       };
       this.modalDetalhesUsuarioOpen = true;
-    },
-    showUsuarios() {
-      console.log(this.usuarios);
     },
   },
 });
