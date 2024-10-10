@@ -1,6 +1,7 @@
 package br.com.legalflow.controller;
 
 import br.com.legalflow.controller.base.BaseController;
+import br.com.legalflow.dto.request.EditarUsuarioRequestDTO;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
@@ -33,6 +34,23 @@ public class UsuarioController extends BaseController {
             }
 
             return ResponseEntity.ok(usuarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<?> editarUsuario(@RequestBody EditarUsuarioRequestDTO editarUsuarioRequestDTO) {
+        try {
+            Usuario usuarioLogado = getUsuarioLogado();
+
+            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+                throw new UsuarioNaoAutorizadoException();
+            }
+
+            Usuario usuario = usuarioService.editarUsuario(editarUsuarioRequestDTO);
+
+            return ResponseEntity.ok(usuario);
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

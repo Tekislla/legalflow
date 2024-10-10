@@ -15,7 +15,8 @@
             required
             dense
             :rules="[
-              (val) => val.length <= 100 || 'Please use maximum 100 characters',
+              (val) => val.length <= 20 || 'Máximo de 50 caracteres',
+              (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
             ]"
           />
           <q-input
@@ -36,7 +37,8 @@
             required
             dense
             :rules="[
-              (val) => val.length <= 100 || 'Please use maximum 100 characters',
+              (val) => val.length <= 20 || 'Máximo de 20 caracteres',
+              (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
             ]"
           />
 
@@ -60,8 +62,12 @@
               color="teal"
               :disable="
                 form.nome === '' ||
+                form.nome.length < 5 ||
+                form.nome.length > 50 ||
                 form.email === '' ||
                 form.senha === '' ||
+                form.senha.length < 5 ||
+                form.senha.length > 20 ||
                 form.role === ''
               "
             />

@@ -12,3 +12,11 @@ export const formatTextSize = (text, limit) => {
   if (!text) return "";
   return text.length > limit ? text.substring(0, limit) + "..." : text;
 };
+
+export const formatUserRole = (role) => {
+  return role === "ADMIN" ? "Administrador" : "Usuário";
+};
+
+export const formatUserStatus = (status) => {
+  return status === true ? "Sim" : "Não";
+};

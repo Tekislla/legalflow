@@ -65,8 +65,10 @@ public class UsuarioService {
         //     throw new RuntimeException("A senha inserida não coincide com a atual");
         // }
 
-        usuario.setNome(dto.getNome());
-        usuario.setSenhaCrypto(passwordEncoder.encode(dto.getNovaSenha()));
+        if (dto.getSenha() != null) {
+            usuario.setSenhaCrypto(passwordEncoder.encode(dto.getSenha()));
+        }
+
         usuario.setDataAtualizacao(new Date());
         usuario.setAtivo(dto.isAtivo());
         usuario.setRole(RoleEnum.getRole(dto.isAdministrador()).toString());

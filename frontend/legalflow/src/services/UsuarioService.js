@@ -5,6 +5,10 @@ class UsuarioService {
     return axios.get("/usuario/");
   }
 
+  editarUsuario(usuario) {
+    return axios.put("/usuario/", usuario);
+  }
+
   excluirUsuario(id) {
     return axios.delete(`/usuario/${id}`);
   }
