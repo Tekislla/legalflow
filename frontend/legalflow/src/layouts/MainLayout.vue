@@ -132,6 +132,7 @@
         v-show="this.idQuadroAtual === null"
         :user-role="userRole"
         :usuarios="this.usuarios"
+        :email-usuario-logado="emailUsuarioLogado"
         @abrir-modal-novo-quadro="abrirModalNovoQuadro()"
         @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
         @deletar-usuario="onUsuarioDelete()"
@@ -176,10 +177,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const userRole = store.state.usuario.role;
+    const emailUsuarioLogado = store.state.usuario.email;
 
     return {
       store,
       userRole,
+      emailUsuarioLogado,
     };
   },
 

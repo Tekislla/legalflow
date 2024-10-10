@@ -40,7 +40,9 @@
               <q-td :props="props" auto-width>
                 <q-btn-group unelevated>
                   <q-btn
-                    v-show="props.row.ativo"
+                    v-show="
+                      props.row.ativo && props.row.email !== emailUsuarioLogado
+                    "
                     size="md"
                     round
                     icon="person_remove"
@@ -49,7 +51,9 @@
                     <q-tooltip>Desativar usuário</q-tooltip>
                   </q-btn>
                   <q-btn
-                    v-show="!props.row.ativo"
+                    v-show="
+                      !props.row.ativo && props.row.email !== emailUsuarioLogado
+                    "
                     size="md"
                     round
                     icon="person_add"
@@ -58,6 +62,7 @@
                     <q-tooltip>Ativar usuário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-show="props.row.email !== emailUsuarioLogado"
                     size="md"
                     round
                     icon="person_off"
@@ -106,7 +111,6 @@
                 required
                 :type="showPwd ? 'text' : 'password'"
                 :rules="[
-                  (val) => !!val || 'Senha é obrigatória',
                   (val) => val.length <= 20 || 'Máximo de 20 caracteres',
                   (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
                 ]"
@@ -127,7 +131,6 @@
                 required
                 :type="showPwd ? 'text' : 'password'"
                 :rules="[
-                  (val) => !!val || 'Confirme a senha',
                   (val) =>
                     val === usuarioSelecionado.senha ||
                     'As senhas não conferem',
@@ -151,6 +154,7 @@
                 outlined
                 required
                 dense
+                :disable="usuarioSelecionado.email === emailUsuarioLogado"
               />
 
               <q-card-actions align="right">
@@ -171,12 +175,14 @@
                   color="teal"
                   no-caps
                   :disable="
-                    !usuarioSelecionado.senha ||
-                    usuarioSelecionado.senha.length < 5 ||
-                    usuarioSelecionado.senha.length > 20 ||
-                    !usuarioSelecionado.confirmaSenha ||
-                    usuarioSelecionado.confirmaSenha.length < 5 ||
-                    usuarioSelecionado.confirmaSenha.length > 20 ||
+                    (usuarioSelecionado.senha != '' &&
+                      usuarioSelecionado.senha.length < 5) ||
+                    (usuarioSelecionado.senha != '' &&
+                      usuarioSelecionado.senha.length > 20) ||
+                    (usuarioSelecionado.confirmaSenha != '' &&
+                      usuarioSelecionado.confirmaSenha.length < 5) ||
+                    (usuarioSelecionado.confirmaSenha != '' &&
+                      usuarioSelecionado.confirmaSenha.length > 20) ||
                     usuarioSelecionado.senha !==
                       usuarioSelecionado.confirmaSenha
                   "
@@ -205,6 +211,7 @@ export default defineComponent({
   props: {
     userRole: String,
     usuarios: Array,
+    emailUsuarioLogado: String,
   },
 
   data() {
