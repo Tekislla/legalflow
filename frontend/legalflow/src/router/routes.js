@@ -9,8 +9,18 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: "processos",
+        component: () => import("pages/ListagemProcessos.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
         path: "usuarios",
         component: () => import("pages/ListagemUsuarios.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "dashboard",
+        component: () => import("pages/DashboardPage.vue"),
         meta: { requiresAuth: true },
       },
     ],

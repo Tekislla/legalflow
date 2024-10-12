@@ -189,7 +189,7 @@
               color="black"
               no-caps
               v-close-popup
-              @click="clearForm"
+              @click="clearForm()"
             />
             <q-btn
               @click="submitFormNovoProcesso()"
@@ -270,7 +270,7 @@ export default defineComponent({
       this.clearForm();
     },
     clearForm() {
-      this.novoProcesso = {
+      this.processo = {
         nome: "",
         numero: "",
         autor: "",

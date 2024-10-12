@@ -497,7 +497,8 @@ export default defineComponent({
       let message = "Tem certeza que deseja excluir este processo?";
       if (tipo === "quadro") {
         title = "Deletar quadro";
-        message = "Tem certeza que deseja excluir este quadro?";
+        message =
+          "Tem certeza que deseja excluir este quadro? TODOS os processos associados à ele serão excluídos.";
       }
 
       this.$q
@@ -528,6 +529,7 @@ export default defineComponent({
     deletarProcesso(processo) {
       ProcessoService.deletarProcesso(processo.id).then(() => {
         this.$emit("deletar-processo");
+        this.modalDetalhesProcessoOpen = false;
       });
     },
     deletarQuadro(quadroId) {

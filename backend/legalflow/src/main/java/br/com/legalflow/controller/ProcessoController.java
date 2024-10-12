@@ -68,30 +68,13 @@ public class ProcessoController extends BaseController {
         }
     }
 
-    @GetMapping("/total/{organizacaoId}")
-    public ResponseEntity<?> countProcessosByOrganizacao(@PathVariable Long organizacaoId) {
+    @GetMapping("/dashboard/{organizacaoId}")
+    public ResponseEntity<?> getDashboardInfo(@PathVariable Long organizacaoId) {
         try {
-            return ResponseEntity.ok(processoService.countProcessosByOrganizacao(organizacaoId));
+            return ResponseEntity.ok(processoService.getDashboardInfo(organizacaoId));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-
-    @GetMapping("/a-vencer/subsidio/{organizacaoId}")
-    public ResponseEntity<?> findProcessosAVencerByPrazoSubsidio(@PathVariable Long organizacaoId) {
-        try {
-            return ResponseEntity.ok(processoService.findProcessosAVencerByPrazoSubsidio(organizacaoId));
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/a-vencer/fatal/{organizacaoId}")
-    public ResponseEntity<?> findProcessosAVencerByPrazoFatal(@PathVariable Long organizacaoId) {
-        try {
-            return ResponseEntity.ok(processoService.findProcessosAVencerByPrazoFatal(organizacaoId));
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
+    
 }

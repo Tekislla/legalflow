@@ -153,7 +153,6 @@
                 label="Role"
                 outlined
                 required
-                dense
                 :disable="usuarioSelecionado.email === emailUsuarioLogado"
               />
 
@@ -171,7 +170,7 @@
                   v-show="!editandoUsuario"
                   unelevated
                   @click="editarUsuario(usuarioSelecionado)"
-                  label="Alterar senha"
+                  label="Salvar"
                   color="teal"
                   no-caps
                   :disable="

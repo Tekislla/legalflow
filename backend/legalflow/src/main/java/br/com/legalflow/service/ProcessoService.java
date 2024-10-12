@@ -1,6 +1,7 @@
 package br.com.legalflow.service;
 
 import br.com.legalflow.dto.request.ProcessoRequestDTO;
+import br.com.legalflow.dto.response.DashboardInfoResponseDTO;
 import br.com.legalflow.entity.Processo;
 import br.com.legalflow.entity.Quadro;
 import br.com.legalflow.enums.ProcessoStatusEnum;
@@ -13,9 +14,8 @@ import br.com.legalflow.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 public class ProcessoService {
@@ -26,6 +26,8 @@ public class ProcessoService {
     private QuadroRepository quadroRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    private final List<String> listaStatusEmAberto = List.of(ProcessoStatusEnum.CRIADO.name(), ProcessoStatusEnum.EM_PROGRESSO.name());
 
 
     public Processo saveProcesso(ProcessoRequestDTO dto, byte[] arquivo) {
@@ -64,18 +66,37 @@ public class ProcessoService {
         return processoRepository.findById(id).orElseThrow(() -> new ProcessoNaoEncontradoException(id));
     }
 
-    public long countProcessosByOrganizacao(Long quadroId) {
-        return processoRepository.countByQuadroOrganizacaoId(quadroId);
+    public DashboardInfoResponseDTO getDashboardInfo(Long organizacaoId) {
+        DashboardInfoResponseDTO dashboardInfo = new DashboardInfoResponseDTO();
+        Set<Long> idsProcessos = new HashSet<>();
+
+        List<Processo> processosAVencerPrazoSubsidio = findProcessosAVencerByPrazoSubsidio(organizacaoId);
+        List<Processo> processosAVencerPrazoFatal = findProcessosAVencerByPrazoFatal(organizacaoId);
+        List<Processo> processosAVencer = Stream.concat(processosAVencerPrazoSubsidio.stream(), processosAVencerPrazoFatal.stream())
+                .filter(processo -> idsProcessos.add(processo.getId()))
+                .toList();
+
+
+        dashboardInfo.setTotalProcessosEmAberto(countProcessosEmAbertoByOrganizacaoId(organizacaoId));
+        dashboardInfo.setProcessosAVencerPrazoSubsidio(processosAVencerPrazoSubsidio);
+        dashboardInfo.setProcessosAVencerPrazoFatal(processosAVencerPrazoFatal);
+        dashboardInfo.setProcessosAVencer(processosAVencer);
+
+        return dashboardInfo;
+    }
+
+    public long countProcessosEmAbertoByOrganizacaoId(Long organizacaoId) {
+       return processoRepository.countByQuadroOrganizacaoIdAndStatusIn(organizacaoId, listaStatusEmAberto);
     }
 
     public List<Processo> findProcessosAVencerByPrazoSubsidio(Long organizacaoId) {
         Date prazo = DateUtils.getDataSomandoDias(7);
-        return processoRepository.findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqual(organizacaoId, prazo);
+        return processoRepository.findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqualAndStatusIn(organizacaoId, prazo, listaStatusEmAberto);
     }
 
     public List<Processo> findProcessosAVencerByPrazoFatal(Long organizacaoId) {
         Date prazo = DateUtils.getDataSomandoDias(7);
-        return processoRepository.findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqual(organizacaoId, prazo);
+        return processoRepository.findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqualAndStatusIn(organizacaoId, prazo, listaStatusEmAberto);
     }
 
     public void deleteById(Long id) {

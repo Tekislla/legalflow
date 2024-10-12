@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="flex column flex-center main-text">
-      <div style="font-size: 8vh">Olá!</div>
+      <div style="font-size: 8vh">Olá, {{ userName }}!</div>
       <div class="text-h4">
         Selecione um quadro no menu ou crie um novo quadro
       </div>
@@ -41,11 +41,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const userRole = store.state.usuario.role;
-    console.log(store.state);
+    const userName = store.state.usuario.nome;
 
     return {
       store,
       userRole,
+      userName,
     };
   },
 });
