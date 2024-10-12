@@ -10,26 +10,34 @@
         <div class="q-gutter-md">
           <q-input
             v-model="form.nome"
+            stack-label
             label="Nome"
             outlined
             required
-            dense
             :rules="[
-              (val) => val.length <= 50 || 'Please use maximum 50 characters',
+              (val) => val.length <= 20 || 'Máximo de 50 caracteres',
+              (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
             ]"
           />
 
           <q-select
             v-model="usuarioSelecionado"
+            stack-label
             :options="listaUsuarios"
             label="Usuário"
             outlined
             required
-            dense
           />
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
+            <q-btn
+              flat
+              @click="clearForm()"
+              label="Cancel"
+              color="black"
+              no-caps
+              v-close-popup
+            />
             <q-btn
               @click="salvarQuadro()"
               unelevated
@@ -38,7 +46,10 @@
               no-caps
               color="teal"
               :disable="
-                !form.nome || !usuarioSelecionado || form.nome.length > 50
+                !form.nome ||
+                !usuarioSelecionado ||
+                form.nome.length < 5 ||
+                form.nome.length > 50
               "
             />
           </q-card-actions>
@@ -85,8 +96,11 @@ export default defineComponent({
       this.clearForm();
     },
     clearForm() {
-      this.newProjectName = "";
-      this.selectedCustomer = null;
+      this.form = {
+        nome: "",
+        usuarioId: null,
+      };
+      this.usuarioSelecionado = null;
     },
   },
 });

@@ -9,6 +9,10 @@ class ProcessoService {
     });
   }
 
+  getDashboardInfo(organizacaoId) {
+    return axios.get(`/processo/dashboard/${organizacaoId}`);
+  }
+
   baixarProcesso(id) {
     return axios.get(`/processo/download/${id}`, {
       responseType: "blob",

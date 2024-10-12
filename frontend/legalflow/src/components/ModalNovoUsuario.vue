@@ -10,10 +10,10 @@
         <div class="q-gutter-md">
           <q-input
             v-model="form.nome"
-            label="Name"
+            stack-label
+            label="Nome"
             outlined
             required
-            dense
             :rules="[
               (val) => val.length <= 20 || 'Máximo de 50 caracteres',
               (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
@@ -21,21 +21,23 @@
           />
           <q-input
             v-model="form.email"
+            stack-label
             label="E-mail"
             outlined
             required
-            dense
             :rules="[
-              (val) => val.length <= 100 || 'Please use maximum 100 characters',
+              (val) => val.length <= 50 || 'Máximo de 50 caracteres',
+              (val) => val.length >= 10 || 'Mínimo de 10 caracteres',
+              (val) => validarEmail() || 'E-mail inválido',
             ]"
           />
           <q-input
             v-model="form.senha"
+            stack-label
             label="Senha"
             type="password"
             outlined
             required
-            dense
             :rules="[
               (val) => val.length <= 20 || 'Máximo de 20 caracteres',
               (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
@@ -44,15 +46,22 @@
 
           <q-select
             v-model="form.administrador"
+            stack-label
             :options="roleList"
             label="Role"
             outlined
             required
-            dense
           />
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="black" no-caps v-close-popup />
+            <q-btn
+              flat
+              @click="resetForm()"
+              label="Cancelar"
+              color="black"
+              no-caps
+              v-close-popup
+            />
             <q-btn
               @click="cadastrar()"
               unelevated
@@ -65,6 +74,9 @@
                 form.nome.length < 5 ||
                 form.nome.length > 50 ||
                 form.email === '' ||
+                form.email.length < 10 ||
+                form.email.length > 50 ||
+                !validarEmail() ||
                 form.senha === '' ||
                 form.senha.length < 5 ||
                 form.senha.length > 20 ||
@@ -121,6 +133,13 @@ export default defineComponent({
       await this.store.dispatch("cadastrar", this.form);
       this.resetForm();
       this.$emit("salvar-usuario");
+    },
+    validarEmail() {
+      if (this.form.email) {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(this.form.email);
+      }
+      return false;
     },
     resetForm() {
       this.form = {

@@ -18,6 +18,9 @@
         <q-item class="list-label" clickable @click="redirectHome()">
           <q-item-section avatar> Home </q-item-section>
         </q-item>
+        <q-item class="list-label" clickable @click="redirectDashboard()">
+          <q-item-section avatar> Dashboard </q-item-section>
+        </q-item>
         <q-expansion-item class="list-label" label="Quadros">
           <lista-quadros
             v-for="quadro in quadros"
@@ -57,6 +60,7 @@
             clickable
             @click="redirectListagemUsuarios()"
             class="list-item"
+            :focused="isUsuariosRoute"
           >
             <q-item-section>
               <q-item-label>Gestão de usuários</q-item-label>
@@ -73,77 +77,25 @@
     </q-drawer>
 
     <q-page-container>
-      <q-tab-panels v-model="tab" animated v-show="idQuadroAtual !== null">
-        <q-tab-panel name="CRIADO">
-          <lista-processos
-            :user-role="userRole"
-            v-show="idQuadroAtual !== null"
-            :status-atual="this.tab"
-            :quadro-id="this.idQuadroAtual"
-            :processos="this.processosCriados"
-            @salvar-processo="processoSalvo()"
-            @deletar-processo="onProcessoDelete()"
-            @deletar-quadro="onQuadroDelete()"
-            @abrir-modal-novo-processo="abrirModalNovoProcesso()"
-          />
-        </q-tab-panel>
-        <q-tab-panel name="EM_PROGRESSO">
-          <lista-processos
-            :user-role="userRole"
-            v-show="idQuadroAtual !== null"
-            :status-atual="this.tab"
-            :quadro-id="this.idQuadroAtual"
-            :processos="this.processosEmProgresso"
-            @salvar-processo="processoSalvo()"
-            @deletar-processo="onProcessoDelete()"
-            @deletar-quadro="onQuadroDelete()"
-            @abrir-modal-novo-processo="abrirModalNovoProcesso()"
-          />
-        </q-tab-panel>
-        <q-tab-panel name="FINALIZADO">
-          <lista-processos
-            :user-role="userRole"
-            v-show="idQuadroAtual !== null"
-            :status-atual="this.tab"
-            :quadro-id="this.idQuadroAtual"
-            :processos="this.processosFinalizados"
-            @salvar-processo="processoSalvo()"
-            @deletar-processo="onProcessoDelete()"
-            @deletar-quadro="onQuadroDelete()"
-            @abrir-modal-novo-processo="abrirModalNovoProcesso()"
-          />
-        </q-tab-panel>
-        <q-tab-panel name="ARQUIVADO">
-          <lista-processos
-            :user-role="userRole"
-            v-show="idQuadroAtual !== null"
-            :status-atual="this.tab"
-            :quadro-id="this.idQuadroAtual"
-            :processos="this.processosArquivados"
-            @salvar-processo="processoSalvo()"
-            @deletar-processo="onProcessoDelete()"
-            @deletar-quadro="onQuadroDelete()"
-            @abrir-modal-novo-processo="abrirModalNovoProcesso()"
-          />
-        </q-tab-panel>
-      </q-tab-panels>
-
       <router-view
-        v-show="this.idQuadroAtual === null"
+        :id-quadro-atual="this.idQuadroAtual"
         :user-role="userRole"
         :usuarios="this.usuarios"
+        :tab="this.tab"
         :email-usuario-logado="emailUsuarioLogado"
+        :processos-criados="this.processosCriados"
+        :processos-em-progresso="this.processosEmProgresso"
+        :processos-finalizados="this.processosFinalizados"
+        :processos-arquivados="this.processosArquivados"
         @abrir-modal-novo-quadro="abrirModalNovoQuadro()"
         @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
         @deletar-usuario="onUsuarioDelete()"
         @editar-usuario="onUsuarioEdit()"
+        @salvar-processo="processoSalvo()"
+        @deletar-processo="onProcessoDelete()"
+        @deletar-quadro="onQuadroDelete()"
       />
 
-      <modal-novo-processo
-        :id-quadro-atual="idQuadroAtual"
-        v-model="modalNovoProcessoOpen"
-        @processo-criado="processoSalvo()"
-      />
       <modal-novo-quadro
         :lista-usuarios="this.listaUsuarios"
         v-model="modalNovoQuadroOpen"
@@ -162,11 +114,9 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import HeaderComponent from "@/components/HeaderComponent.vue";
-import ModalNovoProcesso from "@/components/ModalNovoProcesso.vue";
 import ModalNovoUsuario from "@/components/ModalNovoUsuario.vue";
 import ModalNovoQuadro from "@/components/ModalNovoQuadro.vue";
 import ListaQuadros from "@/components/ListaQuadros.vue";
-import ListaProcessos from "@/pages/ListaProcessos.vue";
 import UsuarioService from "@/services/UsuarioService";
 import QuadroService from "@/services/QuadroService";
 import NotificationUtil from "@/utils/NotificationUtil";
@@ -188,12 +138,12 @@ export default defineComponent({
 
   components: {
     HeaderComponent,
-    ModalNovoProcesso,
     ModalNovoUsuario,
     ModalNovoQuadro,
     ListaQuadros,
-    ListaProcessos,
   },
+
+  inheritAttrs: false,
 
   data() {
     return {
@@ -219,17 +169,28 @@ export default defineComponent({
     fetch() {
       this.getUsuarioInfo();
     },
+    fetchQuadro() {
+      if (this.idQuadroAtual != null) {
+        let actualQuadro = this.quadros.find(
+          (quadro) => quadro.id === this.idQuadroAtual
+        );
+        this.setQuadro(actualQuadro);
+      }
+    },
     redirectHome() {
       this.idQuadroAtual = null;
       this.$router.push({ path: "/" });
     },
-    redirectListagemUsuarios() {
-      this.$router.push({ path: "/usuarios" });
+    redirectDashboard() {
       this.idQuadroAtual = null;
+      this.$router.push({ path: "/dashboard" });
+    },
+    redirectListagemUsuarios() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/usuarios" });
     },
     setQuadro(quadro) {
       this.limparProcessos();
-      this.$router.push({ path: "/" });
       this.idQuadroAtual = quadro.id;
       this.processos = quadro.processos;
       quadro.processos.forEach((processo) => {
@@ -241,6 +202,7 @@ export default defineComponent({
           ? this.processosFinalizados.push(processo)
           : this.processosArquivados.push(processo);
       });
+      this.$router.push({ path: "/processos" });
     },
     abrirModalNovoProcesso() {
       this.modalNovoProcessoOpen = true;
@@ -272,14 +234,6 @@ export default defineComponent({
 
       this.fetchQuadro();
     },
-    fetchQuadro() {
-      if (this.idQuadroAtual != null) {
-        let actualQuadro = this.quadros.find(
-          (quadro) => quadro.id === this.idQuadroAtual
-        );
-        this.setQuadro(actualQuadro);
-      }
-    },
     async salvarQuadro(quadro) {
       await QuadroService.salvarQuadro(quadro).then(() => {
         this.fetch();
@@ -303,7 +257,7 @@ export default defineComponent({
     },
     onQuadroDelete() {
       this.returnFeedbackMessage("Quadro deletado com sucesso!");
-      this.idQuadroAtual = null;
+      this.redirectHome();
       this.fetch();
     },
     onUsuarioDelete() {
@@ -345,6 +299,18 @@ export default defineComponent({
       console.log("Logout");
       this.$store.dispatch("logout");
       this.$router.push({ path: "/auth/login" });
+    },
+  },
+
+  computed: {
+    isUsuariosRoute() {
+      return this.$route.path === "/usuarios";
+    },
+    isProcessosRoute() {
+      return this.$route.path === "/processos";
+    },
+    isDashboardRoute() {
+      return this.$route.path === "/dashboard";
     },
   },
 

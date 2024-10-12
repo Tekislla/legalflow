@@ -12,17 +12,7 @@
       <q-toolbar-title> LegalFlow </q-toolbar-title>
 
       <q-btn
-        v-show="idQuadroAtual != null && userRole === 'ADMIN'"
-        v-on:click="this.$emit('abrir-modal-novo-usuario')"
-        unelevated
-        size="md"
-        label="Novo Usuário"
-        no-caps
-        class="header-btn"
-        color="teal"
-      />
-      <q-btn
-        v-show="idQuadroAtual != null && userRole === 'ADMIN'"
+        v-show="userRole === 'ADMIN'"
         v-on:click="this.$emit('abrir-modal-novo-quadro')"
         unelevated
         size="md"
