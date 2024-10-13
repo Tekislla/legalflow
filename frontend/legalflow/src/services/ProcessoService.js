@@ -9,6 +9,10 @@ class ProcessoService {
     });
   }
 
+  editarProcesso(form) {
+    return axios.put("/processo/", form);
+  }
+
   getDashboardInfo(organizacaoId) {
     return axios.get(`/processo/dashboard/${organizacaoId}`);
   }

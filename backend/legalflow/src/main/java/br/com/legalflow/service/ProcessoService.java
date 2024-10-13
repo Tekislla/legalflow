@@ -57,7 +57,10 @@ public class ProcessoService {
         processo.setDescricao(dto.getDescricao());
         processo.setPrazoSubsidio(prazoSubsidio);
         processo.setPrazoFatal(prazoFatal);
-        processo.setArquivo(arquivo);
+
+        if (arquivo != null) {
+            processo.setArquivo(arquivo);
+        }
 
         return processoRepository.save(processo);
     }

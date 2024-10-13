@@ -2,8 +2,12 @@
   <q-page class="flex flex-center">
     <div class="flex column flex-center main-text">
       <div style="font-size: 8vh">Olá, {{ userName }}!</div>
-      <div class="text-h4">
+      <div class="text-h4" v-show="this.userRole === 'ADMIN'">
         Selecione um quadro no menu ou crie um novo quadro
+      </div>
+      <div class="text-h4" v-show="this.userRole === 'USER'">
+        Selecione um quadro no menu ou solicite acesso a um quadro existente ao
+        administrador
       </div>
       <div class="flex-row" v-show="this.userRole === 'ADMIN'">
         <q-btn

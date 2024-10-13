@@ -60,6 +60,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
+import QuadroService from "@/services/QuadroService";
 
 export default defineComponent({
   name: "ModalNovoQuadro",
@@ -82,9 +83,21 @@ export default defineComponent({
   },
 
   methods: {
-    salvarQuadro() {
+    async salvarQuadro() {
       this.form.usuarioId = this.usuarioSelecionado.value;
-      this.$emit("salvar-quadro", this.form);
+      await QuadroService.salvarQuadro(this.form)
+        .then(() => {
+          this.$emit("salvar-quadro");
+        })
+        .catch((err) => {
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            "Falha ao criar quadro",
+            "negative",
+            "red"
+          );
+          console.log(err);
+        });
     },
     clearForm() {
       this.form = {
