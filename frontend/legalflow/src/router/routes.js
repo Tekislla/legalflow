@@ -2,11 +2,17 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
+    meta: { requiresAuth: true },
     children: [
       {
-        path: "",
+        path: "home",
         component: () => import("pages/IndexPage.vue"),
         meta: { requiresAuth: true },
+      },
+      {
+        path: "dashboard",
+        component: () => import("pages/DashboardPage.vue"),
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
       {
         path: "processos",
@@ -16,12 +22,7 @@ const routes = [
       {
         path: "usuarios",
         component: () => import("pages/ListagemUsuarios.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "dashboard",
-        component: () => import("pages/DashboardPage.vue"),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, requiresAdmin: true },
       },
     ],
   },

@@ -33,21 +33,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 
 export default defineComponent({
   name: "IndexPage",
 
-  setup() {
-    const store = useStore();
-    const userRole = store.state.usuario.role;
-    const userName = store.state.usuario.nome;
-
-    return {
-      store,
-      userRole,
-      userName,
-    };
+  props: {
+    userRole: String,
+    userName: String,
   },
 });
 </script>
