@@ -5,7 +5,7 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     usuario: JSON.parse(localStorage.getItem("usuario")) || {},
-    organizacaoId: localStorage.getItem("organizacaoId") || "",
+    organizacaoId: Number(localStorage.getItem("organizacaoId")) || 0,
   },
   mutations: {
     setToken(state, token) {
@@ -17,8 +17,9 @@ export default createStore({
       localStorage.setItem("usuario", JSON.stringify(usuario));
     },
     setOrganizacaoId(state, organizacaoId) {
-      state.organizacaoId = organizacaoId;
-      localStorage.setItem("organizacaoId", organizacaoId);
+      const orgId = Number(organizacaoId);
+      state.organizacaoId = orgId;
+      localStorage.setItem("organizacaoId", orgId);
     },
     logout(state) {
       state.token = "";

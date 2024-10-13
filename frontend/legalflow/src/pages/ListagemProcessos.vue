@@ -50,6 +50,7 @@
           :status-atual="tabProxy"
           :id-quadro-atual="idQuadroAtual"
           :processos="processosCriados"
+          :lista-quadros="listaQuadros"
           @salvar-processo="processoSalvo()"
           @deletar-processo="onProcessoDelete()"
           @abrir-modal-novo-processo="abrirModalNovoProcesso()"
@@ -62,6 +63,7 @@
           :status-atual="tabProxy"
           :id-quadro-atual="idQuadroAtual"
           :processos="processosEmProgresso"
+          :lista-quadros="listaQuadros"
           @salvar-processo="processoSalvo()"
           @deletar-processo="onProcessoDelete()"
           @abrir-modal-novo-processo="abrirModalNovoProcesso()"
@@ -74,6 +76,7 @@
           :status-atual="tabProxy"
           :id-quadro-atual="idQuadroAtual"
           :processos="processosFinalizados"
+          :lista-quadros="listaQuadros"
           @salvar-processo="processoSalvo()"
           @deletar-processo="onProcessoDelete()"
           @abrir-modal-novo-processo="abrirModalNovoProcesso()"
@@ -86,6 +89,7 @@
           :status-atual="tabProxy"
           :id-quadro-atual="idQuadroAtual"
           :processos="processosArquivados"
+          :lista-quadros="listaQuadros"
           @salvar-processo="processoSalvo()"
           @deletar-processo="onProcessoDelete()"
           @abrir-modal-novo-processo="abrirModalNovoProcesso()"
@@ -126,6 +130,7 @@ export default defineComponent({
     userRole: String,
     idQuadroAtual: Number,
     nomeQuadroAtual: String,
+    listaQuadros: Array,
     listaUsuarios: Array,
     usuarioResponsavelQuadro: Object,
     processosCriados: Array,

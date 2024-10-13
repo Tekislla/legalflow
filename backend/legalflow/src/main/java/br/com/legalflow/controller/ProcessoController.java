@@ -38,6 +38,17 @@ public class ProcessoController extends BaseController {
         }
     }
 
+    @PutMapping("/")
+    public ResponseEntity<?> editarProcesso(@RequestBody ProcessoRequestDTO dto) {
+        try {
+            Processo processo = processoService.saveProcesso(dto, null);
+
+            return ResponseEntity.ok(processo);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadProcesso(@PathVariable Long id) {
         try {

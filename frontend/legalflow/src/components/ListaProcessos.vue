@@ -72,6 +72,17 @@
 
         <q-card-section>
           <div class="q-gutter-md">
+            <q-select
+              v-show="userRole === 'ADMIN'"
+              stack-label
+              v-model="processoSelecionado.quadroAtual"
+              :options="listaQuadros"
+              label="Quadro"
+              outlined
+              required
+              :disable="!editandoProcesso"
+              :rules="[(val) => !!val || 'Status é obrigatório']"
+            />
             <q-input
               stack-label
               :disable="!editandoProcesso"
@@ -280,7 +291,7 @@
                   <q-btn
                     v-show="editandoProcesso"
                     unelevated
-                    @click="salvarProcesso(processoSelecionado)"
+                    @click="editarProcesso(processoSelecionado)"
                     label="Salvar Processo"
                     color="teal"
                     no-caps
@@ -323,7 +334,9 @@ export default defineComponent({
     statusAtual: String,
     processos: Array,
     idQuadroAtual: Number,
+    quadroAtual: Object,
     userRole: String,
+    listaQuadros: Array,
   },
 
   data() {
@@ -331,6 +344,7 @@ export default defineComponent({
       loading: false,
       modalDetalhesProcessoOpen: false,
       editandoProcesso: false,
+      quadroSelecionado: this.quadroAtual,
       processoSelecionado: {},
       pagination: {
         rowsPerPage: 10,
@@ -461,6 +475,18 @@ export default defineComponent({
       );
 
       await ProcessoService.salvarProcesso(formData).then(() => {
+        this.$emit("salvar-processo", processo);
+        this.modalDetalhesProcessoOpen = false;
+        this.editandoProcesso = false;
+      });
+    },
+    async editarProcesso(processo) {
+      processo.quadroId = processo.quadroAtual.value;
+      if (typeof processo.status !== "string") {
+        processo.status = processo.status.label;
+      }
+
+      await ProcessoService.editarProcesso(processo).then(() => {
         this.$emit("salvar-processo", processo);
         this.modalDetalhesProcessoOpen = false;
         this.editandoProcesso = false;

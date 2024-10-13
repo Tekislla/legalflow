@@ -87,7 +87,7 @@ export default defineComponent({
 
   props: {
     userName: String,
-    organizacaoId: String,
+    organizacaoId: Number,
   },
 
   data() {

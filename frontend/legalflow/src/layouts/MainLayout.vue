@@ -94,6 +94,7 @@
       <router-view
         :id-quadro-atual="this.idQuadroAtual"
         :nome-quadro-atual="this.nomeQuadroAtual"
+        :lista-quadros="listaQuadros"
         :usuario-responsavel-quadro="this.usuarioResponsavelQuadro"
         :user-role="userRole"
         :user-name="userName"
@@ -113,7 +114,7 @@
         @salvar-processo="processoSalvo()"
         @deletar-processo="onProcessoDelete()"
         @deletar-quadro="onQuadroDelete()"
-        @salvar-quadro="salvarQuadro($event)"
+        @salvar-quadro="salvarQuadro()"
       />
 
       <modal-novo-quadro
@@ -138,7 +139,6 @@ import ModalNovoUsuario from "@/components/ModalNovoUsuario.vue";
 import ModalNovoQuadro from "@/components/ModalNovoQuadro.vue";
 import ListaQuadros from "@/components/ListaQuadros.vue";
 import UsuarioService from "@/services/UsuarioService";
-import QuadroService from "@/services/QuadroService";
 import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
@@ -217,6 +217,11 @@ export default defineComponent({
       };
 
       quadro.processos.forEach((processo) => {
+        processo.quadroAtual = {
+          label: quadro.nome,
+          value: quadro.id,
+        };
+
         processo.status === "CRIADO"
           ? this.processosCriados.push(processo)
           : processo.status === "EM_PROGRESSO"
@@ -227,11 +232,11 @@ export default defineComponent({
       });
       this.$router.push({ path: "/processos" });
     },
-
     async getUsuarioInfo() {
       this.loading = true;
       this.listaUsuarios = [];
       this.quadros = [];
+      this.listaQuadros = [];
 
       this.usuarios = (await UsuarioService.getUsuarioInfo()).data;
 
@@ -240,6 +245,10 @@ export default defineComponent({
           quadro.responsavel = usuario.nome;
           quadro.idResponsavel = usuario.id;
           this.quadros.push(quadro);
+          this.listaQuadros.push({
+            label: quadro.nome,
+            value: quadro.id,
+          });
         });
 
         this.listaUsuarios.push({
@@ -280,7 +289,7 @@ export default defineComponent({
     },
     onQuadroDelete() {
       this.returnFeedbackMessage("Quadro deletado com sucesso!");
-      this.redirectHome();
+      this.redirectDashboard();
       this.fetch();
     },
     onUsuarioDelete() {
