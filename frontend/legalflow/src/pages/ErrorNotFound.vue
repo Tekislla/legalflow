@@ -5,15 +5,15 @@
     <div>
       <div style="font-size: 30vh">404</div>
 
-      <div class="text-h2" style="opacity: 0.4">Oops. Nothing here...</div>
+      <div class="text-h2" style="opacity: 0.4">Oops. Nada por aqui...</div>
 
       <q-btn
         class="q-mt-xl"
         color="white"
-        text-color="blue"
+        text-color="teal"
         unelevated
         to="/"
-        label="Go Home"
+        label="Voltar ao início"
         no-caps
       />
     </div>

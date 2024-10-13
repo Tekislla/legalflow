@@ -2,6 +2,7 @@
   <q-page class="main-page flex">
     <div class="container text-center q-pa-md flex flex-center">
       <q-card class="container-card q-pa-lg">
+        <h4>Olá, {{ userName }}!</h4>
         <q-card-section class="main-section q-gutter-md">
           <q-card bordered class="dashboard-card q-pa-lg">
             <q-card-section>
@@ -77,20 +78,16 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 import { formatDate, formatTextSize } from "../utils/formatters";
 import ProcessoService from "../services/ProcessoService";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "DashboardPage",
 
-  setup() {
-    const store = useStore();
-    const organizacaoId = store.state.organizacaoId;
-
-    return {
-      organizacaoId,
-    };
+  props: {
+    userName: String,
+    organizacaoId: String,
   },
 
   data() {
@@ -186,6 +183,12 @@ export default defineComponent({
         })
         .catch((error) => {
           this.loading = false;
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            "Falha ao carregar informações do dashboard",
+            "negative",
+            "red"
+          );
           console.log(error);
         });
     },

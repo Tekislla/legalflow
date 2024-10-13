@@ -91,7 +91,7 @@ export default defineComponent({
 
         this.loading = false;
         if (this.$store.state.token) {
-          this.$router.push({ path: "/" });
+          this.$router.push({ path: "/dashboard" });
         } else {
           NotificationUtil.returnFeedbackMessage(
             this.$q,

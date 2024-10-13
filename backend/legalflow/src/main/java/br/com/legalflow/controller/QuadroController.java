@@ -6,8 +6,6 @@ import br.com.legalflow.entity.Quadro;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
-import br.com.legalflow.service.OrganizacaoService;
-import br.com.legalflow.service.ProcessoService;
 import br.com.legalflow.service.QuadroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

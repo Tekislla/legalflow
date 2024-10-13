@@ -15,10 +15,21 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item class="list-label" clickable @click="redirectHome()">
+        <q-item
+          class="list-label"
+          clickable
+          @click="redirectHome()"
+          :focused="isHomeRoute"
+        >
           <q-item-section avatar> Home </q-item-section>
         </q-item>
-        <q-item class="list-label" clickable @click="redirectDashboard()">
+        <q-item
+          class="list-label"
+          clickable
+          @click="redirectDashboard()"
+          :focused="isDashboardRoute"
+          v-show="this.userRole === 'ADMIN'"
+        >
           <q-item-section avatar> Dashboard </q-item-section>
         </q-item>
         <q-expansion-item class="list-label" label="Quadros">
@@ -39,6 +50,9 @@
               <q-item-label>Não há nenhum quadro criado</q-item-label>
               <q-item-label caption>Clique aqui para criar um</q-item-label>
             </q-item-section>
+          </q-item>
+          <q-item v-show="this.loading === true">
+            <q-spinner color="teal" size="3em" :thickness="2" />
           </q-item>
           <q-item
             v-show="this.quadros.length === 0 && this.userRole === 'USER'"
@@ -79,7 +93,12 @@
     <q-page-container>
       <router-view
         :id-quadro-atual="this.idQuadroAtual"
+        :nome-quadro-atual="this.nomeQuadroAtual"
+        :usuario-responsavel-quadro="this.usuarioResponsavelQuadro"
         :user-role="userRole"
+        :user-name="userName"
+        :organizacao-id="organizacaoId"
+        :lista-usuarios="this.listaUsuarios"
         :usuarios="this.usuarios"
         :tab="this.tab"
         :email-usuario-logado="emailUsuarioLogado"
@@ -94,12 +113,13 @@
         @salvar-processo="processoSalvo()"
         @deletar-processo="onProcessoDelete()"
         @deletar-quadro="onQuadroDelete()"
+        @salvar-quadro="salvarQuadro($event)"
       />
 
       <modal-novo-quadro
         :lista-usuarios="this.listaUsuarios"
         v-model="modalNovoQuadroOpen"
-        @salvar-quadro="salvarQuadro($event)"
+        @salvar-quadro="salvarQuadro()"
       />
       <modal-novo-usuario
         v-model="modalNovoUsuarioOpen"
@@ -128,11 +148,15 @@ export default defineComponent({
     const store = useStore();
     const userRole = store.state.usuario.role;
     const emailUsuarioLogado = store.state.usuario.email;
+    const userName = store.state.usuario.nome;
+    const organizacaoId = store.state.organizacaoId;
 
     return {
       store,
       userRole,
       emailUsuarioLogado,
+      userName,
+      organizacaoId,
     };
   },
 
@@ -148,6 +172,9 @@ export default defineComponent({
   data() {
     return {
       tab: "CRIADO",
+      idQuadroAtual: null,
+      nomeQuadroAtual: "",
+      usuarioResponsavelQuadro: null,
       processos: [],
       usuarios: [],
       listaUsuarios: [],
@@ -157,7 +184,7 @@ export default defineComponent({
       processosEmProgresso: [],
       processosFinalizados: [],
       processosArquivados: [],
-      idQuadroAtual: null,
+      loading: ref(false),
       leftDrawerOpen: ref(false),
       modalNovoProcessoOpen: ref(false),
       modalNovoUsuarioOpen: ref(false),
@@ -176,23 +203,19 @@ export default defineComponent({
         );
         this.setQuadro(actualQuadro);
       }
-    },
-    redirectHome() {
-      this.idQuadroAtual = null;
-      this.$router.push({ path: "/" });
-    },
-    redirectDashboard() {
-      this.idQuadroAtual = null;
-      this.$router.push({ path: "/dashboard" });
-    },
-    redirectListagemUsuarios() {
-      this.idQuadroAtual = null;
-      this.$router.push({ path: "/usuarios" });
+      this.loading = false;
     },
     setQuadro(quadro) {
       this.limparProcessos();
-      this.idQuadroAtual = quadro.id;
+
       this.processos = quadro.processos;
+      this.idQuadroAtual = quadro.id;
+      this.nomeQuadroAtual = quadro.nome;
+      this.usuarioResponsavelQuadro = {
+        label: quadro.responsavel,
+        value: quadro.idResponsavel,
+      };
+
       quadro.processos.forEach((processo) => {
         processo.status === "CRIADO"
           ? this.processosCriados.push(processo)
@@ -204,25 +227,18 @@ export default defineComponent({
       });
       this.$router.push({ path: "/processos" });
     },
-    abrirModalNovoProcesso() {
-      this.modalNovoProcessoOpen = true;
-    },
-    abrirModalNovoUsuario() {
-      this.modalNovoUsuarioOpen = true;
-    },
-    abrirModalNovoQuadro() {
-      this.modalNovoQuadroOpen = true;
-    },
+
     async getUsuarioInfo() {
+      this.loading = true;
       this.listaUsuarios = [];
       this.quadros = [];
 
       this.usuarios = (await UsuarioService.getUsuarioInfo()).data;
-      console.log(this.usuarios);
 
       this.usuarios.forEach((usuario) => {
         usuario.quadros.forEach((quadro) => {
           quadro.responsavel = usuario.nome;
+          quadro.idResponsavel = usuario.id;
           this.quadros.push(quadro);
         });
 
@@ -234,22 +250,29 @@ export default defineComponent({
 
       this.fetchQuadro();
     },
-    async salvarQuadro(quadro) {
-      await QuadroService.salvarQuadro(quadro).then(() => {
-        this.fetch();
-        this.modalNovoQuadroOpen = false;
-      });
-      this.returnFeedbackMessage("Quadro criado com sucesso!");
+    async salvarQuadro() {
+      await this.fetch();
+      this.modalNovoQuadroOpen = false;
+      this.returnFeedbackMessage("Quadro salvo com sucesso!");
     },
     async salvarUsuario() {
       await this.fetch();
       this.modalNovoUsuarioOpen = false;
-      this.returnFeedbackMessage("Usuário criado com sucesso!");
+      this.returnFeedbackMessage("Usuário salvo com sucesso!");
     },
     async processoSalvo() {
-      this.modalNovoProcessoOpen = false;
       await this.fetch();
+      this.modalNovoProcessoOpen = false;
       this.returnFeedbackMessage("Processo salvo com sucesso!");
+    },
+    abrirModalNovoProcesso() {
+      this.modalNovoProcessoOpen = true;
+    },
+    abrirModalNovoUsuario() {
+      this.modalNovoUsuarioOpen = true;
+    },
+    abrirModalNovoQuadro() {
+      this.modalNovoQuadroOpen = true;
     },
     onProcessoDelete() {
       this.returnFeedbackMessage("Processo deletado com sucesso");
@@ -267,6 +290,18 @@ export default defineComponent({
     onUsuarioEdit() {
       this.returnFeedbackMessage("Usuário editado com sucesso!");
       this.fetch();
+    },
+    redirectHome() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/home" });
+    },
+    redirectDashboard() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/dashboard" });
+    },
+    redirectListagemUsuarios() {
+      this.idQuadroAtual = null;
+      this.$router.push({ path: "/usuarios" });
     },
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen;
@@ -296,13 +331,15 @@ export default defineComponent({
       ).length;
     },
     logout() {
-      console.log("Logout");
       this.$store.dispatch("logout");
       this.$router.push({ path: "/auth/login" });
     },
   },
 
   computed: {
+    isHomeRoute() {
+      return this.$route.path === "/home";
+    },
     isUsuariosRoute() {
       return this.$route.path === "/usuarios";
     },
@@ -315,6 +352,9 @@ export default defineComponent({
   },
 
   mounted() {
+    if (this.$route.path !== "/") {
+      this.$router.push("/");
+    }
     this.fetch();
   },
 });
