@@ -21,6 +21,4 @@ public enum ProcessoStatusEnum {
         }
         return null;
     }
-
-
 }

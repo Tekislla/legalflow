@@ -4,7 +4,6 @@ import br.com.legalflow.controller.base.BaseController;
 import br.com.legalflow.dto.request.QuadroRequestDTO;
 import br.com.legalflow.entity.Quadro;
 import br.com.legalflow.entity.Usuario;
-import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
 import br.com.legalflow.service.QuadroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ public class QuadroController extends BaseController {
         try {
             Usuario usuarioLogado = getUsuarioLogado();
             quadroRequestDTO.setOrganizacaoId(usuarioLogado.getOrganizacao().getId());
+
             Quadro quadro = quadroService.saveQuadro(quadroRequestDTO);
 
             return ResponseEntity.ok(quadro);
@@ -34,9 +34,7 @@ public class QuadroController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarQuadro(@PathVariable Long id) {
         try {
-            Usuario usuarioLogado = getUsuarioLogado();
-
-            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+            if (!isUsuarioAdmin()) {
                 throw new UsuarioNaoAutorizadoException();
             }
 
@@ -48,5 +46,4 @@ public class QuadroController extends BaseController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-
 }

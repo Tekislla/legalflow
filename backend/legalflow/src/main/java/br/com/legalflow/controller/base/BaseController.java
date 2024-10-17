@@ -1,6 +1,7 @@
 package br.com.legalflow.controller.base;
 
 import br.com.legalflow.entity.Usuario;
+import br.com.legalflow.enums.RoleEnum;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -17,4 +18,8 @@ public abstract class BaseController {
         throw new IllegalStateException("Usuário não autenticado");
     }
 
+    protected boolean isUsuarioAdmin() {
+        Usuario usuario = getUsuarioLogado();
+        return usuario.getRole().equals(RoleEnum.ADMIN.toString());
+    }
 }

@@ -9,7 +9,6 @@ import br.com.legalflow.exception.processo.ProcessoNaoEncontradoException;
 import br.com.legalflow.exception.quadro.QuadroNaoEncontradoException;
 import br.com.legalflow.repository.ProcessoRepository;
 import br.com.legalflow.repository.QuadroRepository;
-import br.com.legalflow.repository.UsuarioRepository;
 import br.com.legalflow.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +23,8 @@ public class ProcessoService {
     private ProcessoRepository processoRepository;
     @Autowired
     private QuadroRepository quadroRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     private final List<String> listaStatusEmAberto = List.of(ProcessoStatusEnum.CRIADO.name(), ProcessoStatusEnum.EM_PROGRESSO.name());
-
 
     public Processo saveProcesso(ProcessoRequestDTO dto, byte[] arquivo) {
         Processo processo = new Processo();
@@ -78,7 +74,6 @@ public class ProcessoService {
         List<Processo> processosAVencer = Stream.concat(processosAVencerPrazoSubsidio.stream(), processosAVencerPrazoFatal.stream())
                 .filter(processo -> idsProcessos.add(processo.getId()))
                 .toList();
-
 
         dashboardInfo.setTotalProcessosEmAberto(countProcessosEmAbertoByOrganizacaoId(organizacaoId));
         dashboardInfo.setProcessosAVencerPrazoSubsidio(processosAVencerPrazoSubsidio);

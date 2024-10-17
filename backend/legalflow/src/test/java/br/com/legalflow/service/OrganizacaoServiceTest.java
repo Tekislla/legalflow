@@ -19,7 +19,6 @@ class OrganizacaoServiceTest {
 
     @InjectMocks
     private OrganizacaoService organizacaoService;
-
     @Mock
     private OrganizacaoRepository organizacaoRepository;
 

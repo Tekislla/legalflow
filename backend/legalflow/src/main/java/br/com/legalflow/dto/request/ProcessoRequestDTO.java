@@ -15,5 +15,4 @@ public class ProcessoRequestDTO {
     private String descricao;
     private String prazoSubsidio;
     private String prazoFatal;
-
 }

@@ -9,8 +9,6 @@ import java.util.List;
 public interface ProcessoRepository extends CrudRepository<Processo, Long> {
 
     long countByQuadroOrganizacaoIdAndStatusIn(Long organizacaoId, List<String> status);
-
     List<Processo> findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqualAndStatusIn(Long organizacaoId, Date prazoSubsidioLimite, List<String> status);
-
     List<Processo> findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqualAndStatusIn(Long organizacaoId, Date prazoFatalLimite, List<String> status);
 }

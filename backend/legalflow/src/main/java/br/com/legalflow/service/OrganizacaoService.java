@@ -1,19 +1,13 @@
 package br.com.legalflow.service;
 
 import br.com.legalflow.dto.request.CadastroRequestDTO;
-import br.com.legalflow.dto.request.QuadroRequestDTO;
 import br.com.legalflow.entity.Organizacao;
-import br.com.legalflow.entity.Quadro;
-import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.exception.organizacao.OrganizacaoJaCadastradaException;
 import br.com.legalflow.exception.organizacao.OrganizacaoNaoEncontradaException;
 import br.com.legalflow.repository.OrganizacaoRepository;
-import br.com.legalflow.repository.QuadroRepository;
-import br.com.legalflow.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

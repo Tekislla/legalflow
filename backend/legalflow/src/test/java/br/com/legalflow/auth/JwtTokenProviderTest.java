@@ -28,7 +28,7 @@ public class JwtTokenProviderTest {
         usuario.setId(1L);
         usuario.setEmail("test@example.com");
         usuario.setOrganizacao(organizacao);
-        usuario.setRole("ROLE_USER");
+        usuario.setRole("ADMIN");
     }
 
     @Test
@@ -48,5 +48,19 @@ public class JwtTokenProviderTest {
         String token = jwtTokenProvider.gerarToken(usuario);
         String email = jwtTokenProvider.getEmailFromToken(token);
         assertEquals("test@example.com", email);
+    }
+
+    @Test
+    public void getOrganizacaoIdFromToken_Sucesso() {
+        String token = jwtTokenProvider.gerarToken(usuario);
+        Long organizacaoId = jwtTokenProvider.getOrganizacaoIdFromToken(token);
+        assertEquals(1L, organizacaoId);
+    }
+
+    @Test
+    public void getRoleFromToken_Sucesso() {
+        String token = jwtTokenProvider.gerarToken(usuario);
+        String role = jwtTokenProvider.getRoleFromToken(token);
+        assertEquals("ADMIN", role);
     }
 }

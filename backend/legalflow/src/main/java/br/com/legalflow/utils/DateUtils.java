@@ -1,16 +1,18 @@
 package br.com.legalflow.utils;
 
+import br.com.legalflow.exception.generic.FormatarDataException;
+import br.com.legalflow.exception.generic.InstanciaClasseFinalException;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 
 public final class DateUtils {
 
     private DateUtils() {
-        throw new UnsupportedOperationException("Essa classe serve apenas para utilidade, não deve ser instanciada");
+        throw new InstanciaClasseFinalException();
     }
 
     public static Date getDataFormatada(String dateStr, String pattern) {
@@ -18,8 +20,8 @@ public final class DateUtils {
         try {
             LocalDate localDate = LocalDate.parse(dateStr, formatter);
             return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException("Unable to parse the date: " + dateStr, e);
+        } catch (Exception e) {
+            throw new FormatarDataException(dateStr);
         }
     }
 

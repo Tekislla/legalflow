@@ -21,10 +21,8 @@ class ProcessoServiceTest {
 
     @InjectMocks
     private ProcessoService processoService;
-
     @Mock
     private ProcessoRepository processoRepository;
-
     @Mock
     private QuadroRepository quadroRepository;
 
@@ -40,6 +38,7 @@ class ProcessoServiceTest {
         dto.setNumero("123456");
         dto.setPrazoFatal("01/01/2020");
         dto.setPrazoSubsidio("02/02/2021");
+        dto.setStatus("CRIADO");
 
         when(quadroRepository.findById(1L)).thenReturn(Optional.of(new Quadro()));
         when(processoRepository.save(any(Processo.class))).thenReturn(new Processo());
@@ -60,5 +59,18 @@ class ProcessoServiceTest {
         assertThrows(QuadroNaoEncontradoException.class, () -> {
             processoService.saveProcesso(dto, null);
         });
+    }
+
+    @Test
+    void shouldFindById() {
+        Processo processo = new Processo();
+        processo.setId(1L);
+
+        when(processoRepository.findById(1L)).thenReturn(Optional.of(processo));
+
+        Processo processoEncontrado = processoService.findById(1L);
+
+        assertNotNull(processoEncontrado);
+        assertEquals(1L, processoEncontrado.getId());
     }
 }

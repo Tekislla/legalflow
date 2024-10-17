@@ -24,10 +24,8 @@ class UsuarioServiceTest {
 
     @InjectMocks
     private UsuarioService usuarioService;
-
     @Mock
     private UsuarioRepository usuarioRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
 

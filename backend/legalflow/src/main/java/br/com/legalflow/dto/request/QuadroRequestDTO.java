@@ -9,5 +9,4 @@ public class QuadroRequestDTO {
     private String nome;
     private Long usuarioId;
     private Long organizacaoId;
-
 }

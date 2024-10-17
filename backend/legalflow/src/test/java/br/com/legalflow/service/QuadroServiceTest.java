@@ -24,13 +24,10 @@ class QuadroServiceTest {
 
     @InjectMocks
     private QuadroService quadroService;
-
     @Mock
     private QuadroRepository quadroRepository;
-
     @Mock
     private UsuarioRepository usuarioRepository;
-
     @Mock
     private OrganizacaoRepository organizacaoRepository;
 
@@ -43,11 +40,11 @@ class QuadroServiceTest {
     void shouldSaveQuadro() {
         QuadroRequestDTO dto = new QuadroRequestDTO();
         dto.setUsuarioId(1L);
-        dto.setOrganizacaoId(1L); // Certifique-se de adicionar o ID da organização
+        dto.setOrganizacaoId(1L);
         dto.setNome("Novo Quadro");
 
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(new Usuario()));
-        when(organizacaoRepository.findById(1L)).thenReturn(Optional.of(new Organizacao())); // Simula uma organização encontrada
+        when(organizacaoRepository.findById(1L)).thenReturn(Optional.of(new Organizacao()));
         when(quadroRepository.save(any(Quadro.class))).thenReturn(new Quadro());
 
         Quadro quadro = quadroService.saveQuadro(dto);
@@ -55,7 +52,6 @@ class QuadroServiceTest {
         assertNotNull(quadro);
         verify(quadroRepository, times(1)).save(any(Quadro.class));
     }
-
 
     @Test
     void shouldThrowUsuarioNaoEncontradoException() {

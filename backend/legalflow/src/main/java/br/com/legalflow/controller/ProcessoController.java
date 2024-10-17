@@ -3,8 +3,6 @@ package br.com.legalflow.controller;
 import br.com.legalflow.controller.base.BaseController;
 import br.com.legalflow.dto.request.ProcessoRequestDTO;
 import br.com.legalflow.entity.Processo;
-import br.com.legalflow.entity.Usuario;
-import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
 import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.ProcessoService;
@@ -65,15 +63,13 @@ public class ProcessoController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarProcesso(@PathVariable Long id) {
         try {
-            Usuario usuarioLogado = getUsuarioLogado();
-
-            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+            if (!isUsuarioAdmin()) {
                 throw new UsuarioNaoAutorizadoException();
             }
 
             processoService.deleteById(id);
 
-            return ResponseEntity.ok("Quadro deletado com sucesso");
+            return ResponseEntity.ok("Processo deletado com sucesso");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -87,5 +83,4 @@ public class ProcessoController extends BaseController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-    
 }

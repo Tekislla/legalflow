@@ -86,5 +86,4 @@ public class JwtTokenProvider {
                 .getBody()
                 .get("role", String.class);
     }
-
 }

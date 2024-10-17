@@ -15,5 +15,4 @@ public class LoginResponseDTO {
         this.usuario = usuario;
         this.organizacaoId = usuario.getOrganizacao().getId();
     }
-
 }

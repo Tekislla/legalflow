@@ -8,7 +8,6 @@ import br.com.legalflow.exception.organizacao.OrganizacaoNaoEncontradaException;
 import br.com.legalflow.exception.quadro.QuadroNaoEncontradoException;
 import br.com.legalflow.exception.usuario.UsuarioNaoEncontradoException;
 import br.com.legalflow.repository.OrganizacaoRepository;
-import br.com.legalflow.repository.ProcessoRepository;
 import br.com.legalflow.repository.QuadroRepository;
 import br.com.legalflow.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,45 +25,36 @@ public class QuadroService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private OrganizacaoRepository organizacaoRepository;
-
     @Autowired
     private ProcessoService processoService;
 
     public Quadro saveQuadro(QuadroRequestDTO dto) {
-            Quadro quadro = new Quadro();
+        Quadro quadro = new Quadro();
 
-            if (dto.getId() != null) {
-               quadro = findById(dto.getId());
-            }
+        if (dto.getId() != null) {
+           quadro = findById(dto.getId());
+        }
 
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(dto.getUsuarioId());
-            Optional<Organizacao> organizacaoOpt = organizacaoRepository.findById(dto.getOrganizacaoId());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(dto.getUsuarioId());
+        Optional<Organizacao> organizacaoOpt = organizacaoRepository.findById(dto.getOrganizacaoId());
 
-            if (usuarioOpt.isEmpty()) {
-                throw new UsuarioNaoEncontradoException(dto.getUsuarioId());
-            }
+        if (usuarioOpt.isEmpty()) {
+            throw new UsuarioNaoEncontradoException(dto.getUsuarioId());
+        }
 
-            if (organizacaoOpt.isEmpty()) {
-                throw new OrganizacaoNaoEncontradaException(dto.getOrganizacaoId());
-            }
+        if (organizacaoOpt.isEmpty()) {
+            throw new OrganizacaoNaoEncontradaException(dto.getOrganizacaoId());
+        }
 
-            quadro.setUsuario(usuarioOpt.get());
-            quadro.setOrganizacao(organizacaoOpt.get());
-            quadro.setNome(dto.getNome());
+        quadro.setUsuario(usuarioOpt.get());
+        quadro.setOrganizacao(organizacaoOpt.get());
+        quadro.setNome(dto.getNome());
 
-            return quadroRepository.save(quadro);
+        return quadroRepository.save(quadro);
     }
 
     public Quadro findById(Long id) {
         return quadroRepository.findById(id).orElseThrow(() -> new QuadroNaoEncontradoException(id));
-    }
-
-    public List<Quadro> findByUsuarioIdAndOrganizacaoId(Long usuarioId, Long organizacaoId) {
-        return quadroRepository.findByUsuarioIdAndOrganizacaoId(usuarioId, organizacaoId);
-    }
-
-    public List<Quadro> findByOrganizacaoId(Long organizacaoId) {
-        return quadroRepository.findByOrganizacaoId(organizacaoId);
     }
 
     public void deletarQuadro(Quadro quadro) {

@@ -5,7 +5,6 @@ import br.com.legalflow.dto.request.EditarUsuarioRequestDTO;
 import br.com.legalflow.entity.Usuario;
 import br.com.legalflow.enums.RoleEnum;
 import br.com.legalflow.exception.usuario.UsuarioNaoAutorizadoException;
-import br.com.legalflow.service.OrganizacaoService;
 import br.com.legalflow.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,19 +58,16 @@ public class UsuarioController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {
         try {
-            Usuario usuarioLogado = getUsuarioLogado();
-
-            if (usuarioLogado.getRole().equals(RoleEnum.USER.toString())) {
+            if (!isUsuarioAdmin()) {
                 throw new UsuarioNaoAutorizadoException();
             }
 
             Usuario usuario = usuarioService.findById(id);
             usuarioService.excluirUsuario(usuario);
 
-            return ResponseEntity.ok("Usuário excluído com sucesso");
+            return ResponseEntity.ok("Usuário deletado com sucesso");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
-
 }

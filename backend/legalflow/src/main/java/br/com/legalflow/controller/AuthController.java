@@ -21,7 +21,6 @@ public class AuthController extends BaseController {
     private UsuarioService usuarioService;
     @Autowired
     private OrganizacaoService organizacaoService;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -48,5 +47,4 @@ public class AuthController extends BaseController {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
-
 }

@@ -23,10 +23,8 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private QuadroService quadroService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
