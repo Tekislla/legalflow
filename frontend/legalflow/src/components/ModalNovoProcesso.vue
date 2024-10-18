@@ -10,25 +10,25 @@
         <div class="q-gutter-md">
           <q-input
             stack-label
-            v-model="processo.nome"
-            label="Nome"
-            outlined
-            required
-            :rules="[
-              (val) =>
-                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
-            ]"
-          />
-
-          <q-input
-            stack-label
             v-model="processo.numero"
             label="Número do processo"
             outlined
             required
             :rules="[
-              (val) =>
-                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
+              (val) => !!val || 'Número do processo é obrigatório',
+              (val) => val.length <= 100 || 'Máximo de 100 caracteres',
+            ]"
+          />
+
+          <q-input
+            stack-label
+            v-model="processo.nome"
+            label="Nome"
+            outlined
+            required
+            :rules="[
+              (val) => !!val || 'Nome do processo é obrigatório',
+              (val) => val.length <= 100 || 'Máximo de 100 caracteres',
             ]"
           />
 
@@ -39,8 +39,8 @@
             outlined
             required
             :rules="[
-              (val) =>
-                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
+              (val) => !!val || 'Autor é obrigatório',
+              (val) => val.length <= 100 || 'Máximo de 100 caracteres',
             ]"
           />
 
@@ -51,23 +51,8 @@
             outlined
             required
             :rules="[
-              (val) =>
-                val.length <= 100 || 'Por favor, use no máximo 100 caracteres',
-            ]"
-          />
-
-          <q-input
-            stack-label
-            v-model="processo.descricao"
-            label="Descrição"
-            outlined
-            required
-            type="textarea"
-            hint="Máximo 1000 caracteres"
-            :rules="[
-              (val) =>
-                val.length <= 1000 ||
-                'Por favor, use no máximo 1000 caracteres',
+              (val) => !!val || 'Réu é obrigatório',
+              (val) => val.length <= 100 || 'Máximo de 100 caracteres',
             ]"
           />
 
@@ -168,6 +153,20 @@
             </div>
           </div>
 
+          <q-input
+            stack-label
+            v-model="processo.descricao"
+            label="Descrição"
+            outlined
+            required
+            type="textarea"
+            hint="Máximo 1000 caracteres"
+            :rules="[
+              (val) => !!val || 'Descrição é obrigatória',
+              (val) => val.length <= 1000 || 'Máximo de 1000 caracteres',
+            ]"
+          />
+
           <q-file
             stack-label
             clearable
@@ -176,6 +175,10 @@
             outlined
             required
             accept="application/pdf"
+            :rules="[
+              (val) => !!val || 'Arquivo é obrigatório',
+              (val) => val.size < 10000000 || 'Arquivo muito grande',
+            ]"
           >
             <template v-slot:append>
               <q-icon name="attach_file" />
@@ -192,6 +195,7 @@
               @click="clearForm()"
             />
             <q-btn
+              :loading="loading"
               @click="submitFormNovoProcesso()"
               unelevated
               size="md"
@@ -199,10 +203,15 @@
               no-caps
               color="teal"
               :disable="
+                loading ||
                 !processo.nome ||
+                processo.nome.length > 100 ||
                 !processo.numero ||
+                processo.numero.length > 100 ||
                 !processo.autor ||
+                processo.autor.length > 100 ||
                 !processo.reu ||
+                processo.reu.length > 100 ||
                 !processo.descricao ||
                 !processo.prazoSubsidio ||
                 !processo.prazoFatal ||
@@ -219,6 +228,7 @@
 <script>
 import { defineComponent } from "vue";
 import ProcessoService from "@/services/ProcessoService";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "ModalNovoProcesso",
@@ -231,6 +241,7 @@ export default defineComponent({
 
   data() {
     return {
+      loading: false,
       processo: {
         nome: "",
         numero: "",
@@ -249,23 +260,34 @@ export default defineComponent({
 
   methods: {
     async submitFormNovoProcesso() {
-      try {
-        this.processo.quadroId = this.idQuadroAtual;
-        const formData = new FormData();
+      this.loading = true;
 
-        formData.append(
-          "processo",
-          new Blob([JSON.stringify(this.processo)], {
-            type: "application/json",
-          })
-        );
+      this.processo.quadroId = this.idQuadroAtual;
+      const formData = new FormData();
 
-        formData.append("arquivo", this.arquivo);
-        await ProcessoService.salvarProcesso(formData);
-        this.$emit("processo-criado");
-      } catch (error) {
-        console.error(error);
-      }
+      formData.append(
+        "processo",
+        new Blob([JSON.stringify(this.processo)], {
+          type: "application/json",
+        })
+      );
+
+      formData.append("arquivo", this.arquivo);
+
+      await ProcessoService.salvarProcesso(formData)
+        .then(() => {
+          this.loading = false;
+          this.$emit("processo-criado");
+        })
+        .catch((err) => {
+          this.loading = false;
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            err.response?.data || "Erro ao criar processo",
+            "negative",
+            "red"
+          );
+        });
 
       this.clearForm();
     },

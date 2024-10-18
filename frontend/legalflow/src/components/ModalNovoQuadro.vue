@@ -39,6 +39,7 @@
               v-close-popup
             />
             <q-btn
+              :loading="loading"
               @click="salvarQuadro()"
               unelevated
               size="md"
@@ -46,6 +47,7 @@
               no-caps
               color="teal"
               :disable="
+                loading ||
                 !form.nome ||
                 !usuarioSelecionado ||
                 form.nome.length < 5 ||
@@ -66,14 +68,12 @@ export default defineComponent({
   name: "ModalNovoQuadro",
 
   props: {
-    listaUsuarios: {
-      type: Array,
-      required: true,
-    },
+    listaUsuarios: Array,
   },
 
   data() {
     return {
+      loading: false,
       form: {
         nome: "",
         usuarioId: null,
@@ -84,19 +84,23 @@ export default defineComponent({
 
   methods: {
     async salvarQuadro() {
+      this.loading = true;
       this.form.usuarioId = this.usuarioSelecionado.value;
+
       await QuadroService.salvarQuadro(this.form)
         .then(() => {
+          this.loading = false;
           this.$emit("salvar-quadro");
+          this.clearForm();
         })
         .catch((err) => {
+          this.loading = false;
           NotificationUtil.returnFeedbackMessage(
             this.$q,
-            "Falha ao criar quadro",
+            err.response?.data || "Falha ao criar quadro",
             "negative",
             "red"
           );
-          console.log(err);
         });
     },
     clearForm() {

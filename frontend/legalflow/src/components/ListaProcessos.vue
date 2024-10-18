@@ -3,6 +3,7 @@
     <q-card class="container-card q-pa-lg">
       <q-card-section>
         <q-table
+          :loading="loading"
           :rows="processos"
           :columns="columns"
           row-key="id"
@@ -81,7 +82,7 @@
               outlined
               required
               :disable="!editandoProcesso"
-              :rules="[(val) => !!val || 'Status é obrigatório']"
+              :rules="[(val) => !!val || 'Quadro é obrigatório']"
             />
             <q-input
               stack-label
@@ -296,19 +297,20 @@
                     color="teal"
                     no-caps
                     :disable="
-                      processoSelecionado.status !== '' &&
-                      processoSelecionado.status !== undefined &&
-                      processoSelecionado.nome !== '' &&
-                      processoSelecionado.nome.length >= 100 &&
-                      processoSelecionado.numero !== '' &&
-                      processoSelecionado.numero.length >= 100 &&
-                      processoSelecionado.autor !== '' &&
-                      processoSelecionado.autor.length >= 100 &&
-                      processoSelecionado.reu !== '' &&
-                      processoSelecionado.reu.length >= 100 &&
-                      processoSelecionado.prazoSubsidio !== '' &&
-                      processoSelecionado.prazoFatal !== '' &&
-                      processoSelecionado.descricao !== '' &&
+                      loading ||
+                      processoSelecionado.status === '' ||
+                      processoSelecionado.status === undefined ||
+                      processoSelecionado.nome === '' ||
+                      processoSelecionado.nome.length >= 100 ||
+                      processoSelecionado.numero === '' ||
+                      processoSelecionado.numero.length >= 100 ||
+                      processoSelecionado.autor === '' ||
+                      processoSelecionado.autor.length >= 100 ||
+                      processoSelecionado.reu === '' ||
+                      processoSelecionado.reu.length >= 100 ||
+                      processoSelecionado.prazoSubsidio === '' ||
+                      processoSelecionado.prazoFatal === '' ||
+                      processoSelecionado.descricao === '' ||
                       processoSelecionado.descricao.length >= 1000
                     "
                   />
@@ -325,6 +327,7 @@
 <script>
 import { defineComponent } from "vue";
 import ProcessoService from "@/services/ProcessoService";
+import NotificationUtil from "@/utils/NotificationUtil";
 import { formatDate, formatStatus, formatTextSize } from "@/utils/formatters";
 
 export default defineComponent({
@@ -379,7 +382,7 @@ export default defineComponent({
           label: "Número",
           align: "left",
           field: (row) => row.numero,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 25)}`,
           sortable: true,
         },
         {
@@ -397,7 +400,7 @@ export default defineComponent({
           label: "Autor",
           align: "left",
           field: (row) => row.autor,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 20)}`,
           sortable: true,
         },
         {
@@ -406,7 +409,7 @@ export default defineComponent({
           label: "Réu",
           align: "left",
           field: (row) => row.reu,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 20)}`,
           sortable: true,
         },
         {
@@ -438,12 +441,21 @@ export default defineComponent({
 
   methods: {
     async baixarProcesso(processo) {
-      await ProcessoService.baixarProcesso(processo.id).then((response) => {
-        const blob = new Blob([response.data], { type: "application/pdf" });
-        const fileURL = URL.createObjectURL(blob);
+      await ProcessoService.baixarProcesso(processo.id)
+        .then((response) => {
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const fileURL = URL.createObjectURL(blob);
 
-        window.open(fileURL, "_blank");
-      });
+          window.open(fileURL, "_blank");
+        })
+        .catch((err) => {
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            err.response?.data || "Erro ao baixar processo",
+            "negative",
+            "red"
+          );
+        });
     },
     arquivarProcesso(processo) {
       let processoSelecionado = {
@@ -456,6 +468,7 @@ export default defineComponent({
     },
     async salvarProcesso(processo) {
       processo.quadroId = this.idQuadroAtual;
+
       if (typeof processo.status !== "string") {
         processo.status = processo.status.label;
       }
@@ -474,23 +487,46 @@ export default defineComponent({
         new Blob([processo.arquivo], { type: "application/pdf" })
       );
 
-      await ProcessoService.salvarProcesso(formData).then(() => {
-        this.$emit("salvar-processo", processo);
-        this.modalDetalhesProcessoOpen = false;
-        this.editandoProcesso = false;
-      });
+      await ProcessoService.salvarProcesso(formData)
+        .then(() => {
+          this.$emit("salvar-processo", processo);
+          this.modalDetalhesProcessoOpen = false;
+          this.editandoProcesso = false;
+        })
+        .catch((err) => {
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            err.response?.data || "Erro ao salvar processo",
+            "negative",
+            "red"
+          );
+        });
     },
     async editarProcesso(processo) {
+      this.loading = true;
+
       processo.quadroId = processo.quadroAtual.value;
+
       if (typeof processo.status !== "string") {
         processo.status = processo.status.label;
       }
 
-      await ProcessoService.editarProcesso(processo).then(() => {
-        this.$emit("salvar-processo", processo);
-        this.modalDetalhesProcessoOpen = false;
-        this.editandoProcesso = false;
-      });
+      await ProcessoService.editarProcesso(processo)
+        .then(() => {
+          this.loading = false;
+          this.$emit("salvar-processo", processo);
+          this.modalDetalhesProcessoOpen = false;
+          this.editandoProcesso = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            err.response?.data || "Erro ao editar processo",
+            "negative",
+            "red"
+          );
+        });
     },
     confirmaDeletarProcesso(processo) {
       const title = "Deletar processo";
@@ -518,10 +554,22 @@ export default defineComponent({
         });
     },
     deletarProcesso(processo) {
-      ProcessoService.deletarProcesso(processo.id).then(() => {
-        this.$emit("deletar-processo");
-        this.modalDetalhesProcessoOpen = false;
-      });
+      this.loading = true;
+      ProcessoService.deletarProcesso(processo.id)
+        .then(() => {
+          this.loading = false;
+          this.$emit("deletar-processo");
+          this.modalDetalhesProcessoOpen = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+          NotificationUtil.returnFeedbackMessage(
+            this.$q,
+            err.response?.data || "Erro ao deletar processo",
+            "negative",
+            "red"
+          );
+        });
     },
     abrirModalDetalhesProcesso(processo) {
       this.processoSelecionado = {

@@ -18,19 +18,14 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
             <column name="data_cadastro" type="date"/>
             <column name="data_atualizacao" type="date"/>
             <column name="ativo" type="boolean"/>
-            <column name="role" type="varchar(100)"/>
+            <column name="role" type="varchar(50)"/>
         </createTable>
         <createTable tableName="organizacao">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="nome" type="varchar(100)"/>
-            <column name="documento" type="varchar(14)"/>
-            <column name="senha_crypto" type="varchar(100)"/>
-            <column name="data_cadastro" type="date"/>
-            <column name="data_atualizacao" type="date"/>
-            <column name="ativo" type="boolean"/>
-            <column name="role" type="varchar(100)"/>
+            <column name="documento" type="varchar(20)"/>
         </createTable>
         <createTable tableName="quadro">
             <column name="id" type="bigint" autoIncrement="true">
@@ -53,8 +48,8 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
             </column>
             <column name="nome" type="varchar(100)"/>
             <column name="numero" type="varchar(100)"/>
-            <column name="autor" type="varchar(1000)"/>
-            <column name="reu" type="varchar(1000)"/>
+            <column name="autor" type="varchar(100)"/>
+            <column name="reu" type="varchar(100)"/>
             <column name="descricao" type="varchar(1000)"/>
             <column name="status" type="varchar(100)"/>
             <column name="prazo_subsidio" type="date"/>

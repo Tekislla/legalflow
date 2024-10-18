@@ -63,6 +63,7 @@
               v-close-popup
             />
             <q-btn
+              :loading="loading"
               @click="cadastrar()"
               unelevated
               size="md"
@@ -70,6 +71,7 @@
               no-caps
               color="teal"
               :disable="
+                this.loading ||
                 form.nome === '' ||
                 form.nome.length < 5 ||
                 form.nome.length > 50 ||
@@ -92,6 +94,7 @@
 <script>
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
+import NotificationUtil from "@/utils/NotificationUtil";
 
 export default defineComponent({
   name: "ModalNovoUsuario",
@@ -106,6 +109,7 @@ export default defineComponent({
 
   data() {
     return {
+      loading: false,
       form: {
         nome: "",
         email: "",
@@ -128,11 +132,25 @@ export default defineComponent({
 
   methods: {
     async cadastrar() {
+      this.loading = true;
+
       this.form.organizacaoId = this.store.state.organizacaoId;
       this.form.administrador = this.form.administrador.value;
-      await this.store.dispatch("cadastrar", this.form);
-      this.resetForm();
-      this.$emit("salvar-usuario");
+
+      try {
+        await this.store.dispatch("cadastrar", this.form);
+        this.loading = false;
+        this.resetForm();
+        this.$emit("salvar-usuario");
+      } catch (error) {
+        this.loading = false;
+        NotificationUtil.returnFeedbackMessage(
+          this.$q,
+          error.response?.data || "",
+          "negative",
+          "red"
+        );
+      }
     },
     validarEmail() {
       if (this.form.email) {
