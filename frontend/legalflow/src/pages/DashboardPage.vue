@@ -13,7 +13,7 @@
               <q-item-label>
                 <q-spinner
                   color="teal"
-                  size="3em"
+                  size="2em"
                   :thickness="2"
                   v-show="loading === true"
                 />
@@ -31,7 +31,7 @@
               <q-item-label>
                 <q-spinner
                   color="teal"
-                  size="3em"
+                  size="2em"
                   :thickness="2"
                   v-show="loading === true"
                 />
@@ -49,7 +49,7 @@
               <q-item-label>
                 <q-spinner
                   color="teal"
-                  size="3em"
+                  size="2em"
                   :thickness="2"
                   v-show="loading === true"
                 />
@@ -65,7 +65,7 @@
             :columns="columns"
             :loading="loading"
             row-key="id"
-            no-data-label="Não há processos próximos ao vencimento."
+            no-data-label="Não há processos vencidos/próximos ao vencimento."
             v-model:pagination="pagination"
             :rows-per-page-options="[10, 25, 50, 100, 0]"
           >
@@ -107,7 +107,7 @@ export default defineComponent({
           label: "Número",
           align: "left",
           field: (row) => row.numero,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 25)}`,
           sortable: true,
         },
         {
@@ -125,7 +125,7 @@ export default defineComponent({
           label: "Autor",
           align: "left",
           field: (row) => row.autor,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 20)}`,
           sortable: true,
         },
         {
@@ -134,7 +134,7 @@ export default defineComponent({
           label: "Réu",
           align: "left",
           field: (row) => row.reu,
-          format: (val) => `${val}`,
+          format: (val) => `${formatTextSize(val, 20)}`,
           sortable: true,
         },
         {
@@ -154,11 +154,6 @@ export default defineComponent({
           field: (row) => row.prazoFatal,
           format: (val) => `${formatDate(val)}`,
           sortable: true,
-        },
-        {
-          name: "actions",
-          label: "Ações",
-          align: "center",
         },
       ],
     };
@@ -181,15 +176,14 @@ export default defineComponent({
           this.processosAVencer = response.data.processosAVencer;
           this.loading = false;
         })
-        .catch((error) => {
+        .catch((err) => {
           this.loading = false;
           NotificationUtil.returnFeedbackMessage(
             this.$q,
-            "Falha ao carregar informações do dashboard",
+            err.response?.data || "Falha ao carregar informações do dashboard",
             "negative",
             "red"
           );
-          console.log(error);
         });
     },
   },

@@ -14,6 +14,7 @@
           label="E-mail"
           type="email"
           v-on:keyup.enter="login"
+          :rules="[(val) => validarEmail() || 'Digite um e-mail válido']"
         />
         <br />
         <q-input
@@ -41,7 +42,7 @@
           label="Entrar"
           color="teal"
           @click="login"
-          :disable="!email || !senha || !validarEmail()"
+          :disable="loading || !email || !senha || !validarEmail()"
         />
       </q-card-actions>
     </q-card>
@@ -63,10 +64,10 @@ export default defineComponent({
 
   data() {
     return {
+      loading: false,
       email: null,
       senha: null,
       isPwd: true,
-      loading: false,
     };
   },
 
@@ -100,12 +101,11 @@ export default defineComponent({
             "red"
           );
         }
-      } catch (error) {
+      } catch (err) {
         this.loading = false;
-        console.error(error);
         NotificationUtil.returnFeedbackMessage(
           this.$q,
-          error.response?.data || "Falha no login",
+          err.response?.data || "Falha no login",
           "negative",
           "red"
         );

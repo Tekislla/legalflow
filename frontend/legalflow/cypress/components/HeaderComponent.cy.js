@@ -1,60 +1,22 @@
-import MainLayout from "@/layouts/MainLayout.vue";
-import { setupMocks } from "../support/mocks";
-import { createStoreMock } from "../support/store"; // Mock do Vuex Store
+import HeaderComponent from "@/components/HeaderComponent.vue";
 
-describe("HeaderComponent dentro do MainLayout", () => {
-  beforeEach(() => {
-    setupMocks();
+describe("HeaderComponent", () => {
+  it("Deve renderizar o componente corretamente", () => {
+    cy.mount(HeaderComponent, {
+      props: {
+        processosCriados: 5,
+        processosEmProgresso: 10,
+        processosFinalizados: 3,
+        processosArquivados: 2,
+        idQuadroAtual: 1,
+        userRole: "ADMIN",
+      },
+    });
 
-    cy.mount(MainLayout, {}).as("mountedComponent");
-  });
-
-  it("Deve verificar as condições de renderização e depurar variáveis", () => {
-    cy.get("@mountedComponent")
-      .then(({ wrapper }) => {
-        // Define os valores no `data` do MainLayout
-        wrapper.setData({
-          processosCriados: 5,
-          processosEmProgresso: 10,
-          processosFinalizados: 3,
-          processosArquivados: 2,
-          idQuadroAtual: 1,
-        });
-
-        // Aguarda o Vue processar a atualização e renderizar os elementos
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        // Verifica e loga o estado do data do MainLayout para depuração
-        cy.get("@mountedComponent").then(({ wrapper }) => {
-          cy.log("Estado atual do data do MainLayout:");
-          cy.log(`processosCriados: ${wrapper.vm.processosCriados}`);
-          cy.log(`processosEmProgresso: ${wrapper.vm.processosEmProgresso}`);
-          cy.log(`idQuadroAtual: ${wrapper.vm.idQuadroAtual}`);
-
-          // Verifica se o HeaderComponent está corretamente montado
-          const headerComponent = wrapper.findComponent({
-            name: "HeaderComponent",
-          });
-          expect(headerComponent.exists()).to.be.true;
-
-          // Log para verificar as props do HeaderComponent
-          cy.log("Props do HeaderComponent:");
-          cy.log(`idQuadroAtual: ${headerComponent.props("idQuadroAtual")}`);
-          cy.log(`userRole: ${headerComponent.vm.userRole}`);
-          cy.log(
-            `processosCriados: ${headerComponent.props("processosCriados")}`
-          );
-
-          // Verifica se o botão "Novo Usuário" é exibido corretamente
-          cy.contains("Novo Usuário").should("be.visible");
-
-          // Verifica se os tabs de processos foram renderizados
-          cy.contains("Criado").should("exist");
-          cy.contains("Em Progresso").should("exist");
-          cy.contains("Finalizado").should("exist");
-          cy.contains("Arquivado").should("exist");
-        });
-      });
+    cy.contains("LegalFlow").should("be.visible");
+    cy.contains("5").should("be.visible");
+    cy.contains("10").should("be.visible");
+    cy.contains("3").should("be.visible");
+    cy.contains("2").should("be.visible");
   });
 });

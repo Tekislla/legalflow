@@ -23,13 +23,15 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.4.3",
+    "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.2",
     "cypress": "^13.15.0",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "postcss": "^8.4.14",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "vue-router-mock": "^1.1.0"
   },
   "engines": {
     "node": "^20 || ^18 || ^16",

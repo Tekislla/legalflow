@@ -17,7 +17,7 @@
           <q-table
             :rows="usuarios"
             :columns="columns"
-            :loading="usuarios.length === 0"
+            :loading="this.loading"
             row-key="id"
             no-data-label="Não há processos disponíveis com este status."
             v-model:pagination="pagination"

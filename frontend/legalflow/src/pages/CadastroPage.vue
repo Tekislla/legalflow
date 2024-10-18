@@ -12,6 +12,10 @@
           v-model="form.nome"
           label="Nome"
           required
+          :rules="[
+            (val) => val.length <= 20 || 'Máximo de 50 caracteres',
+            (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
+          ]"
         />
         <br />
         <q-input
@@ -21,6 +25,11 @@
           type="email"
           label="Email"
           required
+          :rules="[
+            (val) => val.length <= 50 || 'Máximo de 50 caracteres',
+            (val) => val.length >= 10 || 'Mínimo de 10 caracteres',
+            (val) => validarEmail() || 'E-mail inválido',
+          ]"
         />
         <br />
         <q-input
@@ -29,6 +38,10 @@
           v-model="form.nomeOrganizacao"
           label="Nome da Organização"
           required
+          :rules="[
+            (val) => val.length <= 20 || 'Máximo de 100 caracteres',
+            (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
+          ]"
         />
         <br />
         <q-input
@@ -37,6 +50,10 @@
           v-model="form.documentoOrganizacao"
           label="Documento da Organização"
           required
+          :rules="[
+            (val) => val.length <= 20 || 'Máximo de 20 caracteres',
+            (val) => val.length >= 11 || 'Mínimo de 11 caracteres',
+          ]"
         />
         <br />
         <q-input
@@ -47,6 +64,10 @@
           label="Senha"
           required
           v-on:keyup.enter="cadastrar"
+          :rules="[
+            (val) => val.length <= 20 || 'Máximo de 20 caracteres',
+            (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
+          ]"
         >
           <template v-slot:append>
             <q-icon
@@ -67,10 +88,20 @@
           @click="cadastrar"
           :disable="
             !form.email ||
+            form.email.length < 10 ||
+            form.email.length > 50 ||
             !form.senha ||
+            form.senha.length < 5 ||
+            form.senha.length > 20 ||
             !form.nome ||
+            form.nome.length < 5 ||
+            form.nome.length > 50 ||
             !form.nomeOrganizacao ||
+            form.nomeOrganizacao.length < 5 ||
+            form.nomeOrganizacao.length > 100 ||
             !form.documentoOrganizacao ||
+            form.documentoOrganizacao.length < 11 ||
+            form.documentoOrganizacao.length > 20 ||
             !validarEmail()
           "
         />
@@ -142,7 +173,6 @@ export default defineComponent({
         }
       } catch (error) {
         this.loading = false;
-
         NotificationUtil.returnFeedbackMessage(
           this.$q,
           error.response?.data || "",

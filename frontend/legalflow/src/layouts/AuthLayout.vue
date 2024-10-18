@@ -1,4 +1,3 @@
-<!-- layouts/AuthLayout.vue -->
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>

@@ -32,6 +32,7 @@
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="black" no-caps v-close-popup />
             <q-btn
+              :loading="loading"
               @click="salvarQuadro()"
               unelevated
               size="md"
@@ -39,6 +40,7 @@
               no-caps
               color="teal"
               :disable="
+                loading ||
                 !form.nome ||
                 !usuarioSelecionado ||
                 form.nome.length < 5 ||
@@ -68,6 +70,7 @@ export default defineComponent({
 
   data() {
     return {
+      loading: false,
       form: {
         id: this.idQuadroAtual,
         nome: this.nomeQuadro,
@@ -87,12 +90,6 @@ export default defineComponent({
     idQuadroAtual(newValue) {
       this.form.id = newValue;
     },
-    modalOpen(newValue) {
-      if (newValue) {
-        this.form.nome = this.nomeQuadro;
-        this.usuarioSelecionado = this.usuarioResponsavelQuadro;
-      }
-    },
   },
 
   methods: {
@@ -109,7 +106,6 @@ export default defineComponent({
             "negative",
             "red"
           );
-          console.log(err);
         });
     },
   },
