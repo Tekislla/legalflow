@@ -3,12 +3,10 @@ name: Legalflow Pipeline
 on:
   push:
     branches:
-      - "**"
-    paths-ignore:
-      - "refs/pull/**"
+      - "main"
   pull_request:
     branches:
-      - "**"
+      - "main"
 
 jobs:
   backend-build:
