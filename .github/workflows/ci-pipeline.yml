@@ -1,0 +1,67 @@
+name: Legalflow Pipeline
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Build Backend
+        run: mvn clean install -f backend/legalflow/pom.xml
+
+      - name: Test Backend
+        run: mvn test -f backend/legalflow/pom.xml
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/legalflow/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install Frontend Dependencies
+        run: npm install --prefix frontend/legalflow
+
+      - name: Build Frontend
+        run: npm run build --prefix frontend/legalflow
+
+      - name: Run ESLint
+        run: npm run lint --prefix frontend/legalflow
+
+      - name: Test Frontend
+        run: npm run test --prefix frontend/legalflow
