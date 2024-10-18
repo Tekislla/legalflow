@@ -298,20 +298,20 @@
                     no-caps
                     :disable="
                       loading ||
-                      (processoSelecionado.status !== '' &&
-                        processoSelecionado.status !== undefined &&
-                        processoSelecionado.nome !== '' &&
-                        processoSelecionado.nome.length >= 100 &&
-                        processoSelecionado.numero !== '' &&
-                        processoSelecionado.numero.length >= 100 &&
-                        processoSelecionado.autor !== '' &&
-                        processoSelecionado.autor.length >= 100 &&
-                        processoSelecionado.reu !== '' &&
-                        processoSelecionado.reu.length >= 100 &&
-                        processoSelecionado.prazoSubsidio !== '' &&
-                        processoSelecionado.prazoFatal !== '' &&
-                        processoSelecionado.descricao !== '' &&
-                        processoSelecionado.descricao.length >= 1000)
+                      processoSelecionado.status === '' ||
+                      processoSelecionado.status === undefined ||
+                      processoSelecionado.nome === '' ||
+                      processoSelecionado.nome.length >= 100 ||
+                      processoSelecionado.numero === '' ||
+                      processoSelecionado.numero.length >= 100 ||
+                      processoSelecionado.autor === '' ||
+                      processoSelecionado.autor.length >= 100 ||
+                      processoSelecionado.reu === '' ||
+                      processoSelecionado.reu.length >= 100 ||
+                      processoSelecionado.prazoSubsidio === '' ||
+                      processoSelecionado.prazoFatal === '' ||
+                      processoSelecionado.descricao === '' ||
+                      processoSelecionado.descricao.length >= 1000
                     "
                   />
                 </div>
