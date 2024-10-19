@@ -39,7 +39,7 @@ export default route(function () {
         }
       } else if (userRole === "USER") {
         if (to.path === "/") {
-          return next("/home");
+          return next("/dashboard");
         } else if (to.meta.requiresAdmin) {
           return next("/home");
         }

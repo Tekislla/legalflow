@@ -23,8 +23,8 @@ public class ProcessoService {
     private ProcessoRepository processoRepository;
     @Autowired
     private QuadroRepository quadroRepository;
-
     private final List<String> listaStatusEmAberto = List.of(ProcessoStatusEnum.CRIADO.name(), ProcessoStatusEnum.EM_PROGRESSO.name());
+    private final Date diasParaVencer = DateUtils.getDataSomandoDias(7);
 
     public Processo saveProcesso(ProcessoRequestDTO dto, byte[] arquivo) {
         Processo processo = new Processo();
@@ -65,17 +65,17 @@ public class ProcessoService {
         return processoRepository.findById(id).orElseThrow(() -> new ProcessoNaoEncontradoException(id));
     }
 
-    public DashboardInfoResponseDTO getDashboardInfo(Long organizacaoId) {
+    public DashboardInfoResponseDTO getDashboardInfo(boolean isAdmin, Long id) {
         DashboardInfoResponseDTO dashboardInfo = new DashboardInfoResponseDTO();
         Set<Long> idsProcessos = new HashSet<>();
 
-        List<Processo> processosAVencerPrazoSubsidio = findProcessosAVencerByPrazoSubsidio(organizacaoId);
-        List<Processo> processosAVencerPrazoFatal = findProcessosAVencerByPrazoFatal(organizacaoId);
+        List<Processo> processosAVencerPrazoSubsidio = findProcessosAVencerByPrazoSubsidio(isAdmin, id);
+        List<Processo> processosAVencerPrazoFatal = findProcessosAVencerByPrazoFatal(isAdmin, id);
         List<Processo> processosAVencer = Stream.concat(processosAVencerPrazoSubsidio.stream(), processosAVencerPrazoFatal.stream())
                 .filter(processo -> idsProcessos.add(processo.getId()))
                 .toList();
 
-        dashboardInfo.setTotalProcessosEmAberto(countProcessosEmAbertoByOrganizacaoId(organizacaoId));
+        dashboardInfo.setTotalProcessosEmAberto(countProcessosEmAberto(isAdmin, id));
         dashboardInfo.setProcessosAVencerPrazoSubsidio(processosAVencerPrazoSubsidio);
         dashboardInfo.setProcessosAVencerPrazoFatal(processosAVencerPrazoFatal);
         dashboardInfo.setProcessosAVencer(processosAVencer);
@@ -83,18 +83,28 @@ public class ProcessoService {
         return dashboardInfo;
     }
 
-    public long countProcessosEmAbertoByOrganizacaoId(Long organizacaoId) {
-       return processoRepository.countByQuadroOrganizacaoIdAndStatusIn(organizacaoId, listaStatusEmAberto);
+    public long countProcessosEmAberto(boolean isAdmin, Long id) {
+        if (isAdmin) {
+            return processoRepository.countByQuadroOrganizacaoIdAndStatusIn(id, listaStatusEmAberto);
+        } else {
+            return processoRepository.countByQuadroUsuarioIdAndStatusIn(id, listaStatusEmAberto);
+        }
     }
 
-    public List<Processo> findProcessosAVencerByPrazoSubsidio(Long organizacaoId) {
-        Date prazo = DateUtils.getDataSomandoDias(7);
-        return processoRepository.findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqualAndStatusIn(organizacaoId, prazo, listaStatusEmAberto);
+    public List<Processo> findProcessosAVencerByPrazoSubsidio(boolean isAdmin, Long id) {
+        if (isAdmin) {
+            return processoRepository.findByQuadroOrganizacaoIdAndPrazoSubsidioLessThanEqualAndStatusIn(id, diasParaVencer, listaStatusEmAberto);
+        } else {
+            return processoRepository.findByQuadroUsuarioIdAndPrazoSubsidioLessThanEqualAndStatusIn(id, diasParaVencer, listaStatusEmAberto);
+        }
     }
 
-    public List<Processo> findProcessosAVencerByPrazoFatal(Long organizacaoId) {
-        Date prazo = DateUtils.getDataSomandoDias(7);
-        return processoRepository.findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqualAndStatusIn(organizacaoId, prazo, listaStatusEmAberto);
+    public List<Processo> findProcessosAVencerByPrazoFatal(boolean isAdmin, Long id) {
+        if (isAdmin) {
+            return processoRepository.findByQuadroOrganizacaoIdAndPrazoFatalLessThanEqualAndStatusIn(id, diasParaVencer, listaStatusEmAberto);
+        } else {
+            return processoRepository.findByQuadroUsuarioIdAndPrazoFatalLessThanEqualAndStatusIn(id, diasParaVencer, listaStatusEmAberto);
+        }
     }
 
     public void deleteById(Long id) {

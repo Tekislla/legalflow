@@ -256,6 +256,7 @@
               <div class="flex-container">
                 <div class="left-buttons">
                   <q-btn
+                    v-show="userRole === 'ADMIN'"
                     unelevated
                     @click="confirmaDeletarProcesso(processoSelecionado)"
                     label="Deletar Processo"

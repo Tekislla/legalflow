@@ -12,7 +12,7 @@ const routes = [
       {
         path: "dashboard",
         component: () => import("pages/DashboardPage.vue"),
-        meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { requiresAuth: true },
       },
       {
         path: "processos",
