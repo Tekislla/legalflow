@@ -75,10 +75,14 @@ public class ProcessoController extends BaseController {
         }
     }
 
-    @GetMapping("/dashboard/{organizacaoId}")
-    public ResponseEntity<?> getDashboardInfo(@PathVariable Long organizacaoId) {
+    @GetMapping("/dashboard/{id}")
+    public ResponseEntity<?> getDashboardInfo(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(processoService.getDashboardInfo(organizacaoId));
+            if (!isUsuarioAdmin()) {
+                id = getUsuarioLogado().getId();
+            }
+
+            return ResponseEntity.ok(processoService.getDashboardInfo(isUsuarioAdmin(), id));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

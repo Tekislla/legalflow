@@ -28,7 +28,6 @@
           clickable
           @click="redirectDashboard()"
           :focused="isDashboardRoute"
-          v-show="this.userRole === 'ADMIN'"
         >
           <q-item-section avatar> Dashboard </q-item-section>
         </q-item>
