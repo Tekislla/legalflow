@@ -9,7 +9,7 @@ RUN npm install
 
 COPY . .
 
-ENV QUASAR_PROFILE_ENV=container
+ENV QUASAR_PROFILE_ENV=prod
 
 RUN npm run build
 
