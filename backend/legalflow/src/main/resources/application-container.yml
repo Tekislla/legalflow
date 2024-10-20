@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://database:5432/legalflow
+    username: postgres
+    password: postgres
+    driver:
+      class: org.hibernate.dialect.PostgreSQL10Dialect
