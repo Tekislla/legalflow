@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: "${{ github.workspace }}/backend/legalflow/target/*.jar"
+          path: "${{ github.workspace }}/backend/legalflow/target/*.war"
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,4 +64,4 @@ jobs:
         with:
           app-name: "legalflow-backend"
           slot-name: "Production"
-          package: "*.jar"
+          package: "*.war"
