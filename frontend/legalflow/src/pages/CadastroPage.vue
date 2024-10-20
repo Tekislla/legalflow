@@ -13,7 +13,7 @@
           label="Nome"
           required
           :rules="[
-            (val) => val.length <= 20 || 'Máximo de 50 caracteres',
+            (val) => val.length <= 50 || 'Máximo de 50 caracteres',
             (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
           ]"
         />
@@ -39,7 +39,7 @@
           label="Nome da Organização"
           required
           :rules="[
-            (val) => val.length <= 20 || 'Máximo de 100 caracteres',
+            (val) => val.length <= 100 || 'Máximo de 100 caracteres',
             (val) => val.length >= 5 || 'Mínimo de 5 caracteres',
           ]"
         />
