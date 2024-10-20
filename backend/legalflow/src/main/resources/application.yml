@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /legalflow
+
+spring:
+  application:
+    name: "legalflow"
+  profiles:
+    active: prod
+  liquibase:
+    change-log: classpath:/db/dbchangeLog.xml
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+logging:
+  level:
+    root: INFO
+    com.azure: DEBUG
+
+jwt:
+  secret: "secret"
+  expiration: 14

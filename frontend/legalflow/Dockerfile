@@ -9,6 +9,8 @@ RUN npm install
 
 COPY . .
 
+ENV QUASAR_PROFILE_ENV=container
+
 RUN npm run build
 
 FROM nginx:alpine AS production-stage

@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-sources[0]:
+            endpoint: "https://legalflow.vault.azure.net/"
+  datasource:
+    url: jdbc:postgresql://${db-host}:5432/legalflow
+    username: ${db-user}
+    password: ${db-password}
+    driver:
+      class: org.hibernate.dialect.PostgreSQL10Dialect
+
+jwt:
+  secret: ${jwt-secret}
+  expiration: 14

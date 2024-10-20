@@ -70,7 +70,9 @@ module.exports = configure(function (ctx) {
       env: {
         VUE_APP_API_BASE_URL: ctx.dev
           ? "http://localhost:8080/legalflow"
-          : "http://localhost:8080/legalflow",
+          : process.env.QUASAR_PROFILE_ENV === "container"
+          ? "http://localhost:8080/legalflow"
+          : "http://api:8080/legalflow",
       },
       // rawDefine: {}
       // ignorePublicFolder: true,

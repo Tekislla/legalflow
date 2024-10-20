@@ -16,15 +16,8 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-
     @Value("${jwt.expiration}")
     private long jwtExpirationDays;
-
-    @PostConstruct
-    public void init() {
-        System.out.println("JWT Secret: " + jwtSecret);
-        System.out.println("JWT Expiration: " + jwtExpirationDays);
-    }
 
     public String gerarToken(Usuario usuario) {
         Map<String, Object> claims = new HashMap<>();

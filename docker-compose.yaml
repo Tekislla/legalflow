@@ -9,6 +9,8 @@ services:
       - database
     networks:
       - legalflow-net
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
 
   frontend:
     build:
@@ -20,6 +22,8 @@ services:
       - backend
     networks:
       - legalflow-net
+    environment:
+      QUASAR_PROFILE_ENV: ${QUASAR_PROFILE_ENV:-prod}
 
   database:
     image: postgres:latest

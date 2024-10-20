@@ -44,7 +44,11 @@
           <q-item
             clickable
             @click="abrirModalNovoQuadro()"
-            v-show="this.quadros.length === 0 && this.userRole === 'ADMIN'"
+            v-show="
+              this.quadros.length === 0 &&
+              this.userRole === 'ADMIN' &&
+              this.loading === false
+            "
           >
             <q-item-section>
               <q-item-label>Não há nenhum quadro criado</q-item-label>
@@ -52,10 +56,14 @@
             </q-item-section>
           </q-item>
           <q-item v-show="this.loading === true">
-            <q-spinner color="teal" size="3em" :thickness="2" />
+            <q-spinner color="teal" size="2em" :thickness="2" />
           </q-item>
           <q-item
-            v-show="this.quadros.length === 0 && this.userRole === 'USER'"
+            v-show="
+              this.quadros.length === 0 &&
+              this.userRole === 'USER' &&
+              this.loading === false
+            "
           >
             <q-item-section>
               <q-item-label>Não há nenhum quadro criado</q-item-label>
