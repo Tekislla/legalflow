@@ -80,17 +80,21 @@ export default defineComponent({
     },
     idQuadroAtual: Number,
     userRole: String,
+    tab: String,
   },
 
   data() {
     return {
-      tabProxy: "CRIADO",
+      tabProxy: this.tab || "CRIADO",
     };
   },
 
   watch: {
     tabProxy() {
-      this.$emit("update:tab", this.tabProxy);
+      this.$emit("update:tab", this.tabProxy); // Emite sempre que a tab mudar
+    },
+    tab(newValue) {
+      this.tabProxy = newValue; // Sincroniza o valor da tab quando a prop mudar
     },
   },
 });

@@ -147,7 +147,7 @@ export default defineComponent({
 
   data() {
     return {
-      tabProxy: "CRIADO",
+      tabProxy: this.tab || "CRIADO",
       modalNovoProcessoOpen: ref(false),
       modalEditarQuadroOpen: ref(false),
     };

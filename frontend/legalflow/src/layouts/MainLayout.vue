@@ -7,6 +7,7 @@
       :processos-arquivados="getProcessosSize(processosArquivados)"
       :id-quadro-atual="idQuadroAtual"
       :user-role="userRole"
+      :tab="tab"
       @toggle-left-drawer="toggleLeftDrawer()"
       @update:tab="tab = $event"
       @abrir-modal-novo-usuario="abrirModalNovoUsuario()"
@@ -229,7 +230,7 @@ export default defineComponent({
           ? this.processosFinalizados.push(processo)
           : this.processosArquivados.push(processo);
       });
-      this.$router.push({ path: "/processos" });
+      this.redirectListagemProcessos();
     },
     async getUsuarioInfo() {
       this.loading = true;
@@ -300,16 +301,23 @@ export default defineComponent({
       this.fetch();
     },
     redirectHome() {
-      this.idQuadroAtual = null;
+      this.refresh();
       this.$router.push({ path: "/home" });
     },
     redirectDashboard() {
-      this.idQuadroAtual = null;
+      this.refresh();
       this.$router.push({ path: "/dashboard" });
     },
     redirectListagemUsuarios() {
-      this.idQuadroAtual = null;
+      this.refresh();
       this.$router.push({ path: "/usuarios" });
+    },
+    redirectListagemProcessos() {
+      this.$router.push({ path: "/processos" });
+    },
+    refresh() {
+      this.idQuadroAtual = null;
+      this.tab = "CRIADO";
     },
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen;
