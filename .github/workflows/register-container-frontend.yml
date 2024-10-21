@@ -49,14 +49,20 @@ jobs:
         run: |
           az webapp restart --name legalflow-frontend --resource-group freetrial
 
-      - name: Wait for container to be ready
+      - name: Get timestamp
+        id: get_timestamp
         run: |
-          for i in {1..30}; do
-            STATUS=$(az webapp show --name legalflow-frontend --resource-group freetrial --query "state" -o tsv)
-            if [ "$STATUS" == "Running" ]; then
-              echo "Container is up and running!"
+          echo "timestamp=$(date --utc +%Y-%m-%dT%H:%M:%S)" >> $GITHUB_ENV
+
+      - name: Wait for "Site started" log entry after restart
+        run: |
+          for i in {1..60}; do
+            LOGS=$(az webapp log tail --name legalflow-frontend --resource-group freetrial --output tsv)
+            NEW_LOGS=$(echo "$LOGS" | awk -v last_restart="$timestamp" '$0 > last_restart')
+            if [[ "$NEW_LOGS" == *"Site started."* ]]; then
+              echo "Site started successfully!"
               break
             fi
-            echo "Waiting for container to be ready..."
-            sleep 20
+            echo "Waiting for the site to start..."
+            sleep 10
           done
