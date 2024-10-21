@@ -22,3 +22,9 @@ logging:
 jwt:
   secret: "secret"
   expiration: 14
+
+cors:
+  allowed-urls:
+    container: "http://localhost:9000"
+    local: "http://localhost:9000"
+    prod: "https://www.legalflow.online"
