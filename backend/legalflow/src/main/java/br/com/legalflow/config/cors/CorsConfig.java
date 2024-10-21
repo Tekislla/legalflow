@@ -16,6 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:9000")
                         .allowedOrigins("http://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net")
+                        .allowedOrigins("https://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
