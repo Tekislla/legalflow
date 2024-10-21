@@ -22,6 +22,15 @@ jobs:
         run: |
           az acr login --name legalflowfrontend
 
+      - name: Create GitHub Deployment
+        id: create_deployment
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/deployments \
+          -d '{"ref": "${{ github.sha }}", "environment": "production", "description": "Deploying frontend", "required_contexts": []}'
+
       - name: Build the Docker image
         run: |
           docker build -t legalflowfrontend.azurecr.io/legalflow-frontend:latest ./frontend/legalflow
@@ -33,3 +42,21 @@ jobs:
       - name: Clean up Docker images
         run: |
           docker rmi legalflowfrontend.azurecr.io/legalflow-frontend:latest
+
+      - name: Update Deployment Status to Success
+        if: success()
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/deployments/${{ steps.create_deployment.outputs.id }}/statuses \
+          -d '{"state": "success"}'
+
+      - name: Update Deployment Status to Failure
+        if: failure()
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/deployments/${{ steps.create_deployment.outputs.id }}/statuses \
+          -d '{"state": "failure"}'
