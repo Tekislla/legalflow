@@ -33,21 +33,3 @@ jobs:
       - name: Clean up Docker images
         run: |
           docker rmi legalflowfrontend.azurecr.io/legalflow-frontend:latest
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Create GitHub Deployment
-        uses: chrnorm/deployment-action@v2
-        id: deployment
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          environment: production
-          environment-url: https://www.legalflow.online

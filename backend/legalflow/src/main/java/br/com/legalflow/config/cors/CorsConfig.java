@@ -19,8 +19,6 @@ public class CorsConfig {
                                 "https://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net",
                                 "https://legalflow.online",
                                 "https://www.legalflow.online")
-                        .allowedOrigins()
-                        .allowedOrigins()
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
