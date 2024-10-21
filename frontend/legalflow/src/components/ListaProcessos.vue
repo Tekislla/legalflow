@@ -262,6 +262,7 @@
                     label="Deletar Processo"
                     color="black"
                     no-caps
+                    :disable="loading"
                   />
                 </div>
                 <div class="right-buttons">
@@ -291,6 +292,7 @@
                     no-caps
                   />
                   <q-btn
+                    :loading="loading"
                     v-show="editandoProcesso"
                     unelevated
                     @click="editarProcesso(processoSelecionado)"
@@ -442,14 +444,17 @@ export default defineComponent({
 
   methods: {
     async baixarProcesso(processo) {
+      this.loading = true;
       await ProcessoService.baixarProcesso(processo.id)
         .then((response) => {
+          this.loading = false;
           const blob = new Blob([response.data], { type: "application/pdf" });
           const fileURL = URL.createObjectURL(blob);
 
           window.open(fileURL, "_blank");
         })
         .catch((err) => {
+          this.loading = false;
           NotificationUtil.returnFeedbackMessage(
             this.$q,
             err.response?.data || "Erro ao baixar processo",
@@ -468,6 +473,7 @@ export default defineComponent({
       this.salvarProcesso(processoSelecionado);
     },
     async salvarProcesso(processo) {
+      this.loading = true;
       processo.quadroId = this.idQuadroAtual;
 
       if (typeof processo.status !== "string") {
@@ -490,11 +496,13 @@ export default defineComponent({
 
       await ProcessoService.salvarProcesso(formData)
         .then(() => {
+          this.loading = false;
           this.$emit("salvar-processo", processo);
           this.modalDetalhesProcessoOpen = false;
           this.editandoProcesso = false;
         })
         .catch((err) => {
+          this.loading = false;
           NotificationUtil.returnFeedbackMessage(
             this.$q,
             err.response?.data || "Erro ao salvar processo",

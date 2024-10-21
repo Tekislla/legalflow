@@ -1,7 +1,7 @@
 {
   "name": "legalflow",
   "version": "0.0.1",
-  "description": "Client da aplicação LegalFlow.",
+  "description": "Sua plataforma de gestão de processos judiciais",
   "productName": "LegalFlow",
   "author": "Tekislla <jplazarim@gmail.com>",
   "private": true,

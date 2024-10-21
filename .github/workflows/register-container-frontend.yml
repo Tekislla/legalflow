@@ -33,3 +33,30 @@ jobs:
       - name: Clean up Docker images
         run: |
           docker rmi legalflowfrontend.azurecr.io/legalflow-frontend:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Restart Azure App Service
+        run: |
+          az webapp restart --name legalflow-frontend --resource-group freetrial
+
+      - name: Wait for container to be ready
+        run: |
+          for i in {1..30}; do
+            STATUS=$(az webapp show --name legalflow-frontend --resource-group freetrial --query "state" -o tsv)
+            if [ "$STATUS" == "Running" ]; then
+              echo "Container is up and running!"
+              break
+            fi
+            echo "Waiting for container to be ready..."
+            sleep 20
+          done
