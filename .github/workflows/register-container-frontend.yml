@@ -26,6 +26,14 @@ jobs:
         run: |
           docker build -t legalflowfrontend.azurecr.io/legalflow-frontend:latest ./frontend/legalflow
 
+      - name: Push the Docker image to ACR
+        run: |
+          docker push legalflowfrontend.azurecr.io/legalflow-frontend:latest
+
+      - name: Clean up Docker images
+        run: |
+          docker rmi legalflowfrontend.azurecr.io/legalflow-frontend:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -36,14 +44,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Push the Docker image to ACR
-        run: |
-          docker push legalflowfrontend.azurecr.io/legalflow-frontend:latest
-
-      - name: Clean up Docker images
-        run: |
-          docker rmi legalflowfrontend.azurecr.io/legalflow-frontend:latest
-
       - name: Create GitHub Deployment
         uses: chrnorm/deployment-action@v2
         id: deployment
