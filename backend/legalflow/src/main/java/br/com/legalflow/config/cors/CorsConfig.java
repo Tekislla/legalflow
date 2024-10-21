@@ -14,9 +14,13 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:9000")
-                        .allowedOrigins("http://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net")
-                        .allowedOrigins("https://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net")
+                        .allowedOrigins("http://localhost:9000",
+                                "http://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net",
+                                "https://legalflow-frontend-czaygkejaae5d9bc.brazilsouth-01.azurewebsites.net",
+                                "https://legalflow.online",
+                                "https://www.legalflow.online")
+                        .allowedOrigins()
+                        .allowedOrigins()
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
