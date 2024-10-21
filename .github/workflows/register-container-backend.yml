@@ -54,15 +54,21 @@ jobs:
         run: |
           echo "timestamp=$(date --utc +%Y-%m-%dT%H:%M:%S)" >> $GITHUB_ENV
 
-      - name: Wait for "Site started" log entry after restart
+      - name: Monitor logs for "Completed initialization" entry after restart
         run: |
           for i in {1..60}; do
-            LOGS=$(az webapp log tail --name legalflow-backend --resource-group freetrial --output tsv)
-            NEW_LOGS=$(echo "$LOGS" | awk -v last_restart="$timestamp" '$0 > last_restart')
-            if [[ "$NEW_LOGS" == *"Site started."* ]]; then
-              echo "Site started successfully!"
-              break
+            echo "Attempt $i to tail logs..."
+            LOGS=$(az webapp log tail --name legalflow-backend --resource-group freetrial --output tsv || echo "Log stream interrupted")
+            if [[ "$LOGS" == "Log stream interrupted" ]]; then
+              echo "Log stream interrupted, retrying in 10 seconds..."
+              sleep 10
+            else
+              NEW_LOGS=$(echo "$LOGS" | awk -v last_restart="$timestamp" '$0 > last_restart')
+              if [[ "$NEW_LOGS" == *"Completed initialization"* ]]; then
+                echo "Container started successfully!"
+                break
+              fi
             fi
-            echo "Waiting for the site to start..."
+            echo "Waiting for container to start..."
             sleep 10
           done
