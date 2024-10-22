@@ -72,7 +72,7 @@ module.exports = configure(function (ctx) {
           ? "http://localhost:8080/legalflow"
           : process.env.QUASAR_PROFILE_ENV === "container"
           ? "http://localhost:8080/legalflow"
-          : "api.legalflow.online/legalflow",
+          : "https://api.legalflow.online/legalflow",
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
