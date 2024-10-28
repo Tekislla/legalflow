@@ -128,3 +128,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .config-btn {
   margin-right: 55px;
 }
+
+.header-logo {
+  height: 50px;
+  width: 160px;
+  margin: 5px 0px 0px 15px;
+}

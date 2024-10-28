@@ -1,6 +1,13 @@
 <template>
   <q-page class="flex column flex-center">
     <q-card class="form-card">
+      <q-header elevated class="bg-black text-white" height-hint="98">
+        <q-toolbar>
+          <q-toolbar-title>
+            <q-img src="@/assets/logo.png" class="header-logo" />
+          </q-toolbar-title>
+        </q-toolbar>
+      </q-header>
       <q-card-section>
         <div class="text-h6">Login</div>
       </q-card-section>

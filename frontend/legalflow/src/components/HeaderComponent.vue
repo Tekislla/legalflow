@@ -9,7 +9,9 @@
         @click="this.$emit('toggle-left-drawer')"
       />
 
-      <q-toolbar-title> LegalFlow </q-toolbar-title>
+      <q-toolbar-title>
+        <q-img src="@/assets/logo.png" class="header-logo"
+      /></q-toolbar-title>
 
       <q-btn
         v-show="userRole === 'ADMIN'"
