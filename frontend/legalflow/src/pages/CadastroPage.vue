@@ -1,13 +1,7 @@
 <template>
   <q-page class="flex column flex-center">
     <q-card class="form-card">
-      <q-header elevated class="bg-black text-white" height-hint="98">
-        <q-toolbar>
-          <q-toolbar-title>
-            <q-img src="@/assets/logo.png" class="header-logo" />
-          </q-toolbar-title>
-        </q-toolbar>
-      </q-header>
+      <simple-header-component />
       <q-card-section>
         <div class="text-h6">Cadastro</div>
       </q-card-section>
@@ -126,9 +120,14 @@
 <script>
 import { defineComponent } from "vue";
 import NotificationUtil from "@/utils/NotificationUtil";
+import SimpleHeaderComponent from "@/components/SimpleHeaderComponent.vue";
 
 export default defineComponent({
   name: "RegisterPage",
+
+  components: {
+    SimpleHeaderComponent,
+  },
 
   data() {
     return {
