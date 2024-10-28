@@ -1,6 +1,7 @@
 <template>
   <q-page class="flex column flex-center">
     <q-card class="form-card">
+      <simple-header-component />
       <q-card-section>
         <div class="text-h6">Cadastro</div>
       </q-card-section>
@@ -119,9 +120,14 @@
 <script>
 import { defineComponent } from "vue";
 import NotificationUtil from "@/utils/NotificationUtil";
+import SimpleHeaderComponent from "@/components/SimpleHeaderComponent.vue";
 
 export default defineComponent({
   name: "RegisterPage",
+
+  components: {
+    SimpleHeaderComponent,
+  },
 
   data() {
     return {
