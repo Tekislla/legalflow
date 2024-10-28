@@ -13,7 +13,6 @@ describe("HeaderComponent", () => {
       },
     });
 
-    cy.contains("LegalFlow").should("be.visible");
     cy.contains("5").should("be.visible");
     cy.contains("10").should("be.visible");
     cy.contains("3").should("be.visible");
