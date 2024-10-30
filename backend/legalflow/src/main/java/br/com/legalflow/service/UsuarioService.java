@@ -10,6 +10,7 @@ import br.com.legalflow.exception.usuario.UsuarioInativoException;
 import br.com.legalflow.exception.usuario.UsuarioJaCadastradoException;
 import br.com.legalflow.exception.usuario.UsuarioNaoEncontradoException;
 import br.com.legalflow.repository.UsuarioRepository;
+import br.com.legalflow.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class UsuarioService {
     private QuadroService quadroService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     public Usuario cadastrarUsuario(CadastroRequestDTO dto, Organizacao organizacao) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(dto.getEmail());
@@ -113,5 +116,9 @@ public class UsuarioService {
         }
 
         return usuario;
+    }
+
+    public String gerarToken(Usuario usuario) {
+        return jwtTokenProvider.gerarToken(usuario);
     }
 }

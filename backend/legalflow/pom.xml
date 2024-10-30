@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com</groupId>
 	<artifactId>legalflow</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>legalflow</name>
 	<description>Plataforma de gestão de processos judiciais</description>
 	<properties>

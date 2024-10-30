@@ -6,10 +6,10 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17-jdk AS runtime
 WORKDIR /app
-COPY --from=build /app/target/legalflow-0.0.1-SNAPSHOT.jar /app
+COPY --from=build /app/target/legalflow-1.0.jar /app
 
 ENV SPRING_PROFILES_ACTIVE=prod
 
 EXPOSE 80
 
-CMD ["java", "-Dserver.port=80", "-jar", "legalflow-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
+CMD ["java", "-Dserver.port=80", "-jar", "legalflow-1.0.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
