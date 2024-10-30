@@ -10,14 +10,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JwtTokenProviderTest {
+class JwtTokenProviderTest {
 
     @InjectMocks
     private JwtTokenProvider jwtTokenProvider;
     private Usuario usuario;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jwtTokenProvider = new JwtTokenProvider();
         ReflectionTestUtils.setField(jwtTokenProvider, "jwtSecret", "minhaChaveSecreta");
         ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpirationDays", 15);
@@ -32,45 +32,45 @@ public class JwtTokenProviderTest {
     }
 
     @Test
-    public void gerarToken_Sucesso() {
+    void gerarToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         assertNotNull(token);
     }
 
     @Test
-    public void validateToken_Falha() {
+    void validateToken_Falha() {
         assertFalse(jwtTokenProvider.validateToken("token"));
     }
 
     @Test
-    public void validateToken_Sucesso() {
+    void validateToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         assertTrue(jwtTokenProvider.validateToken(token));
     }
 
     @Test
-    public void getEmailFromToken_Sucesso() {
+    void getEmailFromToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         String email = jwtTokenProvider.getEmailFromToken(token);
         assertEquals("test@example.com", email);
     }
 
     @Test
-    public void getOrganizacaoIdFromToken_Sucesso() {
+    void getOrganizacaoIdFromToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         Long organizacaoId = jwtTokenProvider.getOrganizacaoIdFromToken(token);
         assertEquals(1L, organizacaoId);
     }
 
     @Test
-    public void getRoleFromToken_Sucesso() {
+    void getRoleFromToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         String role = jwtTokenProvider.getRoleFromToken(token);
         assertEquals("ADMIN", role);
     }
 
     @Test
-    public void getIdFromToken_Sucesso() {
+    void getIdFromToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         Long id = jwtTokenProvider.getIdFromToken(token);
         assertEquals(1L, id);

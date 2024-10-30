@@ -28,6 +28,6 @@ public class Quadro {
     @JsonManagedReference
     @ToString.Exclude
     @OneToMany(mappedBy = "quadro", cascade = CascadeType.ALL)
-    private List<Processo> processos = new ArrayList<>();;
+    private List<Processo> processos = new ArrayList<>();
     private String nome;
 }

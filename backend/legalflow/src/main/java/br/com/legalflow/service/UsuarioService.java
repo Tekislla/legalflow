@@ -58,11 +58,6 @@ public class UsuarioService {
 
         Usuario usuario = usuarioOpt.get();
 
-        // TODO: No futuro, implementar essa validação junto à um sistema de recuperação de senha via e-mail
-        // if (!passwordEncoder.matches(dto.getSenha(), usuario.getSenhaCrypto())) {
-        //     throw new RuntimeException("A senha inserida não coincide com a atual");
-        // }
-
         if (dto.getSenha() != null) {
             usuario.setSenhaCrypto(passwordEncoder.encode(dto.getSenha()));
         }

@@ -11,8 +11,8 @@ public abstract class BaseController {
         SecurityContext context = SecurityContextHolder.getContext();
         if (context != null && context.getAuthentication() != null) {
             Object principal = context.getAuthentication().getPrincipal();
-            if (principal instanceof Usuario) {
-                return (Usuario) principal;
+            if (principal instanceof Usuario usuario) {
+                return usuario;
             }
         }
         throw new IllegalStateException("Usuário não autenticado");

@@ -8,6 +8,7 @@ class LegalflowApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Este teste verifica se o contexto do Spring Boot carrega sem problemas.
 	}
 
 }

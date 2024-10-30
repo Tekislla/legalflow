@@ -2,9 +2,9 @@ package br.com.legalflow.auth;
 
 import br.com.legalflow.config.filters.JwtTokenFilter;
 import br.com.legalflow.entity.Organizacao;
-import br.com.legalflow.service.UsuarioService;
-import br.com.legalflow.security.JwtTokenProvider;
 import br.com.legalflow.entity.Usuario;
+import br.com.legalflow.security.JwtTokenProvider;
+import br.com.legalflow.service.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,14 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class JwtTokenFilterTest {
+class JwtTokenFilterTest {
 
     @InjectMocks
     private JwtTokenFilter jwtTokenFilter;
@@ -52,7 +51,7 @@ public class JwtTokenFilterTest {
     }
 
     @Test
-    public void doFilterInternal_TokenValido() throws Exception {
+    void doFilterInternal_TokenValido() throws Exception {
         String token = "validToken";
         String email = "test@example.com";
         Long userId = 1L;
@@ -85,7 +84,7 @@ public class JwtTokenFilterTest {
     }
 
     @Test
-    public void doFilterInternal_TokenInvalido() throws Exception {
+    void doFilterInternal_TokenInvalido() throws Exception {
         String token = "invalidToken";
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);

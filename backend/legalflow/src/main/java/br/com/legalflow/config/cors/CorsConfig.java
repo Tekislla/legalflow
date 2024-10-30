@@ -11,8 +11,8 @@ public class CorsConfig {
 
     @Value("${spring.profiles.active}")
     private String profile;
-    private static final String localOrigin = "http://localhost:9000";
-    private static final String[] productionOrigins = {
+    private static final String LOCAL_ORIGIN = "http://localhost:9000";
+    private static final String[] PRODUCTION_ORIGINS = {
             "https://legalflow.online",
             "https://www.legalflow.online"
     };
@@ -24,13 +24,13 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 if (profile.equals("prod")) {
                     registry.addMapping("/**")
-                            .allowedOrigins(productionOrigins)
+                            .allowedOrigins(PRODUCTION_ORIGINS)
                             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                             .allowedHeaders("*")
                             .allowCredentials(true);
                 } else {
                     registry.addMapping("/**")
-                            .allowedOrigins(localOrigin)
+                            .allowedOrigins(LOCAL_ORIGIN)
                             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                             .allowedHeaders("*")
                             .allowCredentials(true);

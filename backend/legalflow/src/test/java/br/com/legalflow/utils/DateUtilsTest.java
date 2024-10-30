@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertThrows;
 
-public class DateUtilsTest {
+class DateUtilsTest {
 
     @Test
-    public void shouldThrowFormatarDataException() {
+    void shouldThrowFormatarDataException() {
         assertThrows(FormatarDataException.class, () -> {
             DateUtils.getDataFormatada("2020-01-01", "dd/MM/yyyy");
         });
