@@ -7,7 +7,7 @@ spring:
   application:
     name: "legalflow"
   profiles:
-    active: local
+    active: prod
   liquibase:
     change-log: classpath:/db/dbchangeLog.xml
   jpa:

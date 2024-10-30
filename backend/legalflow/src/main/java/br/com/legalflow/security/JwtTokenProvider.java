@@ -42,10 +42,8 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-
-        return false;
     }
 
     public String getEmailFromToken(String token) {
