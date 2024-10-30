@@ -38,6 +38,11 @@ public class JwtTokenProviderTest {
     }
 
     @Test
+    public void validateToken_Falha() {
+        assertFalse(jwtTokenProvider.validateToken("token"));
+    }
+
+    @Test
     public void validateToken_Sucesso() {
         String token = jwtTokenProvider.gerarToken(usuario);
         assertTrue(jwtTokenProvider.validateToken(token));
@@ -62,5 +67,12 @@ public class JwtTokenProviderTest {
         String token = jwtTokenProvider.gerarToken(usuario);
         String role = jwtTokenProvider.getRoleFromToken(token);
         assertEquals("ADMIN", role);
+    }
+
+    @Test
+    public void getIdFromToken_Sucesso() {
+        String token = jwtTokenProvider.gerarToken(usuario);
+        Long id = jwtTokenProvider.getIdFromToken(token);
+        assertEquals(1L, id);
     }
 }

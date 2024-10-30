@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud-azure.version>5.17.1</spring-cloud-azure.version>
+		<sonar.organization>tekislla</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -114,12 +116,80 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>3.5.1</version>
 				<configuration>
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>br/com/legalflow/*.class</exclude>
+								<exclude>br/com/legalflow/exception/**/*.class</exclude>
+								<exclude>br/com/legalflow/config/**/*.class</exclude>
+								<exclude>br/com/legalflow/dto/**/*.class</exclude>
+								<exclude>br/com/legalflow/controller/**/*.class</exclude>
+								<exclude>br/com/legalflow/controller/*.class</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>br/com/legalflow/*.class</exclude>
+								<exclude>br/com/legalflow/exception/**/*.class</exclude>
+								<exclude>br/com/legalflow/config/**/*.class</exclude>
+								<exclude>br/com/legalflow/dto/**/*.class</exclude>
+								<exclude>br/com/legalflow/controller/**/*.class</exclude>
+								<exclude>br/com/legalflow/controller/*.class</exclude>
+							</excludes>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.95</minimum>
+										</limit>
+									</limits>
+								</rule>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.95</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
