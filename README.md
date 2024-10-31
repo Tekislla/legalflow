@@ -1,6 +1,7 @@
 # LegalFlow
 
 LegalFlow é uma plataforma de gestão de processos judiciais que funciona como um kanban, permitindo o acompanhamento de processos através de diferentes status. O sistema é projetado para ser utilizado por escritórios de advocacia e departamentos jurídicos para gerenciar seus casos de forma eficiente.
+A finalidade do projeto é trazer a metodologia ágil para dentro do mundo jurídico, ajudando na agilização e acompanhamento de processos.
 
 <br />
 
@@ -10,12 +11,12 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
   - Um usuário administrador pode se cadastrar e, dentro de sua conta, cadastrar outros usuários (administradores ou usuários comuns).
   
 - **Gestão de Processos**:
-  - O administrador pode cadastrar novos processos, incluindo detalhes como número do processo, nome, cliente, responsável, observações e anexos (PDF).
-  - Atribuição de processos a usuários responsáveis.
+  - O administrador pode cadastrar novos quadros e, dentro destes quadros, novos processos, incluindo detalhes como número do processo, nome, réu, autor, observações e anexos (PDF até 10mb).
+  - Atribuição de quadros de processos a usuários responsáveis.
 
 - **Acompanhamento de Status**:
-  - Os processos podem ser acompanhados através de status como: Criado, Em Andamento, Finalizado, Cancelado, etc.
-  - Usuários responsáveis podem alterar o status dos processos sob sua responsabilidade.
+  - Os processos podem ser acompanhados através de status como: Criado, Em Progresso, Finalizado, Arquivado.
+  - Usuários responsáveis podem alterar o status e detalhes dos processos sob sua responsabilidade.
 
 <br />
 
@@ -31,6 +32,10 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
   - Docker
 - **Cloud**
   - Azure
+- **Monitoramento**
+  - Azure
+  - <a href="https://sonarcloud.io/project/overview?id=Tekislla_legalflow">SonarCloud</a>
+  - JaCoCo para code coverage
 
 <br />
 
@@ -42,6 +47,22 @@ LegalFlow é uma plataforma de gestão de processos judiciais que funciona como 
 - **PostgreSQL**
 
 <br />  
+
+## Diagramas modelo C4
+
+### Diagrama de contexto
+![Diagrama de contexto](assets/diagrama_contexto.svg)
+
+### Diagrama de container
+![Diagrama de contexto](assets/diagrama_container.svg)
+
+### Diagrama de componentes
+![Diagrama de contexto](assets/diagrama_componentes.svg)
+
+### Diagrama dinâmico
+![Diagrama de contexto](assets/diagrama_dinamico.svg)
+
+<br />
 
 # Como Executar o Projeto
 
