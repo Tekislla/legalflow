@@ -19,14 +19,6 @@
         <q-item
           class="list-label"
           clickable
-          @click="redirectHome()"
-          :focused="isHomeRoute"
-        >
-          <q-item-section avatar> Home </q-item-section>
-        </q-item>
-        <q-item
-          class="list-label"
-          clickable
           @click="redirectDashboard()"
           :focused="isDashboardRoute"
         >
@@ -308,10 +300,6 @@ export default defineComponent({
       this.returnFeedbackMessage("Usuário editado com sucesso!");
       this.fetch();
     },
-    redirectHome() {
-      this.refresh();
-      this.$router.push({ path: "/home" });
-    },
     redirectDashboard() {
       this.refresh();
       this.$router.push({ path: "/dashboard" });
@@ -361,9 +349,6 @@ export default defineComponent({
   },
 
   computed: {
-    isHomeRoute() {
-      return this.$route.path === "/home";
-    },
     isUsuariosRoute() {
       return this.$route.path === "/usuarios";
     },

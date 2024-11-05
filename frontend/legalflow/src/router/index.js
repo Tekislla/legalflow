@@ -41,7 +41,7 @@ export default route(function () {
         if (to.path === "/") {
           return next("/dashboard");
         } else if (to.meta.requiresAdmin) {
-          return next("/home");
+          return next("/dashboard");
         }
       }
 
