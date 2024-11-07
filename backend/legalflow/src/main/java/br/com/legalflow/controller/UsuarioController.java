@@ -58,14 +58,17 @@ public class UsuarioController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {
         try {
-            if (!isUsuarioAdmin()) {
-                throw new UsuarioNaoAutorizadoException();
+            Usuario usuario = usuarioService.findById(id);
+            Usuario usuarioLogado = getUsuarioLogado();
+
+            if (isUsuarioAdmin()) {
+                if (usuario.getOrganizacao().getId().equals(usuarioLogado.getOrganizacao().getId())) {
+                    usuarioService.excluirUsuario(usuario);
+                    return ResponseEntity.ok("Usuário deletado com sucesso");
+                }
             }
 
-            Usuario usuario = usuarioService.findById(id);
-            usuarioService.excluirUsuario(usuario);
-
-            return ResponseEntity.ok("Usuário deletado com sucesso");
+            throw new UsuarioNaoAutorizadoException();
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

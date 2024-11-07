@@ -40,6 +40,7 @@
               <q-td :props="props" auto-width>
                 <q-btn-group unelevated>
                   <q-btn
+                    :disabled="this.loading"
                     v-show="
                       props.row.ativo && props.row.email !== emailUsuarioLogado
                     "
@@ -51,6 +52,7 @@
                     <q-tooltip>Desativar usuário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    :disabled="this.loading"
                     v-show="
                       !props.row.ativo && props.row.email !== emailUsuarioLogado
                     "
@@ -62,6 +64,7 @@
                     <q-tooltip>Ativar usuário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    :disabled="this.loading"
                     v-show="props.row.email !== emailUsuarioLogado"
                     size="md"
                     round
@@ -158,6 +161,7 @@
 
               <q-card-actions align="right">
                 <q-btn
+                  :disable="loading"
                   v-show="!editandoUsuario"
                   flat
                   @click="editandoUsuario = false"
@@ -167,6 +171,7 @@
                   v-close-popup
                 />
                 <q-btn
+                  :loading="loading"
                   v-show="!editandoUsuario"
                   unelevated
                   @click="editarUsuario(usuarioSelecionado)"
@@ -174,6 +179,7 @@
                   color="teal"
                   no-caps
                   :disable="
+                    loading ||
                     (usuarioSelecionado.senha != '' &&
                       usuarioSelecionado.senha.length < 5) ||
                     (usuarioSelecionado.senha != '' &&
@@ -346,20 +352,25 @@ export default defineComponent({
         });
     },
     deletarUsuario(usuario) {
+      this.loading = true;
       UsuarioService.excluirUsuario(usuario.id).then(() => {
         this.$emit("deletar-usuario");
+        this.loading = false;
       });
     },
     ativarDesativarUsuario(usuario, condicao) {
+      this.loading = true;
       UsuarioService.editarUsuario({
         id: usuario.id,
         ativo: condicao,
         administrador: usuario.role === "ADMIN",
       }).then(() => {
         this.$emit("editar-usuario");
+        this.loading = false;
       });
     },
     editarUsuario(usuarioSelecionado) {
+      this.loading = true;
       const usuario = {
         id: usuarioSelecionado.id,
         senha: usuarioSelecionado.senha || null,
@@ -368,6 +379,7 @@ export default defineComponent({
       };
       UsuarioService.editarUsuario(usuario).then(() => {
         this.$emit("editar-usuario");
+        this.loading = false;
         this.modalDetalhesUsuarioOpen = false;
       });
     },

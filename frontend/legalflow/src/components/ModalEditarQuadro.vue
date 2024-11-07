@@ -94,12 +94,15 @@ export default defineComponent({
 
   methods: {
     async salvarQuadro() {
+      this.loading = true;
       this.form.usuarioId = this.usuarioSelecionado.value;
       await QuadroService.salvarQuadro(this.form)
         .then(() => {
+          this.loading = false;
           this.$emit("salvar-quadro");
         })
         .catch((err) => {
+          this.loading = false;
           NotificationUtil.returnFeedbackMessage(
             this.$q,
             "Falha ao editar quadro",

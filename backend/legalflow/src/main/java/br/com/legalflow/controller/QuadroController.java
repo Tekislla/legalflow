@@ -34,14 +34,17 @@ public class QuadroController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarQuadro(@PathVariable Long id) {
         try {
-            if (!isUsuarioAdmin()) {
-                throw new UsuarioNaoAutorizadoException();
+            Usuario usuarioLogado = getUsuarioLogado();
+            Quadro quadro = quadroService.findById(id);
+
+            if (isUsuarioAdmin()) {
+                if (quadro.getOrganizacao().getId().equals(usuarioLogado.getOrganizacao().getId())) {
+                    quadroService.deletarQuadro(quadro);
+                    return ResponseEntity.ok("Quadro deletado com sucesso");
+                }
             }
 
-            Quadro quadro = quadroService.findById(id);
-            quadroService.deletarQuadro(quadro);
-
-            return ResponseEntity.ok("Quadro deletado com sucesso");
+            throw new UsuarioNaoAutorizadoException();
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

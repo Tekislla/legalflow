@@ -32,6 +32,7 @@
                   round
                   icon="file_open"
                   @click="baixarProcesso(props.row)"
+                  :disabled="this.loading"
                 >
                   <q-tooltip>Abrir processo em nova guia</q-tooltip>
                 </q-btn>
@@ -40,7 +41,7 @@
                   round
                   icon="block"
                   @click="arquivarProcesso(props.row)"
-                  :disabled="this.statusAtual === 'ARQUIVADO'"
+                  :disabled="this.statusAtual === 'ARQUIVADO' || this.loading"
                 >
                   <q-tooltip>Arquivar processo</q-tooltip>
                 </q-btn>
@@ -276,6 +277,7 @@
                     v-close-popup
                   />
                   <q-btn
+                    :disable="loading"
                     v-show="editandoProcesso"
                     flat
                     @click="editandoProcesso = false"
@@ -522,8 +524,8 @@ export default defineComponent({
 
       await ProcessoService.editarProcesso(processo)
         .then(() => {
-          this.loading = false;
           this.$emit("salvar-processo", processo);
+          this.loading = false;
           this.modalDetalhesProcessoOpen = false;
           this.editandoProcesso = false;
         })
